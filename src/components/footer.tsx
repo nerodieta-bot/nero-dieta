@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { PawPrint, Mail, Twitter, Instagram } from 'lucide-react';
+import { PawPrint, Mail, Youtube, Instagram } from 'lucide-react';
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -56,8 +56,8 @@ export function Footer() {
               </Link>
             </div>
             <div className="flex items-center justify-center md:justify-start gap-4">
-                <Link href="#" aria-label="Twitter" className="text-muted-foreground hover:text-primary">
-                    <Twitter className="w-5 h-5"/>
+                <Link href="#" aria-label="YouTube" className="text-muted-foreground hover:text-primary">
+                    <Youtube className="w-5 h-5"/>
                 </Link>
                  <Link href="#" aria-label="Instagram" className="text-muted-foreground hover:text-primary">
                     <Instagram className="w-5 h-5"/>
