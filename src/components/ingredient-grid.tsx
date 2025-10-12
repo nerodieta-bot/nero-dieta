@@ -35,8 +35,7 @@ export function IngredientGrid({ ingredients }: IngredientGridProps) {
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.desc.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      .sort((a,b) => a.name.localeCompare(b.name));
+      );
   }, [ingredients, filter, searchQuery]);
   
   return (
