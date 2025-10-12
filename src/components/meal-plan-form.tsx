@@ -41,7 +41,7 @@ export function MealPlanForm() {
     if (printContent) {
       const printWindow = window.open('', '', 'height=800,width=800');
       if (printWindow) {
-        printWindow.document.write('<html><head><title>Dieta Jedi - Plan Posiłków</title>');
+        printWindow.document.write('<html><head><title>Dieta Nero - Plan Posiłków</title>');
         printWindow.document.write(`
           <style>
             @import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
