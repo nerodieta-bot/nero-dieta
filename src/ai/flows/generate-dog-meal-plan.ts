@@ -1,3 +1,4 @@
+
 // This file is machine-generated - edit with caution!
 'use server';
 /**
@@ -50,11 +51,11 @@ You will generate a balanced, daily meal plan for a small dog based on the follo
 
 **Your Task:**
 Create a meal plan that is structured, clear, and easy to follow. **Format the entire response as a single HTML string.**
-- Use `<h3>` tags for each meal title (e.g., "<h3>🌞 Śniadanie Mistrza</h3>" or "<h3>🌜 Kolacja Wojownika</h3>").
-- Use `<p>` tags for descriptive paragraphs. Ensure proper spacing between paragraphs.
-- Use `<ul>` and `<li>` tags for bulleted lists of ingredients and their exact quantities in grams.
-- Add a short, compelling introduction in a `<p>` tag that explains the benefits of this specific plan.
-- Conclude with an encouraging and positive summary in a `<p>` tag.
+- Use \`<h3>\` tags for each meal title (e.g., "<h3>🌞 Śniadanie Mistrza</h3>" or "<h3>🌜 Kolacja Wojownika</h3>").
+- Use \`<p>\` tags for descriptive paragraphs. Ensure proper spacing between paragraphs.
+- Use \`<ul>\` and \`<li>\` tags for bulleted lists of ingredients and their exact quantities in grams.
+- Add a short, compelling introduction in a \`<p>\` tag that explains the benefits of this specific plan.
+- Conclude with an encouraging and positive summary in a \`<p>\` tag.
 - The tone should be professional yet caring and enthusiastic. Address the user directly ("Twój mały..."). Remember, you're creating a plan for a tiny, beloved companion! Make it sound both delicious and scientifically sound.
 `,
 });
