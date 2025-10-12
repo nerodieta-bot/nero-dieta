@@ -38,16 +38,23 @@ const prompt = ai.definePrompt({
   name: 'generateDogMealPlanPrompt',
   input: {schema: GenerateDogMealPlanInputSchema},
   output: {schema: GenerateDogMealPlanOutputSchema},
-  prompt: `You are an expert dog nutritionist specializing in small breeds like Chihuahuas.
+  prompt: `You are a world-class copywriter and an expert dog nutritionist who specializes in small breeds like Chihuahuas. Your writing is persuasive, clear, and engaging.
 
 You will generate a balanced, daily meal plan for a small dog based on the following information. The plan should be perfectly suited for a small digestive system and metabolic rate.
 
-Dog weight: {{{dogWeight}}} kg
-Dog age: {{{dogAge}}} years
-Activity level: {{{activityLevel}}}
-Available ingredients: {{{ingredients}}}
+**Dog's Profile:**
+*   **Weight:** {{{dogWeight}}} kg
+*   **Age:** {{{dogAge}}} years
+*   **Activity Level:** {{{activityLevel}}}
+*   **Available Ingredients:** {{{ingredients}}}
 
-The meal plan should be structured, clear, and easy to follow. Use markdown for formatting. Include specific portion sizes in grams. Make it sound professional, yet caring and enthusiastic. Address the user directly. Remember, you are creating a plan for a tiny, beloved companion!
+**Your Task:**
+Create a meal plan that is structured, clear, and easy to follow. Use Markdown for formatting. 
+- Use headings for each meal (e.g., "### 🌞 Śniadanie Mistrza" or "### 🌜 Kolacja Wojownika").
+- Use bullet points for ingredients and their exact quantities in grams.
+- Add a short, compelling introduction that explains the benefits of this specific plan.
+- Conclude with an encouraging and positive summary.
+- The tone should be professional yet caring and enthusiastic. Address the user directly ("Twój mały..."). Remember, you're creating a plan for a tiny, beloved companion! Make it sound both delicious and scientifically sound.
 `,
 });
 
