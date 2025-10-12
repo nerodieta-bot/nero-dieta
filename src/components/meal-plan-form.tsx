@@ -10,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2 } from 'lucide-react';
 import {
@@ -22,6 +21,7 @@ import {
 } from './ui/select';
 import { marked } from 'marked';
 import { Label } from './ui/label';
+import { Input } from './ui/input';
 
 const initialState: FormState = {
   message: '',
