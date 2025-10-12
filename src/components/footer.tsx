@@ -39,7 +39,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link href="/report-bug" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   Zgłoś błąd
                 </Link>
               </li>
