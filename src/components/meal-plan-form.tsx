@@ -1,5 +1,5 @@
 'use client';
-import { useFormState } from 'react-dom';
+import { useActionState, useEffect, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -23,7 +23,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { useEffect, useTransition } from 'react';
 import { Loader2 } from 'lucide-react';
 import {
   Select,
@@ -55,8 +54,7 @@ const initialState: FormState = {
 };
 
 export function MealPlanForm() {
-  const [formState, formAction] = useFormState(createMealPlanAction, initialState);
-  const [isPending, startTransition] = useTransition();
+  const [formState, formAction, isPending] = useActionState(createMealPlanAction, initialState);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -69,13 +67,11 @@ export function MealPlanForm() {
   });
 
   const onSubmit = (data: FormData) => {
-    startTransition(() => {
-      const formData = new FormData();
-      Object.entries(data).forEach(([key, value]) => {
-        formData.append(key, String(value));
-      });
-      formAction(formData);
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, String(value));
     });
+    formAction(formData);
   };
 
   useEffect(() => {
