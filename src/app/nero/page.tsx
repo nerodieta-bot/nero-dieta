@@ -19,16 +19,15 @@ export default function NeroPage() {
           <main className="grid md:grid-cols-5 gap-8">
             <div className="md:col-span-2">
               <Card className="overflow-hidden sticky top-24">
-                <div className="relative w-full aspect-square">
-                  <Image
-                    src="/images/nero.png"
-                    alt="Zdjęcie Nero"
-                    fill
-                    className="object-cover"
-                    data-ai-hint="chihuahua dog"
-                    priority
-                  />
-                </div>
+                <Image
+                  src="/images/nero.png"
+                  alt="Zdjęcie Nero"
+                  width={600}
+                  height={600}
+                  className="object-cover w-full h-auto"
+                  data-ai-hint="chihuahua dog"
+                  priority
+                />
                 <CardHeader>
                   <CardTitle className="text-primary font-headline">Nero Silky Beauty</CardTitle>
                   <CardDescription>Urodzony: 28 października 2024 r.</CardDescription>
