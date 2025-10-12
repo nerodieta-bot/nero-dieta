@@ -11,4 +11,5 @@ export interface Ingredient {
   portion?: string;
   prep?: string;
   nero: string;
+  source?: string;
 }

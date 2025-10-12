@@ -9,13 +9,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Slider } from '@/components/ui/slider';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { useEffect, useState } from 'react';
+import { useEffect, useTransition } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 const formSchema = z.object({
-  dogWeight: z.coerce.number().min(1, "Waga musi być większa niż 0."),
-  dogAge: z.coerce.number().min(0, "Wiek nie może być ujemny."),
+  dogWeight: z.coerce.number().min(1, "Waga musi być większa niż 0.").max(10, "Kreator jest zoptymalizowany dla psów do 10kg."),
+  dogAge: z.coerce.number().min(0, "Wiek nie może być ujemny.").max(20),
   activityLevel: z.enum(['sedentary', 'moderate', 'active'], { required_error: 'Wybierz poziom aktywności.' }),
   ingredients: z.string().min(10, "Wpisz co najmniej kilka składników (min. 10 znaków)."),
 });
@@ -28,35 +28,30 @@ const initialState: FormState = {
 
 export function MealPlanForm() {
   const [formState, formAction] = useFormState(createMealPlanAction, initialState);
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      dogWeight: 10,
+      dogWeight: 3,
       dogAge: 5,
       activityLevel: 'moderate',
-      ingredients: 'Gotowany kurczak, marchewka, ryż basmati',
+      ingredients: 'Gotowany kurczak, ryż, marchewka, olej z łososia',
     },
   });
 
-  const [isPending, setIsPending] = useState(false);
-  
-  // This is a bit of a workaround to bridge useFormState and useForm
-  // We use a local state to track pending status for the UI
-  const onSubmit = form.handleSubmit(async (data) => {
-    setIsPending(true);
-    // FormData is needed for server actions
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, String(value));
+  const onSubmit = (data: FormData) => {
+    startTransition(() => {
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        formData.append(key, String(value));
+      });
+      formAction(formData);
     });
-    await formAction(formData);
-    setIsPending(false);
-  });
+  };
   
   useEffect(() => {
     if (formState.errors) {
-      // Set errors manually
       if (formState.errors.dogWeight) {
         form.setError('dogWeight', { message: formState.errors.dogWeight[0] });
       }
@@ -72,15 +67,14 @@ export function MealPlanForm() {
     }
   }, [formState, form]);
 
-
   return (
     <Card className="w-full">
       <CardHeader>
         <CardTitle>Dane Twojego psa</CardTitle>
-        <CardDescription>Wypełnij formularz, abyśmy mogli stworzyć idealny plan posiłków.</CardDescription>
+        <CardDescription>Wypełnij formularz, abyśmy mogli stworzyć idealny plan posiłków dla Twojego małego przyjaciela.</CardDescription>
       </CardHeader>
       <Form {...form}>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-6">
             <FormField
               control={form.control}
@@ -92,8 +86,8 @@ export function MealPlanForm() {
                     <Slider
                       value={[field.value]}
                       onValueChange={(value) => field.onChange(value[0])}
-                      max={100}
-                      step={1}
+                      max={10}
+                      step={0.1}
                     />
                   </FormControl>
                   <FormMessage />
@@ -128,7 +122,7 @@ export function MealPlanForm() {
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Wybierz poziom aktywności..." />
-                      </SelectTrigger>
+                      </Trigger>
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="sedentary">Kanapowiec (mało aktywny)</SelectItem>
@@ -171,7 +165,7 @@ export function MealPlanForm() {
             {isPending && (
               <div className="w-full text-center p-8">
                 <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-                <p className="mt-4 text-muted-foreground">Analizujemy dane i tworzymy plan... To może zająć chwilę.</p>
+                <p className="mt-4 text-muted-foreground">Analizuję dane i tworzę plan... To może zająć chwilę.</p>
               </div>
             )}
 
@@ -181,7 +175,10 @@ export function MealPlanForm() {
                   <CardTitle>Oto Twój Plan Posiłków!</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="prose prose-sm dark:prose-invert whitespace-pre-wrap">{formState.mealPlan}</div>
+                  <div
+                    className="prose prose-sm dark:prose-invert max-w-none"
+                    dangerouslySetInnerHTML={{ __html: formState.mealPlan.replace(/\n/g, '<br />') }}
+                  />
                 </CardContent>
               </Card>
             )}
