@@ -21,11 +21,12 @@ export default function NeroPage() {
               <Card className="overflow-hidden sticky top-24">
                 <div className="relative w-full aspect-square">
                   <Image
-                    src="/nero.png"
+                    src="/images/nero.png"
                     alt="Zdjęcie Nero"
                     fill
                     className="object-cover"
                     data-ai-hint="chihuahua dog"
+                    priority
                   />
                 </div>
                 <CardHeader>
