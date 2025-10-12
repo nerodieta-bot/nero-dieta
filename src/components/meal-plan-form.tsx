@@ -1,5 +1,5 @@
 'use client';
-import { useActionState, useEffect, useTransition } from 'react';
+import { useActionState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -66,14 +66,6 @@ export function MealPlanForm() {
     },
   });
 
-  const onSubmit = (data: FormData) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, String(value));
-    });
-    formAction(formData);
-  };
-
   useEffect(() => {
     if (formState.errors) {
       const errors = formState.errors;
@@ -99,7 +91,10 @@ export function MealPlanForm() {
         </CardDescription>
       </CardHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          action={formAction}
+          className="space-y-6"
+        >
           <CardContent className="space-y-6">
             <FormField
               control={form.control}
@@ -147,6 +142,7 @@ export function MealPlanForm() {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    name={field.name}
                   >
                     <FormControl>
                       <SelectTrigger>
