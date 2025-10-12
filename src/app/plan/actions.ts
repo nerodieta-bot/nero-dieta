@@ -24,12 +24,7 @@ export async function createMealPlanAction(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
-  const validatedFields = MealPlanSchema.safeParse({
-    dogWeight: formData.get('dogWeight'),
-    dogAge: formData.get('dogAge'),
-    activityLevel: formData.get('activityLevel'),
-    ingredients: formData.get('ingredients'),
-  });
+  const validatedFields = MealPlanSchema.safeParse(Object.fromEntries(formData.entries()));
 
   if (!validatedFields.success) {
     return {
