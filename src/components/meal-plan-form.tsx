@@ -40,18 +40,46 @@ export function MealPlanForm() {
   const handlePrint = () => {
     const printContent = mealPlanRef.current?.innerHTML;
     if (printContent) {
-      const printWindow = window.open('', '', 'height=600,width=800');
+      const printWindow = window.open('', '', 'height=800,width=800');
       if (printWindow) {
-        printWindow.document.write('<html><head><title>Plan Posiłków</title>');
+        printWindow.document.write('<html><head><title>Dieta Jedi - Plan Posiłków</title>');
         printWindow.document.write(`
           <style>
-            body { font-family: sans-serif; line-height: 1.6; }
-            h1, h2, h3 { color: #333; }
-            ul { padding-left: 20px; }
-            li { margin-bottom: 8px; }
+            @import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
+            body { 
+              font-family: 'PT Sans', sans-serif; 
+              line-height: 1.6; 
+              margin: 40px;
+              color: #333;
+            }
+            h1, h2, h3 { 
+              font-family: 'PT Sans', sans-serif;
+              color: #134e4a; /* primary color */
+              border-bottom: 2px solid #f0f0f0;
+              padding-bottom: 10px;
+              margin-top: 24px;
+            }
+            h1 { font-size: 2.25rem; }
+            h2 { font-size: 1.75rem; }
+            h3 { font-size: 1.25rem; font-weight: bold; }
+            ul { 
+              list-style-type: '✓ ';
+              padding-left: 20px; 
+            }
+            li { 
+              margin-bottom: 10px; 
+              padding-left: 10px;
+            }
+            p {
+              margin-bottom: 16px;
+            }
+            strong {
+              color: #134e4a;
+            }
           </style>
         `);
         printWindow.document.write('</head><body>');
+        printWindow.document.write('<h1>Dieta Jedi - Twój Indywidualny Plan Posiłków</h1>');
         printWindow.document.write(printContent);
         printWindow.document.write('</body></html>');
         printWindow.document.close();
