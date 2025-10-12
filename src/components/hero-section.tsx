@@ -32,13 +32,13 @@ export function HeroSection() {
     <section className="mb-12 text-center flex flex-col items-center animate-in fade-in duration-500">
       <PawPrint className="w-16 h-16 text-primary mb-4" />
       <h1 className="text-4xl md:text-5xl font-bold font-headline text-primary mb-4">
-        NeroDieta: Nero sprawdza – Ty wybierasz mądrze
+        Nero sprawdza – Ty wybierasz mądrze
       </h1>
       <p className="max-w-3xl mx-auto text-muted-foreground text-lg mb-6">
         Każdy składnik oceniony. Każda decyzja przemyślana. Nero wie, co trafia do miski – i co lepiej zostawić w spokoju.
       </p>
       <p className="max-w-3xl mx-auto text-muted-foreground mb-8">
-        Przewodnik NeroDieta powstał z myślą o zdrowiu, bezpieczeństwie i wygodzie. Werdykt?{' '}
+        Przewodnik Dieta Nero powstał z myślą o zdrowiu, bezpieczeństwie i wygodzie. Werdykt?{' '}
         <span className="text-green-700 dark:text-green-400 font-semibold">Do miski</span> albo <span className="text-red-700 dark:text-red-400 font-semibold">Do kosza</span>. Nero nie zgaduje – analizuje, porównuje, zatwierdza.
       </p>
 
