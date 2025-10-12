@@ -5,19 +5,47 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { createMealPlanAction, type FormState } from '@/app/plan/actions';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Textarea } from '@/components/ui/textarea';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { useEffect, useTransition } from 'react';
 import { Loader2 } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
+import { marked } from 'marked';
 
 const formSchema = z.object({
-  dogWeight: z.coerce.number().min(1, "Waga musi być większa niż 0.").max(10, "Kreator jest zoptymalizowany dla psów do 10kg."),
-  dogAge: z.coerce.number().min(0, "Wiek nie może być ujemny.").max(20),
-  activityLevel: z.enum(['sedentary', 'moderate', 'active'], { required_error: 'Wybierz poziom aktywności.' }),
-  ingredients: z.string().min(10, "Wpisz co najmniej kilka składników (min. 10 znaków)."),
+  dogWeight: z.coerce
+    .number()
+    .min(1, 'Waga musi być większa niż 0.')
+    .max(10, 'Kreator jest zoptymalizowany dla psów do 10kg.'),
+  dogAge: z.coerce.number().min(0, 'Wiek nie może być ujemny.').max(20),
+  activityLevel: z.enum(['sedentary', 'moderate', 'active'], {
+    required_error: 'Wybierz poziom aktywności.',
+  }),
+  ingredients: z
+    .string()
+    .min(10, 'Wpisz co najmniej kilka składników (min. 10 znaków).'),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -49,29 +77,30 @@ export function MealPlanForm() {
       formAction(formData);
     });
   };
-  
+
   useEffect(() => {
     if (formState.errors) {
-      if (formState.errors.dogWeight) {
-        form.setError('dogWeight', { message: formState.errors.dogWeight[0] });
-      }
-      if (formState.errors.dogAge) {
-        form.setError('dogAge', { message: formState.errors.dogAge[0] });
-      }
-      if (formState.errors.activityLevel) {
-        form.setError('activityLevel', { message: formState.errors.activityLevel[0] });
-      }
-      if (formState.errors.ingredients) {
-        form.setError('ingredients', { message: formState.errors.ingredients[0] });
-      }
+      const errors = formState.errors;
+      if (errors.dogWeight) form.setError('dogWeight', { message: errors.dogWeight[0] });
+      if (errors.dogAge) form.setError('dogAge', { message: errors.dogAge[0] });
+      if (errors.activityLevel) form.setError('activityLevel', { message: errors.activityLevel[0] });
+      if (errors.ingredients) form.setError('ingredients', { message: errors.ingredients[0] });
     }
   }, [formState, form]);
+  
+  const getHtml = (markdown?: string) => {
+    if(!markdown) return { __html: '' };
+    return { __html: marked(markdown) };
+  }
 
   return (
     <Card className="w-full">
       <CardHeader>
         <CardTitle>Dane Twojego psa</CardTitle>
-        <CardDescription>Wypełnij formularz, abyśmy mogli stworzyć idealny plan posiłków dla Twojego małego przyjaciela.</CardDescription>
+        <CardDescription>
+          Wypełnij formularz, abyśmy mogli stworzyć idealny plan posiłków dla
+          Twojego małego przyjaciela.
+        </CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -94,7 +123,7 @@ export function MealPlanForm() {
                 </FormItem>
               )}
             />
-             <FormField
+            <FormField
               control={form.control}
               name="dogAge"
               render={({ field }) => (
@@ -118,16 +147,25 @@ export function MealPlanForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Poziom aktywności</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Wybierz poziom aktywności..." />
-                      </Trigger>
+                      </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="sedentary">Kanapowiec (mało aktywny)</SelectItem>
-                      <SelectItem value="moderate">Spacerowicz (średnio aktywny)</SelectItem>
-                      <SelectItem value="active">Sportowiec (bardzo aktywny)</SelectItem>
+                      <SelectItem value="sedentary">
+                        Kanapowiec (mało aktywny)
+                      </SelectItem>
+                      <SelectItem value="moderate">
+                        Spacerowicz (średnio aktywny)
+                      </SelectItem>
+                      <SelectItem value="active">
+                        Sportowiec (bardzo aktywny)
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -154,18 +192,22 @@ export function MealPlanForm() {
           </CardContent>
           <CardFooter className="flex-col items-start gap-4">
             <Button type="submit" disabled={isPending} className="w-full md:w-auto">
-              {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              {isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : null}
               {isPending ? 'Generowanie...' : 'Generuj plan posiłków'}
             </Button>
-            
-            {formState.message && !formState.mealPlan && !formState.errors &&(
+
+            {formState.message && !formState.mealPlan && !formState.errors && (
               <p className="text-sm text-destructive">{formState.message}</p>
             )}
 
             {isPending && (
               <div className="w-full text-center p-8">
                 <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-                <p className="mt-4 text-muted-foreground">Analizuję dane i tworzę plan... To może zająć chwilę.</p>
+                <p className="mt-4 text-muted-foreground">
+                  Analizuję dane i tworzę plan... To może zająć chwilę.
+                </p>
               </div>
             )}
 
@@ -177,7 +219,7 @@ export function MealPlanForm() {
                 <CardContent>
                   <div
                     className="prose prose-sm dark:prose-invert max-w-none"
-                    dangerouslySetInnerHTML={{ __html: formState.mealPlan.replace(/\n/g, '<br />') }}
+                    dangerouslySetInnerHTML={getHtml(formState.mealPlan)}
                   />
                 </CardContent>
               </Card>
