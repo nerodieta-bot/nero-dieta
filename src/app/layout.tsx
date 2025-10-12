@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { Header } from '@/components/header';
 import { cn } from '@/lib/utils';
+import { Footer } from '@/components/footer';
 
 export const metadata: Metadata = {
   title: 'Dieta Nero',
@@ -28,6 +29,7 @@ export default function RootLayout({
         <div className="flex flex-col min-h-screen">
           <Header />
           <main className="flex-grow">{children}</main>
+          <Footer />
         </div>
         <Toaster />
       </body>
