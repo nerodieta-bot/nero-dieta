@@ -1,18 +1,17 @@
 'use client';
-import { useFormState, useForm } from 'react-hook-form';
+import { useFormState } from 'react-dom';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { createMealPlanAction, type FormState } from '@/app/plan/actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 const formSchema = z.object({
   dogWeight: z.coerce.number().min(1, "Waga musi być większa niż 0."),
@@ -23,10 +22,12 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
+const initialState: FormState = {
+  message: '',
+};
+
 export function MealPlanForm() {
-  const [formState, formAction] = useFormState<FormState, FormData>(createMealPlanAction, {
-    message: '',
-  });
+  const [formState, formAction] = useFormState(createMealPlanAction, initialState);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -39,22 +40,37 @@ export function MealPlanForm() {
   });
 
   const [isPending, setIsPending] = useState(false);
-
-  const onSubmit = async (data: FormData) => {
+  
+  // This is a bit of a workaround to bridge useFormState and useForm
+  // We use a local state to track pending status for the UI
+  const onSubmit = form.handleSubmit(async (data) => {
     setIsPending(true);
+    // FormData is needed for server actions
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       formData.append(key, String(value));
     });
     await formAction(formData);
     setIsPending(false);
-  };
+  });
   
   useEffect(() => {
     if (formState.errors) {
-      // Manual error setting for react-hook-form
+      // Set errors manually
+      if (formState.errors.dogWeight) {
+        form.setError('dogWeight', { message: formState.errors.dogWeight[0] });
+      }
+      if (formState.errors.dogAge) {
+        form.setError('dogAge', { message: formState.errors.dogAge[0] });
+      }
+      if (formState.errors.activityLevel) {
+        form.setError('activityLevel', { message: formState.errors.activityLevel[0] });
+      }
+      if (formState.errors.ingredients) {
+        form.setError('ingredients', { message: formState.errors.ingredients[0] });
+      }
     }
-  }, [formState]);
+  }, [formState, form]);
 
 
   return (
@@ -64,7 +80,7 @@ export function MealPlanForm() {
         <CardDescription>Wypełnij formularz, abyśmy mogli stworzyć idealny plan posiłków.</CardDescription>
       </CardHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={onSubmit}>
           <CardContent className="space-y-6">
             <FormField
               control={form.control}
@@ -148,7 +164,7 @@ export function MealPlanForm() {
               {isPending ? 'Generowanie...' : 'Generuj plan posiłków'}
             </Button>
             
-            {formState.message && !formState.mealPlan && (
+            {formState.message && !formState.mealPlan && !formState.errors &&(
               <p className="text-sm text-destructive">{formState.message}</p>
             )}
 
