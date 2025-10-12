@@ -38,6 +38,11 @@ export function Footer() {
                   Zgłoś składnik
                 </Link>
               </li>
+              <li>
+                <Link href="/submit" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Zgłoś błąd
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -46,9 +51,9 @@ export function Footer() {
             <h3 className="font-semibold text-foreground mb-4">Kontakt</h3>
             <div className="flex items-center justify-center md:justify-start gap-2 text-muted-foreground mb-4">
               <Mail className="w-4 h-4" />
-              <a href="mailto:kontakt@dietanero.pl" className="text-sm hover:text-primary transition-colors">
-                kontakt@dietanero.pl
-              </a>
+              <Link href="/contact" className="text-sm hover:text-primary transition-colors">
+                Napisz do nas
+              </Link>
             </div>
             <div className="flex items-center justify-center md:justify-start gap-4">
                 <Link href="#" aria-label="Twitter" className="text-muted-foreground hover:text-primary">
