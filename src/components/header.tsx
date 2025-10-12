@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { Button } from './ui/button';
 import { PawPrint } from 'lucide-react';
 import { usePathname } from 'next/navigation';
@@ -22,6 +23,7 @@ const navLinks = [
 
 export function Header() {
   const pathname = usePathname();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   return (
     <header className="bg-card/80 backdrop-blur-sm border-b sticky top-0 z-50">
@@ -43,10 +45,11 @@ export function Header() {
           ))}
         </div>
         <div className="md:hidden">
-          <Sheet>
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Menu />
+                <span className="sr-only">Otwórz menu</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="right">
@@ -58,6 +61,7 @@ export function Header() {
                   asChild
                   variant={pathname === link.href ? 'secondary' : 'ghost'}
                   className={cn('w-full justify-start', pathname === link.href && 'font-bold')}
+                  onClick={() => setIsSheetOpen(false)}
                   >
                   <Link href={link.href}>{link.label}</Link>
                 </Button>
