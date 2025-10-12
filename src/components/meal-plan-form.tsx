@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Slider } from '@/components/ui/slider';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2 } from 'lucide-react';
 import {
@@ -25,15 +25,20 @@ import { Label } from './ui/label';
 
 const initialState: FormState = {
   message: '',
+  mealPlan: undefined,
+  errors: undefined,
 };
 
 export function MealPlanForm() {
-  const [formState, formAction, isPending] = useActionState(createMealPlanAction, initialState);
+  const [formState, formAction, isPending] = useActionState(
+    createMealPlanAction,
+    initialState
+  );
 
   const getHtml = (markdown?: string) => {
-    if(!markdown) return { __html: '' };
+    if (!markdown) return { __html: '' };
     return { __html: marked(markdown) };
-  }
+  };
 
   return (
     <Card className="w-full">
