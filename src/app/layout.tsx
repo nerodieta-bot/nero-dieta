@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { Header } from '@/components/header';
 import { cn } from '@/lib/utils';
 import { Footer } from '@/components/footer';
+import { CookieConsentBanner } from '@/components/cookie-consent-banner';
 
 export const metadata: Metadata = {
   title: 'Dieta Nero',
@@ -32,6 +33,7 @@ export default function RootLayout({
           <Footer />
         </div>
         <Toaster />
+        <CookieConsentBanner />
       </body>
     </html>
   );
