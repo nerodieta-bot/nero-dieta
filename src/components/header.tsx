@@ -14,10 +14,10 @@ const navLinks = [
   { href: '/nero', label: 'O Nero', icon: Dog },
 ];
 
-const NAV_BUTTON_SIZE = 64; // w-16 h-16
-const NAV_RADIUS = 120; // Radius of the circle in pixels
+// Radial menu constants
+const NAV_RADIUS = 100; // Radius of the circle in pixels
 const START_ANGLE = -90; // Start angle in degrees (pointing upwards)
-const ANGLE_STEP = 45; // Angle between items
+const ANGLE_STEP = 40; // Angle between items
 
 export function Header() {
   const pathname = usePathname();
@@ -28,9 +28,11 @@ export function Header() {
     setIsMounted(true);
   }, []);
 
-  // Close menu on route change
+  // Close mobile menu on route change
   useEffect(() => {
-    setIsOpen(false);
+    if (isOpen) {
+      setIsOpen(false);
+    }
   }, [pathname]);
 
   if (!isMounted) {
@@ -46,19 +48,43 @@ export function Header() {
 
   return (
     <>
-      {/* Invisible placeholder to maintain layout space */}
-      <header className="h-16" />
+      {/* Traditional Header for Desktop */}
+      <header className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-b">
+        <nav className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 font-bold text-lg text-primary transition-transform hover:scale-105">
+            <PawPrint className="w-6 h-6 text-accent" />
+            <span className="font-headline">Dieta Nero</span>
+          </Link>
 
-      {/* Actual Navigation */}
-      <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50">
+          {/* Desktop Navigation Links (hidden on mobile) */}
+          <div className="hidden md:flex items-center gap-2">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Button key={link.href} asChild variant={isActive ? 'secondary' : 'ghost'}>
+                  <Link href={link.href} className="flex items-center gap-2">
+                    <link.icon className="h-4 w-4" />
+                    {link.label}
+                  </Link>
+                </Button>
+              );
+            })}
+          </div>
+        </nav>
+      </header>
+      
+      {/* Placeholder to prevent content overlap */}
+      <div className="h-16" />
+
+      {/* Radial Mobile Navigation (hidden on desktop) */}
+      <div className="md:hidden fixed bottom-6 right-6 z-50">
         <div className="relative flex items-center justify-center">
-          
           {/* Animated navigation items */}
           {navLinks.map((link, index) => {
             const angle = START_ANGLE + index * ANGLE_STEP;
             const x = Math.cos((angle * Math.PI) / 180) * NAV_RADIUS;
             const y = Math.sin((angle * Math.PI) / 180) * NAV_RADIUS;
-
             const isActive = pathname === link.href;
 
             return (
@@ -67,20 +93,19 @@ export function Header() {
                 href={link.href}
                 className={cn(
                   'absolute flex flex-col items-center justify-center w-16 h-16 rounded-full bg-card shadow-lg border transition-all duration-300 ease-in-out',
-                  'transform-gpu',
+                  'transform-gpu', // Hardware acceleration for smooth animation
                   isOpen
-                    ? `translate-x-[${x}px] translate-y-[${y}px] opacity-100`
-                    : 'translate-x-0 translate-y-0 opacity-0 pointer-events-none',
+                    ? 'opacity-100'
+                    : 'opacity-0 scale-50 pointer-events-none',
                    isActive ? 'text-primary ring-2 ring-primary bg-primary/10' : 'text-muted-foreground hover:text-primary hover:bg-accent/50'
                 )}
                 style={{
-                  // Inline styles are needed for dynamic transform values
                   transform: isOpen ? `translate(${x}px, ${y}px)` : 'translate(0, 0)',
                 }}
                 aria-label={link.label}
               >
-                <link.icon className="h-6 w-6" />
-                <span className="text-xs mt-1">{link.label}</span>
+                <link.icon className="h-5 w-5" />
+                <span className="text-[10px] mt-1">{link.label}</span>
               </Link>
             );
           })}
@@ -89,12 +114,12 @@ export function Header() {
           <Button
             onClick={() => setIsOpen(!isOpen)}
             className="w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-primary-foreground transition-transform duration-500 ease-in-out hover:scale-110"
-            aria-label="Otwórz menu"
+            aria-label={isOpen ? "Zamknij menu" : "Otwórz menu"}
             aria-expanded={isOpen}
           >
-            <div className="relative w-8 h-8 flex items-center justify-center">
-                 <X className={cn("absolute h-8 w-8 transition-all duration-300 transform", isOpen ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0")} />
-                 <Menu className={cn("absolute h-8 w-8 transition-all duration-300 transform", isOpen ? "rotate-90 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100")} />
+            <div className="relative w-8 h-8 flex items-center justify-center overflow-hidden">
+                 <X className={cn("absolute h-7 w-7 transition-all duration-300 transform", isOpen ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0")} />
+                 <Menu className={cn("absolute h-7 w-7 transition-all duration-300 transform", isOpen ? "rotate-90 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100")} />
             </div>
           </Button>
         </div>
