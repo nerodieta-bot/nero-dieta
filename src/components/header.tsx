@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import {
   Sheet,
   SheetContent,
+  SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
@@ -49,6 +50,7 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right">
+              <SheetTitle className="sr-only">Menu nawigacyjne</SheetTitle>
               <div className="flex flex-col gap-4 mt-8">
               {navLinks.map((link) => (
                 <Button
