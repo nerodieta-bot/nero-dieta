@@ -47,9 +47,11 @@ export function Header() {
         <div className="md:hidden">
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild aria-label="Otwórz menu">
-              <Button variant="ghost" size="icon">
-                <Menu />
-              </Button>
+              <div>
+                <Button variant="ghost" size="icon">
+                  <Menu />
+                </Button>
+              </div>
             </SheetTrigger>
             <SheetContent side="right">
               <SheetTitle className="sr-only">Menu nawigacyjne</SheetTitle>
