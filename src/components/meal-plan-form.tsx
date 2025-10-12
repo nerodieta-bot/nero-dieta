@@ -1,5 +1,5 @@
 'use client';
-import { useActionState } from 'react';
+import { useActionState, useRef } from 'react';
 import { createMealPlanAction, type FormState } from '@/app/plan/actions';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Printer } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -34,6 +34,32 @@ export function MealPlanForm() {
     createMealPlanAction,
     initialState
   );
+
+  const mealPlanRef = useRef<HTMLDivElement>(null);
+
+  const handlePrint = () => {
+    const printContent = mealPlanRef.current?.innerHTML;
+    if (printContent) {
+      const printWindow = window.open('', '', 'height=600,width=800');
+      if (printWindow) {
+        printWindow.document.write('<html><head><title>Plan Posiłków</title>');
+        printWindow.document.write(`
+          <style>
+            body { font-family: sans-serif; line-height: 1.6; }
+            h1, h2, h3 { color: #333; }
+            ul { padding-left: 20px; }
+            li { margin-bottom: 8px; }
+          </style>
+        `);
+        printWindow.document.write('</head><body>');
+        printWindow.document.write(printContent);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.print();
+      }
+    }
+  };
+
 
   const getHtml = (markdown?: string) => {
     if (!markdown) return { __html: '' };
@@ -106,7 +132,7 @@ export function MealPlanForm() {
             {isPending ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : null}
-            {isPending ? 'Generowanie...' : 'Generuj plan posiłków'}
+            {isPending ? 'Generowanie...' : 'Generuj plan'}
           </Button>
 
           {formState.message && !formState.mealPlan && !formState.errors && (
@@ -124,11 +150,16 @@ export function MealPlanForm() {
 
           {formState.mealPlan && !isPending && (
             <Card className="w-full bg-primary/5 dark:bg-primary/10">
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Oto Twój Plan Posiłków!</CardTitle>
+                <Button variant="outline" size="sm" onClick={handlePrint}>
+                  <Printer className="mr-2 h-4 w-4" />
+                  Drukuj
+                </Button>
               </CardHeader>
               <CardContent>
                 <div
+                  ref={mealPlanRef}
                   className="prose prose-sm dark:prose-invert max-w-none"
                   dangerouslySetInnerHTML={getHtml(formState.mealPlan)}
                 />
