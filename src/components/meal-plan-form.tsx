@@ -19,7 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
-import { marked } from 'marked';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
 
@@ -54,7 +53,7 @@ export function MealPlanForm() {
             }
             h1, h2, h3 { 
               font-family: 'PT Sans', sans-serif;
-              color: #134e4a; /* primary color */
+              color: #386641;
               border-bottom: 2px solid #f0f0f0;
               padding-bottom: 10px;
               margin-top: 24px;
@@ -74,12 +73,12 @@ export function MealPlanForm() {
               margin-bottom: 16px;
             }
             strong {
-              color: #134e4a;
+              color: #386641;
             }
           </style>
         `);
         printWindow.document.write('</head><body>');
-        printWindow.document.write('<h1>Dieta Jedi - Twój Indywidualny Plan Posiłków</h1>');
+        printWindow.document.write('<h1>Oto Twój Plan Posiłków!</h1>');
         printWindow.document.write(printContent);
         printWindow.document.write('</body></html>');
         printWindow.document.close();
@@ -89,9 +88,9 @@ export function MealPlanForm() {
   };
 
 
-  const getHtml = (markdown?: string) => {
-    if (!markdown) return { __html: '' };
-    return { __html: marked(markdown) };
+  const getHtml = (html?: string) => {
+    if (!html) return { __html: '' };
+    return { __html: html };
   };
 
   return (
