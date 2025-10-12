@@ -5,7 +5,7 @@ import { Header } from '@/components/header';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'Dieta Jedi',
+  title: 'Dieta Nero',
   description: 'Przewodnik po zdrowym żywieniu psa. Sprawdź, co jest bezpieczne dla Twojego pupila.',
 };
 

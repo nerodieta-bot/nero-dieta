@@ -26,7 +26,7 @@ export function Header() {
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         <Link href="/" className="flex items-center gap-2 font-bold text-lg text-primary">
           <PawPrint className="w-6 h-6 text-accent" />
-          <span className="font-headline">Dieta Jedi</span>
+          <span className="font-headline">Dieta Nero</span>
         </Link>
         <div className="hidden md:flex items-center gap-2">
           {navLinks.map((link) => (
