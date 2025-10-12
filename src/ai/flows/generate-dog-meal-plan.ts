@@ -25,7 +25,7 @@ const GenerateDogMealPlanInputSchema = z.object({
 export type GenerateDogMealPlanInput = z.infer<typeof GenerateDogMealPlanInputSchema>;
 
 const GenerateDogMealPlanOutputSchema = z.object({
-  mealPlan: z.string().describe('A balanced meal plan for a small breed dog, like a Chihuahua. The output should be formatted as markdown, with headings for each meal of the day, and bullet points for ingredients and their quantities in grams. The tone should be informative, but also friendly and encouraging, as if written by a dog nutrition expert who loves small dogs.'),
+  mealPlan: z.string().describe("A balanced meal plan for a small breed dog, like a Chihuahua. The output should be formatted as a self-contained HTML string, not markdown. Use h3 for titles, ul/li for lists, and p for paragraphs. Example: '<h3>Breakfast</h3><p>Details...</p><ul><li>Ingredient 1</li></ul>'. The tone should be informative, but also friendly and encouraging, as if written by a dog nutrition expert who loves small dogs."),
 });
 
 export type GenerateDogMealPlanOutput = z.infer<typeof GenerateDogMealPlanOutputSchema>;
@@ -40,7 +40,7 @@ const prompt = ai.definePrompt({
   output: {schema: GenerateDogMealPlanOutputSchema},
   prompt: `You are a world-class copywriter and an expert dog nutritionist who specializes in small breeds like Chihuahuas. Your writing is persuasive, clear, and engaging.
 
-You will generate a balanced, daily meal plan for a small dog based on the following information. The plan should be perfectly suited for a small digestive system and metabolic rate.
+You will generate a balanced, daily meal plan for a small dog based on the following information. The plan should be perfectly suited for a small digestive system and metabolic rate. The output must be a valid HTML string.
 
 **Dog's Profile:**
 *   **Weight:** {{{dogWeight}}} kg
@@ -49,11 +49,12 @@ You will generate a balanced, daily meal plan for a small dog based on the follo
 *   **Available Ingredients:** {{{ingredients}}}
 
 **Your Task:**
-Create a meal plan that is structured, clear, and easy to follow. Use Markdown for formatting. 
-- Use headings for each meal (e.g., "### 🌞 Śniadanie Mistrza" or "### 🌜 Kolacja Wojownika").
-- Use bullet points for ingredients and their exact quantities in grams.
-- Add a short, compelling introduction that explains the benefits of this specific plan.
-- Conclude with an encouraging and positive summary.
+Create a meal plan that is structured, clear, and easy to follow. **Format the entire response as a single HTML string.**
+- Use `<h3>` tags for each meal title (e.g., "<h3>🌞 Śniadanie Mistrza</h3>" or "<h3>🌜 Kolacja Wojownika</h3>").
+- Use `<p>` tags for descriptive paragraphs. Ensure proper spacing between paragraphs.
+- Use `<ul>` and `<li>` tags for bulleted lists of ingredients and their exact quantities in grams.
+- Add a short, compelling introduction in a `<p>` tag that explains the benefits of this specific plan.
+- Conclude with an encouraging and positive summary in a `<p>` tag.
 - The tone should be professional yet caring and enthusiastic. Address the user directly ("Twój mały..."). Remember, you're creating a plan for a tiny, beloved companion! Make it sound both delicious and scientifically sound.
 `,
 });
