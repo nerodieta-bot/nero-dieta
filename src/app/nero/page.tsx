@@ -20,7 +20,7 @@ export default function NeroPage() {
               <Card className="overflow-hidden sticky top-24">
                 <div className="relative w-full aspect-square">
                   <Image
-                    src="https://picsum.photos/seed/nero/600/600"
+                    src="/nero.jpg"
                     alt="Zdjęcie Nero"
                     fill
                     className="object-cover"
