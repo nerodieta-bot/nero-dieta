@@ -6,6 +6,13 @@ import { usePathname } from 'next/navigation';
 import { Button } from './ui/button';
 import { PawPrint, Home, Bot, PlusSquare, Dog, X, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 
 const navLinks = [
   { href: '/', label: 'Baza Wiedzy', icon: Home },
@@ -50,7 +57,7 @@ export function Header() {
     <>
       {/* Traditional Header for Desktop */}
       <header className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-b">
-        <nav className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 font-bold text-lg text-primary transition-transform hover:scale-105">
             <PawPrint className="w-6 h-6 text-accent" />
@@ -71,7 +78,12 @@ export function Header() {
               );
             })}
           </div>
-        </nav>
+
+          {/* Mobile menu trigger - hidden on desktop */}
+          <div className="md:hidden">
+            {/* This space is intentionally left blank for the radial menu trigger */}
+          </div>
+        </div>
       </header>
       
       {/* Placeholder to prevent content overlap */}
@@ -97,7 +109,7 @@ export function Header() {
                   isOpen
                     ? 'opacity-100'
                     : 'opacity-0 scale-50 pointer-events-none',
-                   isActive ? 'text-primary ring-2 ring-primary bg-primary/10' : 'text-muted-foreground hover:text-primary hover:bg-accent/50'
+                   isActive ? 'text-primary-foreground bg-primary ring-2 ring-primary' : 'text-foreground bg-card hover:text-primary hover:bg-accent/50'
                 )}
                 style={{
                   transform: isOpen ? `translate(${x}px, ${y}px)` : 'translate(0, 0)',
@@ -105,7 +117,7 @@ export function Header() {
                 aria-label={link.label}
               >
                 <link.icon className="h-5 w-5" />
-                <span className="text-[10px] mt-1">{link.label}</span>
+                <span className="text-xs mt-1 font-medium">{link.label}</span>
               </Link>
             );
           })}
@@ -113,7 +125,7 @@ export function Header() {
           {/* Main toggle button */}
           <Button
             onClick={() => setIsOpen(!isOpen)}
-            className="w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-primary-foreground transition-transform duration-500 ease-in-out hover:scale-110"
+            className="w-16 h-16 rounded-full shadow-2xl flex items-center justify-center bg-accent text-accent-foreground transition-transform duration-500 ease-in-out hover:scale-110 hover:bg-accent/90"
             aria-label={isOpen ? "Zamknij menu" : "Otwórz menu"}
             aria-expanded={isOpen}
           >
