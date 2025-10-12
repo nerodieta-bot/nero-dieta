@@ -1,5 +1,5 @@
 'use client';
-import { useActionState, useEffect, useRef, useState } from 'react';
+import { useActionState, useEffect, useRef } from 'react';
 import {
   submitIngredientAction,
   type ContributionFormState,
@@ -31,21 +31,11 @@ const initialState: ContributionFormState = {
 };
 
 export function ContributionForm() {
-  const [state, formAction] = useActionState(submitIngredientAction, initialState);
-  const [isPending, setIsPending] = useState(false);
+  const [state, formAction, isPending] = useActionState(submitIngredientAction, initialState);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsPending(true);
-    const formData = new FormData(event.currentTarget);
-    // @ts-ignore
-    await formAction(formData);
-    setIsPending(false);
-  };
-  
   useEffect(() => {
-    if(state.success) {
+    if (state.success) {
       formRef.current?.reset();
     }
   }, [state.success]);
@@ -71,7 +61,7 @@ export function ContributionForm() {
           Pomóż nam rozbudować bazę! Wypełnij poniższe pola, a nasz zespół zweryfikuje Twoje zgłoszenie.
         </CardDescription>
       </CardHeader>
-      <form ref={formRef} onSubmit={handleSubmit}>
+      <form ref={formRef} action={formAction}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Nazwa składnika</Label>
