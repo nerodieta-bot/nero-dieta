@@ -1,6 +1,5 @@
 'use server';
 import { generateDogMealPlan } from '@/ai/flows/generate-dog-meal-plan';
-import { translateText } from '@/ai/flows/translate-text';
 import { z } from 'zod';
 
 const MealPlanSchema = z.object({
@@ -36,14 +35,10 @@ export async function createMealPlanAction(
 
   try {
     const result = await generateDogMealPlan(validatedFields.data);
-    const translationResult = await translateText({
-        text: result.mealPlan,
-        targetLanguage: 'Polish'
-    });
 
     return {
       message: 'Plan posiłków wygenerowany pomyślnie!',
-      mealPlan: translationResult.translatedText,
+      mealPlan: result.mealPlan,
     };
   } catch (error) {
     console.error('Error generating meal plan:', error);
