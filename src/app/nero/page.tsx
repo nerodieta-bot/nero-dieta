@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { PawPrint, Heart, Crown, Mountain } from 'lucide-react';
@@ -20,7 +21,7 @@ export default function NeroPage() {
               <Card className="overflow-hidden sticky top-24">
                 <div className="relative w-full aspect-square">
                   <Image
-                    src="/nero.jpg"
+                    src="/nero.png"
                     alt="Zdjęcie Nero"
                     fill
                     className="object-cover"
