@@ -20,7 +20,7 @@ export default function NeroPage() {
             <div className="md:col-span-2">
               <Card className="overflow-hidden sticky top-24">
                 <Image
-                  src="/images/nero.png"
+                  src="/Nero.png"
                   alt="Zdjęcie Nero"
                   width={600}
                   height={600}
