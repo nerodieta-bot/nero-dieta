@@ -37,7 +37,7 @@ import { marked } from 'marked';
 const formSchema = z.object({
   dogWeight: z.coerce
     .number()
-    .min(1, 'Waga musi być większa niż 0.')
+    .min(0.5, 'Waga musi być większa niż 0.5 kg.')
     .max(10, 'Kreator jest zoptymalizowany dla psów do 10kg.'),
   dogAge: z.coerce.number().min(0, 'Wiek nie może być ujemny.').max(20),
   activityLevel: z.enum(['sedentary', 'moderate', 'active'], {
@@ -115,6 +115,7 @@ export function MealPlanForm() {
                     <Slider
                       value={[field.value]}
                       onValueChange={(value) => field.onChange(value[0])}
+                      min={0.5}
                       max={10}
                       step={0.1}
                     />
