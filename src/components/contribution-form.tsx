@@ -1,6 +1,5 @@
 'use client';
-import { useFormState } from 'react-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import {
   submitIngredientAction,
   type ContributionFormState,
@@ -32,7 +31,7 @@ const initialState: ContributionFormState = {
 };
 
 export function ContributionForm() {
-  const [state, formAction] = useFormState(submitIngredientAction, initialState);
+  const [state, formAction] = useActionState(submitIngredientAction, initialState);
   const [isPending, setIsPending] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -40,6 +39,7 @@ export function ContributionForm() {
     event.preventDefault();
     setIsPending(true);
     const formData = new FormData(event.currentTarget);
+    // @ts-ignore
     await formAction(formData);
     setIsPending(false);
   };
