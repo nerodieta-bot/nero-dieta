@@ -16,6 +16,7 @@ const navLinks = [
   { href: '/', label: 'Baza Wiedzy' },
   { href: '/plan', label: 'Kreator Posiłków' },
   { href: '/submit', label: 'Dodaj Składnik' },
+  { href: '/nero', label: 'O Nero' },
 ];
 
 export function Header() {
