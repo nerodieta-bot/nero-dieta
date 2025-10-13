@@ -57,19 +57,19 @@ export function CookieConsentBanner() {
             <Cookie className="h-12 w-12 text-accent" />
           </div>
           <DialogTitle className="text-center text-2xl font-headline text-primary">Witaj w Świecie Dieta Nero!</DialogTitle>
-          <DialogDescription className="text-center text-muted-foreground">
+          <DialogDescription className="text-center text-muted-foreground !text-sm sm:!text-base">
             Zanim zaczniesz, prosimy o akceptację naszych zasad. To ważne dla Twojego bezpieczeństwa i świadomego korzystania z serwisu.
           </DialogDescription>
         </DialogHeader>
         
-        <div className="py-4 space-y-4 text-sm">
-            <p>
+        <div className="py-2 sm:py-4 space-y-4 text-sm">
+            <p className="!text-xs sm:!text-sm">
                 Korzystając z serwisu, potwierdzasz, że rozumiesz i akceptujesz, iż wszystkie treści mają charakter wyłącznie informacyjny i <strong>nie zastępują profesjonalnej porady weterynaryjnej</strong>.
             </p>
             <div className='flex flex-col sm:flex-row gap-2'>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="outline" className="w-full">
+                  <Button variant="outline" className="w-full text-xs sm:text-sm">
                     <FileText className='mr-2 h-4 w-4'/>
                     Przeczytaj Regulamin
                   </Button>
@@ -89,7 +89,7 @@ export function CookieConsentBanner() {
 
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="outline" className="w-full">
+                  <Button variant="outline" className="w-full text-xs sm:text-sm">
                     <ShieldCheck className='mr-2 h-4 w-4'/>
                     Przeczytaj Politykę Prywatności
                   </Button>
