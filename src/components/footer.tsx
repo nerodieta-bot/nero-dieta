@@ -185,7 +185,7 @@ export function Footer() {
                         Informacje o twórcy
                     </Button>
                 </CollapsibleTrigger>
-                <CollapsibleContent>
+                <CollapsibleContent className="bg-card p-2 rounded-md">
                     <p className="text-xs text-muted-foreground pt-2">
                         Zaprojektowane i zbudowane od podstaw przez <Link href="/contact" className="font-semibold text-accent/90 hover:text-accent underline">NERO STUDIO</Link>.
                     </p>
