@@ -57,14 +57,13 @@ export function Footer() {
                     rel="noopener noreferrer"
                     className="flex flex-col items-center justify-center p-4 border rounded-lg bg-background/50 h-32 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
                   >
-                    <div className="relative w-full h-full">
-                      <Image
-                        src={rec.logoUrl}
-                        alt={`Logo ${rec.name}`}
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
+                    <Image
+                      src={rec.logoUrl}
+                      alt={`Logo ${rec.name}`}
+                      width={128}
+                      height={64}
+                      style={{ objectFit: 'contain' }}
+                    />
                   </Link>
                 ))}
                  {/* CTA for advertising */}
