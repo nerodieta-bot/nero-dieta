@@ -1,6 +1,8 @@
 'use server';
 
 import { z } from 'zod';
+import { initializeAdminApp } from '@/firebase/admin';
+import { getFirestore,FieldValue } from 'firebase-admin/firestore';
 
 const ContactSchema = z.object({
   name: z.string().min(2, 'Imię musi mieć co najmniej 2 znaki.'),
@@ -17,6 +19,10 @@ export type ContactFormState = {
   };
   success?: boolean;
 };
+
+// Initialize Firebase Admin SDK
+const { firestore } = initializeAdminApp();
+
 
 export async function sendContactMessageAction(
   prevState: ContactFormState,
@@ -36,14 +42,23 @@ export async function sendContactMessageAction(
     };
   }
 
-  // In a real application, you would integrate this with an email service
-  // like SendGrid, Resend, or Nodemailer.
-  // For this example, we'll just log it to the server console.
-  console.log('New contact message received:');
-  console.log(validatedFields.data);
+  try {
+    const contactMessagesRef = firestore.collection('contact_messages');
+    await contactMessagesRef.add({
+      ...validatedFields.data,
+      createdAt: FieldValue.serverTimestamp(),
+    });
+    
+    return {
+      message: 'Dziękujemy za Twoją wiadomość! Odpowiemy najszybciej, jak to możliwe.',
+      success: true,
+    };
 
-  return {
-    message: 'Dziękujemy za Twoją wiadomość! Odpowiemy najszybciej, jak to możliwe.',
-    success: true,
-  };
+  } catch(error) {
+     console.error('Error saving contact message:', error);
+     return {
+        message: 'Wystąpił błąd podczas wysyłania wiadomości. Spróbuj ponownie.',
+        success: false,
+     }
+  }
 }
