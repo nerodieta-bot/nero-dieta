@@ -11,8 +11,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { LogOut } from 'lucide-react';
+import { LogOut, User as UserIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export function UserNav() {
   const { user } = useUser();
@@ -48,12 +49,19 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Mój profil</p>
+            <p className="text-sm font-medium leading-none">Moje konto</p>
             <p className="text-xs leading-none text-muted-foreground">
-              {user.email}
+              {user.email || user.phoneNumber}
             </p>
           </div>
         </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/profil" className="cursor-pointer">
+            <UserIcon className="mr-2 h-4 w-4" />
+            <span>Mój profil</span>
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut} className="text-red-500 focus:text-red-500 focus:bg-red-500/10 cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
