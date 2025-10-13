@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { PawPrint, Mail, Youtube, Instagram, Award, BadgeDollarSign, ChevronDown } from 'lucide-react';
+import { PawPrint, Mail, Youtube, Instagram, Award, BadgeDollarSign, ChevronDown, Building } from 'lucide-react';
 import {
   Collapsible,
   CollapsibleContent,
@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
-const recommendations = [
+const organizations = [
     {
         name: 'FCI',
         logoUrl: 'https://www.fci.be/img/logo_fci.png',
@@ -22,6 +22,9 @@ const recommendations = [
         logoUrl: 'https://www.zkwp.pl/zg/images/logo_zkwp.png',
         link: 'https://www.zkwp.pl/',
     },
+];
+
+const recommendations = [
     {
         name: 'Silky Beauty',
         logoUrl: '/images/Silky-Beauty.png',
@@ -36,33 +39,68 @@ const recommendations = [
 
 export function Footer() {
   const year = new Date().getFullYear();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOrgsOpen, setIsOrgsOpen] = useState(false);
+  const [isRecsOpen, setIsRecsOpen] = useState(false);
 
   return (
     <footer className="bg-card border-t mt-auto">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {/* Organizations Section */}
+        <Collapsible open={isOrgsOpen} onOpenChange={setIsOrgsOpen} className='mb-4'>
+          <div className="text-center">
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" className="text-lg font-headline text-primary hover:bg-accent/20 transition-all p-4 rounded-lg group">
+                <Building className="w-6 h-6 mr-3 text-accent group-hover:scale-110 transition-transform" />
+                <span className='group-hover:text-foreground'>Organizacje Kynologiczne</span>
+                 <ChevronDown className={cn("ml-2 h-5 w-5 transition-transform duration-300", isOrgsOpen && "rotate-180")} />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+          <CollapsibleContent className="mt-4 mb-8">
+              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 items-center justify-center text-center">
+                {organizations.map((org) => (
+                   <Link 
+                    key={org.name}
+                    href={org.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center justify-center p-4 border rounded-lg bg-background/50 h-32 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
+                  >
+                     <img
+                        src={org.logoUrl}
+                        alt={`Logo ${org.name}`}
+                        className="max-h-16 w-auto"
+                        loading="lazy"
+                    />
+                  </Link>
+                ))}
+              </div>
+          </CollapsibleContent>
+        </Collapsible>
+        
         {/* Recommended by Nero Section */}
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <Collapsible open={isRecsOpen} onOpenChange={setIsRecsOpen}>
           <div className="text-center mb-8">
             <CollapsibleTrigger asChild>
               <Button variant="ghost" className="text-lg font-headline text-primary hover:bg-accent/20 transition-all p-4 rounded-lg group">
                 <Award className="w-6 h-6 mr-3 text-accent group-hover:scale-110 transition-transform" />
                 <span className='group-hover:text-foreground'>Polecane przez Nero</span>
-                 <ChevronDown className={cn("ml-2 h-5 w-5 transition-transform duration-300", isOpen && "rotate-180")} />
+                 <ChevronDown className={cn("ml-2 h-5 w-5 transition-transform duration-300", isRecsOpen && "rotate-180")} />
               </Button>
             </CollapsibleTrigger>
           </div>
           <CollapsibleContent className="mb-8">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 items-center justify-center text-center">
+              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 items-center justify-center text-center">
                 {recommendations.map((rec) => (
                   <Link 
                     key={rec.name}
                     href={rec.link}
-                    target="_blank"
+                    target={rec.link.startsWith('http') ? '_blank' : '_self'}
                     rel="noopener noreferrer"
                     className="flex flex-col items-center justify-center p-4 border rounded-lg bg-background/50 h-32 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
                   >
-                    <img
+                     <img
                         src={rec.logoUrl}
                         alt={`Logo ${rec.name}`}
                         className="max-h-16 w-auto"

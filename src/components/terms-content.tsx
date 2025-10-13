@@ -21,6 +21,7 @@ export function TermsContent() {
               <li>Korzystanie z narzędzia "Kreator Posiłków" do generowania przykładowych planów posiłków przy użyciu sztucznej inteligencji (AI).</li>
               <li>Korzystanie z narzędzia "Skaner Etykiet" do analizy składu produktów na podstawie zdjęcia.</li>
               <li>Zgłaszanie propozycji nowych składników do bazy danych.</li>
+              <li>Zapoznawanie się z treściami o charakterze komercyjnym i reklamowym, w szczególności w sekcji "Polecane przez Nero", które stanowią formę płatnej promocji.</li>
             </ul>
           </li>
           <li>Wszystkie usługi w Serwisie są świadczone nieodpłatnie.</li>
