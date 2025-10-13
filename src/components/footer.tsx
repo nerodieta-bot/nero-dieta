@@ -79,7 +79,7 @@ export function Footer() {
                         className="max-h-16 w-auto object-contain flex-grow"
                         loading="lazy"
                       />
-                    <span className="text-xs font-semibold text-muted-foreground mt-2 pt-2 border-t w-full group-hover:text-primary transition-colors">{rec.name}</span>
+                    <span className="text-xs font-semibold text-foreground/90 mt-2 pt-2 border-t w-full group-hover:text-primary transition-colors">{rec.name}</span>
                   </Link>
                 ))}
                  {/* CTA for advertising */}
@@ -116,7 +116,7 @@ export function Footer() {
                           className="max-h-16 w-auto object-contain flex-grow"
                           loading="lazy"
                         />
-                      <span className="text-xs font-semibold text-muted-foreground mt-2 pt-2 border-t w-full group-hover:text-primary transition-colors">{org.name}</span>
+                      <span className="text-xs font-semibold text-foreground/90 mt-2 pt-2 border-t w-full group-hover:text-primary transition-colors">{org.name}</span>
                     </Link>
                   ))}
                 </div>
@@ -186,7 +186,7 @@ export function Footer() {
         <div className="border-t mt-8 pt-6 text-center">
             <Collapsible>
                 <CollapsibleTrigger asChild>
-                    <Button variant="outline" size="sm" className="text-xs text-muted-foreground border-accent hover:text-accent hover:bg-transparent">
+                    <Button variant="ghost" size="sm" className="text-xs text-foreground/90 border border-transparent hover:border-accent hover:text-accent">
                         <Code className="mr-2 h-3 w-3" />
                         Informacje o twórcy
                     </Button>
