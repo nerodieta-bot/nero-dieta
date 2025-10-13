@@ -13,6 +13,7 @@ import {
 import { Loader2, Camera, Sparkles, AlertTriangle, XCircle, RefreshCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { cn } from '@/lib/utils';
 
 const initialState: ScanFormState = {
   message: '',
