@@ -57,12 +57,11 @@ export function Footer() {
                     rel="noopener noreferrer"
                     className="flex flex-col items-center justify-center p-4 border rounded-lg bg-background/50 h-32 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
                   >
-                    <Image
-                      src={rec.logoUrl}
-                      alt={`Logo ${rec.name}`}
-                      width={128}
-                      height={64}
-                      style={{ objectFit: 'contain' }}
+                    <img
+                        src={rec.logoUrl}
+                        alt={`Logo ${rec.name}`}
+                        className="max-h-16 w-auto"
+                        loading="lazy"
                     />
                   </Link>
                 ))}
