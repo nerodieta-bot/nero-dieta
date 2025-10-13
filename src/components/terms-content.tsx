@@ -55,7 +55,7 @@ export function TermsContent() {
           <li>Administrator zastrzega sobie prawo do wprowadzania zmian w Regulaminie w dowolnym czasie.</li>
           <li>Aktualna wersja Regulaminu jest zawsze dostępna w Serwisie.</li>
           <li>W sprawach nieuregulowanych niniejszym Regulaminem mają zastosowanie przepisy prawa polskiego.</li>
-          <li>Data ostatniej aktualizacji: {new Date().toLocaleDateString('pl-PL')}.</li>
+          <li>Data ostatniej aktualizacji: 18.07.2024.</li>
         </ol>
       </section>
     </div>

@@ -63,7 +63,7 @@ export function PrivacyContent() {
                 <li>Administrator zastrzega sobie prawo do wprowadzania zmian w polityce prywatności.</li>
                 <li>O wszelkich zmianach Administrator będzie informować w sposób widoczny i zrozumiały.</li>
                 <li>W sprawach nieuregulowanych niniejszą Polityką Prywatności mają zastosowanie odpowiednie przepisy prawa polskiego.</li>
-                <li>Data ostatniej aktualizacji: {new Date().toLocaleDateString('pl-PL')}.</li>
+                <li>Data ostatniej aktualizacji: 18.07.2024.</li>
               </ol>
             </section>
         </div>
