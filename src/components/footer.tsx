@@ -26,6 +26,11 @@ const recommendations = [
         name: 'Silky Beauty',
         logoUrl: '/Silky-Beauty.png',
         link: 'https://chihuahuafci.com'
+    },
+    {
+        name: 'NERO STUDIO',
+        logoUrl: '/nero-studio.png',
+        link: '/contact'
     }
 ];
 
