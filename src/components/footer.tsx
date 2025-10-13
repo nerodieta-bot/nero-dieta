@@ -10,6 +10,7 @@ import { Button } from './ui/button';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { Separator } from './ui/separator';
 
 const organizations = [
     {
@@ -39,15 +40,14 @@ const recommendations = [
 
 export function Footer() {
   const year = new Date().getFullYear();
-  const [isOrgsOpen, setIsOrgsOpen] = useState(false);
   const [isRecsOpen, setIsRecsOpen] = useState(false);
 
   return (
     <footer className="bg-card border-t mt-auto">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        {/* Recommended by Nero Section */}
-        <Collapsible open={isRecsOpen} onOpenChange={setIsRecsOpen} className='mb-4'>
+        {/* Combined Collapsible Section */}
+        <Collapsible open={isRecsOpen} onOpenChange={setIsRecsOpen} className='mb-8'>
           <div className="text-center">
             <CollapsibleTrigger asChild>
               <Button variant="ghost" className="text-lg font-headline text-primary hover:bg-accent/20 transition-all p-4 rounded-lg group">
@@ -57,7 +57,8 @@ export function Footer() {
               </Button>
             </CollapsibleTrigger>
           </div>
-          <CollapsibleContent className="mt-4">
+          <CollapsibleContent className="mt-4 space-y-8">
+              {/* Recommendations */}
               <div className="flex flex-wrap items-stretch justify-center gap-4 text-center">
                 {recommendations.map((rec) => (
                   <Link 
@@ -67,14 +68,12 @@ export function Footer() {
                     rel="noopener noreferrer"
                      className="flex flex-col items-center justify-between p-4 border rounded-lg bg-background/50 w-40 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
                   >
-                     <div className='relative w-full h-16'>
-                        <img
-                          src={rec.logoUrl}
-                          alt={`Logo ${rec.name}`}
-                          className="absolute inset-0 w-full h-full object-contain"
-                          loading="lazy"
-                        />
-                     </div>
+                     <img
+                        src={rec.logoUrl}
+                        alt={`Logo ${rec.name}`}
+                        className="max-h-16 w-auto object-contain flex-grow"
+                        loading="lazy"
+                      />
                     <span className="text-xs font-semibold text-muted-foreground mt-2 pt-2 border-t w-full group-hover:text-primary transition-colors">{rec.name}</span>
                   </Link>
                 ))}
@@ -88,46 +87,38 @@ export function Footer() {
                     <span className="text-sm text-center font-semibold text-accent/80 group-hover:text-accent">Twoja firma tutaj?</span>
                 </Link>
               </div>
-          </CollapsibleContent>
-        </Collapsible>
 
-        {/* Organizations Section */}
-        <Collapsible open={isOrgsOpen} onOpenChange={setIsOrgsOpen} className='mb-8'>
-          <div className="text-center">
-            <CollapsibleTrigger asChild>
-              <Button variant="ghost" className="text-lg font-headline text-primary hover:bg-accent/20 transition-all p-4 rounded-lg group">
-                <Building className="w-6 h-6 mr-3 text-accent group-hover:scale-110 transition-transform" />
-                <span className='group-hover:text-foreground'>Organizacje Kynologiczne</span>
-                 <ChevronDown className={cn("ml-2 h-5 w-5 transition-transform duration-300", isOrgsOpen && "rotate-180")} />
-              </Button>
-            </CollapsibleTrigger>
-          </div>
-          <CollapsibleContent className="mt-4">
-              <div className="flex flex-wrap items-stretch justify-center gap-4 text-center">
-                {organizations.map((org) => (
-                   <Link 
-                    key={org.name}
-                    href={org.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex flex-col items-center justify-between p-4 border rounded-lg bg-background/50 w-40 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
-                  >
-                     <div className='relative w-full h-16'>
-                        <img
+              <Separator />
+
+              {/* Organizations */}
+              <div>
+                <h4 className="text-center text-md font-headline text-primary mb-4 flex items-center justify-center gap-2">
+                  <Building className="w-5 h-5 text-accent" />
+                  Organizacje Kynologiczne
+                </h4>
+                <div className="flex flex-wrap items-stretch justify-center gap-4 text-center">
+                  {organizations.map((org) => (
+                     <Link 
+                      key={org.name}
+                      href={org.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex flex-col items-center justify-between p-4 border rounded-lg bg-background/50 w-40 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
+                    >
+                       <img
                           src={org.logoUrl}
                           alt={`Logo ${org.name}`}
-                          className="absolute inset-0 w-full h-full object-contain"
+                          className="max-h-16 w-auto object-contain flex-grow"
                           loading="lazy"
                         />
-                     </div>
-                    <span className="text-xs font-semibold text-muted-foreground mt-2 pt-2 border-t w-full group-hover:text-primary transition-colors">{org.name}</span>
-                  </Link>
-                ))}
+                      <span className="text-xs font-semibold text-muted-foreground mt-2 pt-2 border-t w-full group-hover:text-primary transition-colors">{org.name}</span>
+                    </Link>
+                  ))}
+                </div>
               </div>
           </CollapsibleContent>
         </Collapsible>
         
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left mt-16">
           {/* About Section */}
           <div>
