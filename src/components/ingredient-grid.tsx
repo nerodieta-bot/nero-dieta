@@ -54,7 +54,7 @@ export function IngredientGrid({ ingredients }: IngredientGridProps) {
             className="pl-10 text-lg shadow-sm"
           />
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-2">
+        <div className="flex flex-wrap items-center justify-center gap-4">
           {filterOptions.map(option => (
             <Button
               key={option.value}
