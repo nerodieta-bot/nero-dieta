@@ -2,7 +2,8 @@
 
 import { z } from 'zod';
 import { initializeAdminApp } from '@/firebase/admin';
-import { getFirestore,FieldValue } from 'firebase-admin/firestore';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { Resend } from 'resend';
 
 const ContactSchema = z.object({
   name: z.string().min(2, 'Imię musi mieć co najmniej 2 znaki.'),
@@ -22,6 +23,8 @@ export type ContactFormState = {
 
 // Initialize Firebase Admin SDK
 const { firestore } = initializeAdminApp();
+const resend = new Resend(process.env.RESEND_API_KEY);
+const adminEmail = 'admin@nero-dieta.ch';
 
 
 export async function sendContactMessageAction(
@@ -42,12 +45,37 @@ export async function sendContactMessageAction(
     };
   }
 
+  const { name, email, message } = validatedFields.data;
+
   try {
+    // 1. Save message to Firestore
     const contactMessagesRef = firestore.collection('contact_messages');
     await contactMessagesRef.add({
-      ...validatedFields.data,
+      name,
+      email,
+      message,
       createdAt: FieldValue.serverTimestamp(),
     });
+
+    // 2. Send email notification to admin
+    try {
+      await resend.emails.send({
+        from: 'Dieta Nero <noreply@nero-dieta.ch>',
+        to: adminEmail,
+        subject: `Nowa wiadomość od ${name} - Dieta Nero`,
+        html: `
+          <h1>Nowa wiadomość z formularza kontaktowego</h1>
+          <p><strong>Imię:</strong> ${name}</p>
+          <p><strong>E-mail:</strong> ${email}</p>
+          <p><strong>Wiadomość:</strong></p>
+          <p>${message}</p>
+        `,
+      });
+    } catch (emailError) {
+        console.error('Email sending error:', emailError);
+        // Log the error but don't block the user.
+        // The message is already saved in the database.
+    }
     
     return {
       message: 'Dziękujemy za Twoją wiadomość! Odpowiemy najszybciej, jak to możliwe.',
