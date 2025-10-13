@@ -1,5 +1,5 @@
 'use client';
-import { useActionState, useState, useRef } from 'react';
+import { useActionState, useState, useRef, useEffect } from 'react';
 import { analyzeLabelAction, type ScanFormState } from '@/app/scan/actions';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,10 +10,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Label } from './ui/label';
-import { Input } from './ui/input';
-import { Loader2, Camera, Sparkles, Check, AlertTriangle, X } from 'lucide-react';
-import Image from 'next/image';
+import { Loader2, Camera, Sparkles, AlertTriangle, XCircle, RefreshCcw } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const initialState: ScanFormState = {
   message: '',
@@ -21,96 +20,187 @@ const initialState: ScanFormState = {
 
 export function LabelScanner() {
   const [formState, formAction, isPending] = useActionState(analyzeLabelAction, initialState);
-  const [preview, setPreview] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [image, setImage] = useState<string | null>(null);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { toast } = useToast();
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setPreview(null);
+  useEffect(() => {
+    const getCameraPermission = async () => {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setHasCameraPermission(false);
+        toast({
+          variant: 'destructive',
+          title: 'Brak wsparcia dla kamery',
+          description: 'Twoja przeglądarka nie obsługuje dostępu do kamery.',
+        });
+        return;
+      }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        setHasCameraPermission(true);
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        setHasCameraPermission(false);
+      }
+    };
+
+    getCameraPermission();
+
+    return () => {
+      // Wyłącz kamerę przy opuszczaniu komponentu
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [toast]);
+
+  const handleCapture = () => {
+    if (videoRef.current && canvasRef.current) {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      const context = canvas.getContext('2d');
+
+      if (context) {
+        // Ustaw rozmiar canvas na taki sam jak video
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        // Narysuj klatkę wideo na canvas
+        context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+
+        // Uzyskaj dane obrazu jako data URL
+        const dataUrl = canvas.toDataURL('image/jpeg');
+        setImage(dataUrl);
+
+        // Zatrzymaj wideo po zrobieniu zdjęcia
+        const stream = video.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+      }
     }
   };
 
+  const handleRetake = () => {
+    setImage(null);
+    if (videoRef.current) {
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(stream => {
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        })
+        .catch(err => console.error(err));
+    }
+  };
+  
   const getHtml = (html?: string) => {
     if (!html) return { __html: '' };
     return { __html: html };
   };
 
+  const dataURLtoFile = (dataurl: string, filename: string) => {
+    const arr = dataurl.split(',');
+    const mimeMatch = arr[0].match(/:(.*?);/);
+    if (!mimeMatch) return;
+    const mime = mimeMatch[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  }
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (image) {
+      const formData = new FormData();
+      const file = dataURLtoFile(image, 'capture.jpg');
+      if(file) {
+        formData.append('image', file);
+        formAction(formData);
+      }
+    }
+  };
+
   return (
     <Card className="w-full">
-      <form action={(formData) => {
-        // Reset preview for new submissions if needed, or keep it
-        formAction(formData);
-      }}>
+      <form onSubmit={handleSubmit}>
         <CardHeader>
-          <CardTitle>Prześlij zdjęcie</CardTitle>
+          <CardTitle>Podgląd z kamery</CardTitle>
           <CardDescription>
-            Wybierz wyraźne zdjęcie etykiety ze składem produktu. Im lepsza jakość, tym dokładniejsza analiza.
+            Nakieruj aparat na etykietę ze składem i naciśnij "Zrób zdjęcie", aby rozpocząć analizę.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="image-upload" className="sr-only">Upload Image</Label>
-            <div className="flex flex-col items-center gap-4">
-               <Button
-                type="button"
-                variant="outline"
-                className="w-full h-auto py-4"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <div className='flex flex-col items-center gap-2'>
-                    <Camera className="h-8 w-8 text-muted-foreground" />
-                    <span className="text-base font-medium">{preview ? "Zmień zdjęcie" : "Zrób lub wybierz zdjęcie"}</span>
-                </div>
-              </Button>
-              <Input
-                id="image-upload"
-                name="image"
-                type="file"
-                accept="image/*"
-                capture="environment"
-                ref={fileInputRef}
-                className="hidden"
-                onChange={handleFileChange}
-              />
-              {formState.errors?.image && (
-                <p className="text-sm text-destructive">{formState.errors.image[0]}</p>
-              )}
-            </div>
-          </div>
-
-          {preview && (
-            <div className="border rounded-lg p-2 bg-muted/50">
-              <Image
-                src={preview}
-                alt="Podgląd etykiety"
-                width={700}
-                height={400}
-                className="rounded-md object-contain max-h-60 w-full"
-              />
-            </div>
-          )}
-        </CardContent>
-        <CardFooter className="flex-col items-start gap-4">
-          <Button type="submit" disabled={isPending || !preview} className="w-full md:w-auto">
-            {isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Analizowanie...
-              </>
-            ) : (
+        <CardContent className="space-y-4">
+          <div className="relative w-full aspect-[4/3] bg-muted rounded-lg overflow-hidden border">
+            {hasCameraPermission === null && (
+              <div className="flex items-center justify-center h-full">
+                <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" />
+                <p className="ml-4">Uruchamianie kamery...</p>
+              </div>
+            )}
+            {hasCameraPermission === false && (
+              <div className="flex items-center justify-center h-full p-4">
+                 <Alert variant="destructive">
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTitle>Dostęp do kamery jest wymagany</AlertTitle>
+                    <AlertDescription>
+                        Aby korzystać ze skanera, zezwól na dostęp do aparatu w ustawieniach przeglądarki.
+                    </AlertDescription>
+                 </Alert>
+              </div>
+            )}
+            {hasCameraPermission && (
                 <>
-                <Sparkles className="mr-2 h-4 w-4" />
-                Analizuj skład
+                <video
+                    ref={videoRef}
+                    className={cn('w-full h-full object-cover', image ? 'hidden' : 'block')}
+                    autoPlay
+                    playsInline
+                    muted
+                />
+                {image && (
+                    <img src={image} alt="Przechwycona etykieta" className="w-full h-full object-contain" />
+                )}
+                <canvas ref={canvasRef} className="hidden" />
                 </>
             )}
-          </Button>
+          </div>
+        </CardContent>
+        <CardFooter className="flex-col items-start gap-4">
+          {!image ? (
+             <Button type="button" onClick={handleCapture} disabled={!hasCameraPermission || isPending} className="w-full md:w-auto">
+                <Camera className="mr-2 h-4 w-4" />
+                Zrób zdjęcie
+            </Button>
+          ) : (
+            <div className='flex flex-col sm:flex-row gap-2 w-full'>
+                 <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
+                    {isPending ? (
+                    <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Analizowanie...
+                    </>
+                    ) : (
+                        <>
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        Analizuj skład
+                        </>
+                    )}
+                </Button>
+                <Button type="button" variant="outline" onClick={handleRetake} disabled={isPending} className="w-full sm:w-auto">
+                    <RefreshCcw className="mr-2 h-4 w-4" />
+                    Zrób ponownie
+                </Button>
+            </div>
+          )}
 
           {formState.message && !formState.analysisHtml && !formState.errors && (
             <p className="text-sm text-destructive">{formState.message}</p>
@@ -162,7 +252,6 @@ export function LabelScanner() {
               </CardContent>
             </Card>
           )}
-
         </CardFooter>
       </form>
     </Card>
