@@ -91,16 +91,13 @@
           "description": "The timestamp when the user profile was created."
         }
       },
-      "required": ["email", "createdAt"]
+      "required": ["email", "createdAt", "displayName", "dogName"]
     }
   },
   "auth": {
     "providers": [
-      "password",
-      "anonymous",
       "emailLink",
-      "google.com",
-      "phone"
+      "google.com"
     ]
   },
   "firestore": {
