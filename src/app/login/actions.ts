@@ -35,6 +35,9 @@ export async function sendSignInLink(
 
   try {
     await sendSignInLinkToEmail(auth, validatedEmail.data, actionCodeSettings);
+    // In a real app, you'd probably want to store the email in localStorage
+    // or pass it in the URL to complete the sign-in on the same device.
+    // For this example, we'll rely on the user providing it again.
     return {
       status: 'success',
       message: `Wysłaliśmy link logujący na adres ${validatedEmail.data}. Otwórz go na tym samym urządzeniu.`,
@@ -70,9 +73,4 @@ export async function completeSignIn(href: string, email: string): Promise<AuthS
     }
     return { status: 'error', message: userMessage };
   }
-}
-
-export async function signOutAction(): Promise<void> {
-    const { auth } = initializeFirebase();
-    await auth.signOut();
 }
