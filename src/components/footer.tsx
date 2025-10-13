@@ -38,7 +38,7 @@ const recommendations = [
 ];
 
 export function Footer() {
-  const [year, setYear] = useState(new Date().getFullYear());
+  const [year, setYear] = useState<number | null>(null);
   const [isRecsOpen, setIsRecsOpen] = useState(false);
 
   useEffect(() => {
@@ -207,5 +207,3 @@ export function Footer() {
     </footer>
   );
 }
-
-    
