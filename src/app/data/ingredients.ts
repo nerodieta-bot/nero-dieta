@@ -1850,7 +1850,7 @@ export const ingredients: Ingredient[] = [
     desc: 'Bogata w witaminy A, C, E i błonnik. Podobnie jak zwykła dynia, wspiera zdrowie układu trawiennego i odpornościowego. Ma delikatny, słodki smak.',
     WARNING: 'TYLKO MIĄŻSZ, UGOTOWANY. Bez skórki i pestek.',
     portion: '1 łyżka puree',
-    prep: 'Pieczona lub gotowana na parze',
+    prep: 'Pieczona veya gotowana na parze',
     nero: 'Słodsza niż zwykła dynia! Mój brzuszek ją uwielbia. Jest delikatna i pyszna. Deser i lekarstwo w jednym. Genialne!',
     source: 'https://www.akc.org/expert-advice/nutrition/can-dogs-eat-pumpkin/',
   },
