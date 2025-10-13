@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -105,7 +106,7 @@ export function IngredientCard({ ingredient, isOpen, onToggle }: IngredientCardP
               <strong className={cn(config.textColor)}>Nero:</strong> "{ingredient.nero}"
             </p>
           </div>
-          <div className="flex justify-center items-center text-muted-foreground w-full">
+          <div className="flex justify-center items-center text-accent w-full">
             <span className="text-xs mr-2">Pokaż szczegóły</span>
             <ChevronDown
               className={cn(
