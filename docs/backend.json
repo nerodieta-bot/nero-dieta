@@ -1,0 +1,98 @@
+{
+  "entities": {
+    "Ingredient": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Ingredient",
+      "type": "object",
+      "description": "Represents an ingredient in the dog food database.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the ingredient."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the ingredient."
+        },
+        "status": {
+          "type": "string",
+          "description": "The safety status of the ingredient (safe, warning, danger)."
+        },
+        "catIcon": {
+          "type": "string",
+          "description": "The category icon for the ingredient."
+        },
+        "icon": {
+          "type": "string",
+          "description": "The icon representing the ingredient."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category the ingredient belongs to."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the ingredient."
+        },
+        "warning": {
+          "type": "string",
+          "description": "Warning information for the ingredient."
+        },
+        "portion": {
+          "type": "string",
+          "description": "Recommended portion size of the ingredient."
+        },
+        "prep": {
+          "type": "string",
+          "description": "Preparation instructions for the ingredient."
+        },
+        "nero": {
+          "type": "string",
+          "description": "Nero's comment on the ingredient."
+        },
+        "toxicity": {
+          "type": "string",
+          "description": "Toxicity level of the ingredient"
+        },
+        "klinikaInfo": {
+          "type": "string",
+          "description": "Information of ingredient's toxicity and necessary first aid measures"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "status",
+        "category",
+        "description"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/ingredients/{ingredientId}",
+        "definition": {
+          "entityName": "Ingredient",
+          "schema": {
+            "$ref": "#/backend/entities/Ingredient"
+          },
+          "description": "Stores ingredient documents, including their ID, name, safety status, category, description, and other relevant details.",
+          "params": [
+            {
+              "name": "ingredientId",
+              "description": "The unique identifier for the ingredient."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The data structure is designed to store ingredient information for a dog food database, focusing on safety and providing detailed information for users. A single collection, `/ingredients`, is used to store all ingredient documents. This simplifies data access and security rules. Structural Segregation is maintained by ensuring all documents in the collection share the same security needs (publicly accessible ingredient data).\n\nAuthorization Independence is achieved because the ingredient data doesn't rely on parent documents or user-specific information. This avoids the need for `get()` calls in security rules and enables secure list operations. The application will retrieve documents from the /ingredients collection to display to the user.\n\nThe DBAC principle is followed because the data displayed will be the same for all users, no user based roles or custom claims are needed. \n\nThis structure supports the required QAPs by segregating all data into a single collection with a uniform security posture, enabling simple and secure `list` operations."
+  }
+}

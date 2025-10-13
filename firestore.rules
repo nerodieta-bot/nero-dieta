@@ -1,0 +1,29 @@
+/**
+ * @file Firestore Security Rules
+ * @description This ruleset allows public read access to the /ingredients collection
+ * and prevents any write access (create, update, delete) to the /ingredients collection, since it is meant to be populated and maintained by admins only.
+ *
+ * Data Structure:
+ * - /ingredients/{ingredientId}: Contains ingredient information (name, status, category, description, etc.).
+ *
+ * Key Security Decisions:
+ * - Public read access to the /ingredients collection is allowed.
+ * - Write access to the /ingredients collection is denied.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Allows public read access to ingredient documents.
+     * @path /ingredients/{ingredientId}
+     * @allow (get, list) Any unauthenticated user can retrieve the ingredient document.
+     * @deny (create, update, delete) No user can create, update, or delete ingredient documents.
+     * @principle Grants public read access while restricting write access.
+     */
+    match /ingredients/{ingredientId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+  }
+}
