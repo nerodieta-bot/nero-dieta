@@ -98,7 +98,8 @@
     "providers": [
       "password",
       "anonymous",
-      "emailLink"
+      "emailLink",
+      "google.com"
     ]
   },
   "firestore": {

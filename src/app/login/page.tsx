@@ -49,19 +49,24 @@ export default function LoginPage() {
           const userCred = result.userCredential as UserCredential;
           const { user } = userCred;
 
+          const storedUserData = window.localStorage.getItem('userDataForSignIn');
+          const userData = storedUserData ? JSON.parse(storedUserData) : {};
+
           const userRef = doc(firestore, 'users', user.uid);
-           setDoc(userRef, {
-              email: user.email,
-              createdAt: serverTimestamp(),
-            }, { merge: true }).catch(error => {
+          const finalUserData = {
+            email: user.email,
+            displayName: userData.name || user.displayName,
+            dogName: userData.dogName || '',
+            createdAt: serverTimestamp(),
+          };
+
+           setDoc(userRef, finalUserData, { merge: true }).catch(error => {
                 errorEmitter.emit(
                   'permission-error',
                   new FirestorePermissionError({
                     path: userRef.path,
                     operation: 'write',
-                    requestResourceData: {
-                      email: user.email,
-                    },
+                    requestResourceData: finalUserData,
                   })
                 )
             });
@@ -72,6 +77,7 @@ export default function LoginPage() {
           });
 
           window.localStorage.removeItem('emailForSignIn');
+          window.localStorage.removeItem('userDataForSignIn');
           router.push('/');
 
         } else {
@@ -81,9 +87,10 @@ export default function LoginPage() {
             variant: 'destructive',
           });
           setIsCompletingSignIn(false);
+          // Always remove the items from local storage after attempting sign-in
+          window.localStorage.removeItem('emailForSignIn');
+          window.localStorage.removeItem('userDataForSignIn');
         }
-        // Always remove the email from local storage after attempting sign-in
-        window.localStorage.removeItem('emailForSignIn');
       }
     };
     if (firestore) {
@@ -92,10 +99,10 @@ export default function LoginPage() {
   }, [searchParams, router, toast, firestore]);
 
   useEffect(() => {
-    if (user) {
+    if (user && !isCompletingSignIn) {
       router.replace('/');
     }
-  }, [user, router]);
+  }, [user, router, isCompletingSignIn]);
 
   if (isUserLoading || user || isCompletingSignIn) {
      return (
