@@ -1,13 +1,14 @@
 'use server';
 
 import { initializeFirebase } from '@/firebase';
-import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
+import { isSignInWithEmailLink, signInWithEmailLink, UserCredential } from 'firebase/auth';
 
 export type AuthStatus = 'idle' | 'success' | 'error';
 
 export interface AuthState {
   status: AuthStatus;
   message: string;
+  userCredential?: UserCredential | null;
 }
 
 export async function completeSignIn(href: string, email: string): Promise<AuthState> {
@@ -18,10 +19,8 @@ export async function completeSignIn(href: string, email: string): Promise<AuthS
   }
   
   try {
-    // The await is necessary here to complete the sign in before returning a success message.
-    // This server action is only called on the client after redirection, so it's safe.
-    await signInWithEmailLink(auth, email, href);
-    return { status: 'success', message: 'Zalogowano pomyślnie!' };
+    const userCredential = await signInWithEmailLink(auth, email, href);
+    return { status: 'success', message: 'Zalogowano pomyślnie!', userCredential };
   } catch (error: any) {
     console.error('Error completing sign-in:', error.code, error.message);
      let userMessage = 'Wystąpił błąd podczas logowania. Link mógł wygasnąć.';
