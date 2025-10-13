@@ -2,63 +2,77 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import Link from 'next/link';
-import { Cookie } from 'lucide-react';
+import { Cookie, FileText, ShieldCheck } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export function CookieConsentBanner() {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+  const [consent, setConsent] = useState<string | null>(null);
 
   useEffect(() => {
-    // Sprawdzamy po stronie klienta, czy zgoda została już wyrażona
-    const consent = localStorage.getItem('cookie_consent');
-    if (consent === null) {
-      setIsVisible(true);
-    }
+    setIsClient(true);
+    setConsent(localStorage.getItem('dieta_nero_consent'));
   }, []);
 
   const handleAccept = () => {
-    localStorage.setItem('cookie_consent', 'accepted');
-    setIsVisible(false);
+    localStorage.setItem('dieta_nero_consent', 'accepted');
+    setConsent('accepted');
   };
 
-  const handleDecline = () => {
-    localStorage.setItem('cookie_consent', 'declined');
-    setIsVisible(false);
-  };
-
-  if (!isVisible) {
-    return null;
+  if (!isClient) {
+    return null; // Render nothing on the server
   }
 
+  const isOpen = consent !== 'accepted';
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[200] p-4 animate-in slide-in-from-bottom-10 duration-500">
-      <Card className="max-w-2xl mx-auto shadow-2xl border-accent/50 bg-background/95 backdrop-blur-sm">
-        <CardHeader className="flex-row items-start gap-4 space-y-0">
-            <Cookie className="h-8 w-8 text-accent flex-shrink-0 mt-1" />
-            <div>
-                <CardTitle className="text-lg text-primary font-headline">Stawiamy na przejrzystość!</CardTitle>
-                <CardDescription>
-                    Używamy plików cookie, aby zapewnić najlepsze doświadczenia na naszej stronie. Pomagają nam one analizować ruch i personalizować treści.
-                </CardDescription>
-            </div>
-        </CardHeader>
-        <CardContent className="flex flex-col sm:flex-row items-center gap-4">
-          <p className="text-xs text-muted-foreground flex-grow">
-            Wybierając "Akceptuj", zgadzasz się na użycie wszystkich plików cookie. Możesz dowiedzieć się więcej, czytając naszą{' '}
-            <Link href="/privacy" className="underline hover:text-primary">
-              Politykę Prywatności
-            </Link>
-            .
-          </p>
-          <div className="flex gap-2 flex-shrink-0">
-            <Button variant="outline" onClick={handleDecline}>
-              Odrzuć
-            </Button>
-            <Button onClick={handleAccept}>Akceptuj</Button>
+    <Dialog open={isOpen}>
+      <DialogContent 
+        className="max-w-md"
+        onInteractOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
+      >
+        <DialogHeader>
+          <div className="flex justify-center mb-4">
+            <Cookie className="h-12 w-12 text-accent" />
           </div>
-        </CardContent>
-      </Card>
-    </div>
+          <DialogTitle className="text-center text-2xl font-headline text-primary">Witaj w Świecie Dieta Nero!</DialogTitle>
+          <DialogDescription className="text-center text-muted-foreground">
+            Zanim zaczniesz, prosimy o akceptację naszych zasad. To ważne dla Twojego bezpieczeństwa i świadomego korzystania z serwisu.
+          </DialogDescription>
+        </DialogHeader>
+        
+        <div className="py-4 space-y-4 text-sm">
+            <p>
+                Korzystając z serwisu, potwierdzasz, że rozumiesz i akceptujesz, iż wszystkie treści, w tym te generowane przez AI, mają charakter wyłącznie informacyjny i <strong>nie zastępują profesjonalnej porady weterynaryjnej</strong>.
+            </p>
+            <div className='flex flex-col space-y-2'>
+                 <Link href="/terms" target="_blank" className='flex items-center gap-2 hover:text-primary transition-colors'>
+                    <FileText className='h-4 w-4 text-muted-foreground'/>
+                    <span>Przeczytaj Regulamin</span>
+                </Link>
+                 <Link href="/privacy" target="_blank" className='flex items-center gap-2 hover:text-primary transition-colors'>
+                    <ShieldCheck className='h-4 w-4 text-muted-foreground'/>
+                    <span>Przeczytaj Politykę Prywatności</span>
+                </Link>
+            </div>
+        </div>
+
+        <DialogFooter>
+          <Button onClick={handleAccept} className="w-full">
+            Rozumiem i akceptuję
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
