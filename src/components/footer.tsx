@@ -141,22 +141,22 @@ export function Footer() {
             <h3 className="font-semibold text-foreground mb-4">Ważne linki</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/terms" className="text-sm text-foreground/90 hover:text-primary transition-colors">
+                <Link href="/terms" className="text-sm text-foreground/90 hover:text-accent hover:font-bold transition-colors">
                   Regulamin
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="text-sm text-foreground/90 hover:text-primary transition-colors">
+                <Link href="/privacy" className="text-sm text-foreground/90 hover:text-accent hover:font-bold transition-colors">
                   Polityka Prywatności
                 </Link>
               </li>
                <li>
-                <Link href="/submit" className="text-sm text-foreground/90 hover:text-primary transition-colors">
+                <Link href="/submit" className="text-sm text-foreground/90 hover:text-accent hover:font-bold transition-colors">
                   Zgłoś składnik
                 </Link>
               </li>
               <li>
-                <Link href="/report-bug" className="text-sm text-foreground/90 hover:text-primary transition-colors">
+                <Link href="/report-bug" className="text-sm text-foreground/90 hover:text-accent hover:font-bold transition-colors">
                   Zgłoś błąd
                 </Link>
               </li>
@@ -168,7 +168,7 @@ export function Footer() {
             <h3 className="font-semibold text-foreground mb-4">Kontakt</h3>
             <div className="flex items-center justify-center md:justify-start gap-2 text-foreground/90 mb-4">
               <Mail className="w-4 h-4" />
-              <Link href="/contact" className="text-sm hover:text-primary transition-colors">
+              <Link href="/contact" className="text-sm hover:text-accent hover:font-bold transition-colors">
                 Napisz do nas
               </Link>
             </div>
@@ -186,7 +186,7 @@ export function Footer() {
         <div className="border-t mt-8 pt-6 text-center">
             <Collapsible>
                 <CollapsibleTrigger asChild>
-                    <Button variant="ghost" size="sm" className="text-xs text-foreground/90 border border-transparent hover:border-accent hover:text-accent transition-transform hover:-translate-y-0.5">
+                    <Button variant="ghost" size="sm" className="text-xs text-foreground/90 border border-transparent hover:border-accent hover:text-accent hover:font-bold transition-transform hover:-translate-y-0.5">
                         <Code className="mr-2 h-3 w-3" />
                         Informacje o twórcy
                     </Button>
