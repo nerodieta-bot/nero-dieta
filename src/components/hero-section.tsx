@@ -37,12 +37,12 @@ export function HeroSection() {
       <p className="max-w-3xl mx-auto text-muted-foreground text-lg mb-6">
         Każdy składnik oceniony. Każda decyzja przemyślana. Nero wie, co trafia do miski – i co lepiej zostawić w spokoju.
       </p>
-      <p className="max-w-3xl mx-auto text-muted-foreground mb-8">
+      <div className="max-w-3xl mx-auto text-muted-foreground mb-8">
         Przewodnik Dieta Nero powstał z myślą o zdrowiu, bezpieczeństwie i wygodzie. Werdykt?{' '}
         <span className="text-green-700 dark:text-green-400 font-semibold">Do miski</span> albo <span className="text-red-700 dark:text-red-400 font-semibold">Do kosza</span>. Nero nie zgaduje – analizuje, porównuje, zatwierdza.
-      </p>
+      </div>
 
-      <Accordion type="single" collapsible className="w-full max-w-2xl mx-auto text-left">
+      <Accordion type="single" collapsible className="w-full max-w-2xl mx-auto text-left mb-8">
         {introItems.map(item => (
            <AccordionItem value={item.value} key={item.value}>
             <AccordionTrigger className='text-lg font-semibold hover:no-underline'>
@@ -55,7 +55,7 @@ export function HeroSection() {
         ))}
       </Accordion>
 
-      <p className="mt-8 text-lg font-semibold">
+      <p className="text-lg font-semibold">
         🔍 <strong>Wyszukaj</strong>, 🧠 <strong>przefiltruj</strong>, 👆 <strong>kliknij</strong> – a Nero podpowie, co naprawdę warto podać.
       </p>
     </section>
