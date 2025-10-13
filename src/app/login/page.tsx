@@ -1,10 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import { useUser } from '@/firebase/provider';
 import { useRouter } from 'next/navigation';
 import { Loader2, PawPrint } from 'lucide-react';
-import { MultiStepLoginForm } from '@/components/login-form';
+import { PhoneLoginForm } from '@/components/login-form';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -33,10 +32,10 @@ export default function LoginPage() {
                 Dołącz do stada Nero!
             </h1>
             <p className="mt-2 text-lg text-muted-foreground">
-                Zarejestruj się, aby w pełni korzystać z Dieta Nero.
+                Zaloguj się, aby w pełni korzystać z Dieta Nero.
             </p>
         </div>
-        <MultiStepLoginForm />
+        <PhoneLoginForm />
       </div>
     </div>
   );
