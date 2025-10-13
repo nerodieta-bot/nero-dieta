@@ -64,7 +64,7 @@ export function CookieConsentBanner() {
         
         <div className="py-4 space-y-4 text-sm">
             <p>
-                Korzystając z serwisu, potwierdzasz, że rozumiesz i akceptujesz, iż wszystkie treści, w tym te generowane przez AI, mają charakter wyłącznie informacyjny i <strong>nie zastępują profesjonalnej porady weterynaryjnej</strong>.
+                Korzystając z serwisu, potwierdzasz, że rozumiesz i akceptujesz, iż wszystkie treści mają charakter wyłącznie informacyjny i <strong>nie zastępują profesjonalnej porady weterynaryjnej</strong>.
             </p>
             <div className='flex flex-col sm:flex-row gap-2'>
               <AlertDialog>
