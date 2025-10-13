@@ -22,10 +22,11 @@ const initialState: ScanFormState = {
 
 export function LabelScanner() {
   const [formState, formAction, isPending] = useActionState(analyzeLabelAction, initialState);
-  const [image, setImage] = useState<string | null>(null);
+  const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -69,18 +70,12 @@ export function LabelScanner() {
       const context = canvas.getContext('2d');
 
       if (context) {
-        // Ustaw rozmiar canvas na taki sam jak video
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-
-        // Narysuj klatkę wideo na canvas
         context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-
-        // Uzyskaj dane obrazu jako data URL
         const dataUrl = canvas.toDataURL('image/jpeg');
-        setImage(dataUrl);
+        setImageDataUrl(dataUrl);
 
-        // Zatrzymaj wideo po zrobieniu zdjęcia
         if (video.srcObject) {
             const stream = video.srcObject as MediaStream;
             stream.getTracks().forEach(track => track.stop());
@@ -90,7 +85,8 @@ export function LabelScanner() {
   };
 
   const handleRetake = () => {
-    setImage(null);
+    setImageDataUrl(null);
+    formRef.current?.reset();
     if (videoRef.current) {
       navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
         .then(stream => {
@@ -107,10 +103,11 @@ export function LabelScanner() {
     return { __html: html };
   };
 
-  const dataURLtoFile = (dataurl: string, filename: string) => {
+  const dataURLtoFile = (dataurl: string, filename: string): File | null => {
     const arr = dataurl.split(',');
+    if (arr.length < 2) return null;
     const mimeMatch = arr[0].match(/:(.*?);/);
-    if (!mimeMatch) return;
+    if (!mimeMatch) return null;
     const mime = mimeMatch[1];
     const bstr = atob(arr[1]);
     let n = bstr.length;
@@ -121,21 +118,19 @@ export function LabelScanner() {
     return new File([u8arr], filename, { type: mime });
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (image) {
-      const formData = new FormData();
-      const file = dataURLtoFile(image, 'capture.jpg');
-      if(file) {
+  const handleFormAction = (formData: FormData) => {
+    if (imageDataUrl) {
+      const file = dataURLtoFile(imageDataUrl, 'capture.jpg');
+      if (file) {
         formData.append('image', file);
         formAction(formData);
       }
     }
   };
-
+  
   return (
     <Card className="w-full">
-      <form onSubmit={handleSubmit}>
+      <form ref={formRef} action={handleFormAction}>
         <CardHeader>
           <CardTitle>Podgląd z kamery</CardTitle>
           <CardDescription>
@@ -165,13 +160,13 @@ export function LabelScanner() {
                 <>
                 <video
                     ref={videoRef}
-                    className={cn('w-full h-full object-cover', image ? 'hidden' : 'block')}
+                    className={cn('w-full h-full object-cover', imageDataUrl ? 'hidden' : 'block')}
                     autoPlay
                     playsInline
                     muted
                 />
-                {image && (
-                    <img src={image} alt="Przechwycona etykieta" className="w-full h-full object-contain" />
+                {imageDataUrl && (
+                    <img src={imageDataUrl} alt="Przechwycona etykieta" className="w-full h-full object-contain" />
                 )}
                 <canvas ref={canvasRef} className="hidden" />
                 </>
@@ -179,7 +174,7 @@ export function LabelScanner() {
           </div>
         </CardContent>
         <CardFooter className="flex-col items-start gap-4">
-          {!image ? (
+          {!imageDataUrl ? (
              <Button type="button" onClick={handleCapture} disabled={!hasCameraPermission || isPending} className="w-full md:w-auto">
                 <Camera className="mr-2 h-4 w-4" />
                 Zrób zdjęcie
@@ -209,6 +204,9 @@ export function LabelScanner() {
           {formState.message && !formState.analysisHtml && !formState.errors && (
             <p className="text-sm text-destructive">{formState.message}</p>
           )}
+           {formState.errors?.image && (
+                <p className="text-sm text-destructive">{formState.errors.image[0]}</p>
+            )}
 
           {isPending && (
             <div className="w-full text-center p-8 flex flex-col items-center gap-4">

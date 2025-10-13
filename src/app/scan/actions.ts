@@ -1,3 +1,4 @@
+
 'use server';
 import { analyzeLabel } from '@/ai/flows/analyze-label-flow';
 import { z } from 'zod';
@@ -8,13 +9,13 @@ const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/web
 const ScanLabelSchema = z.object({
   image: z
     .any()
-    .refine((file) => file?.size > 0, "Proszę wybrać plik obrazu.")
+    .refine((file) => !!file && file.size > 0, "Proszę wybrać plik obrazu.")
     .refine(
-      (file) => file?.size <= MAX_FILE_SIZE,
+      (file) => file.size <= MAX_FILE_SIZE,
       `Maksymalny rozmiar pliku to 5MB.`
     )
     .refine(
-      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+      (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
       "Akceptowane formaty to .jpg, .jpeg, .png i .webp."
     ),
 });
