@@ -64,7 +64,7 @@ export const ingredients: Ingredient[] = [
     WARNING: 'PODWÓJNE SPRAWDZENIE OŚCI! Nawet mikro-ość = niebezpieczeństwo',
     portion: '10g (kostka 1x1cm)',
     prep: 'Gotować 15 min bez soli, sprawdzić palcami każdy kawałek',
-    nero: 'Po tym przysmaku moja sierść lśni jak miecz Jedi! Dziś czuję się jak Chihuahua-supermodel... aż do pierwszej kałuży. Perfekcja jest ulotna!',
+    nero: 'Po tym przysmaku moja sierść lśni jak nowa! Dziś czuję się jak Chihuahua-supermodel... aż do pierwszej kałuży. Perfekcja jest ulotna!',
     source: 'https://www.akc.org/expert-advice/nutrition/can-dogs-eat-salmon/',
   },
   {
