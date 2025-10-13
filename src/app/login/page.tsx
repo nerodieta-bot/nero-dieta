@@ -2,17 +2,22 @@
 
 import { useUser } from '@/firebase/provider';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { Loader2, PawPrint } from 'lucide-react';
 import { PhoneLoginForm } from '@/components/login-form';
 
 export default function LoginPage() {
   const router = useRouter();
   const { user, isUserLoading } = useUser();
+
+  useEffect(() => {
+    // Przekieruj użytkownika, jeśli jest już zalogowany i zakończono ładowanie.
+    if (user && !isUserLoading) {
+      router.replace('/');
+    }
+  }, [user, isUserLoading, router]);
   
   if (isUserLoading || user) {
-    if (user && !isUserLoading) {
-        router.replace('/');
-    }
      return (
       <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
         <div className="flex flex-col items-center justify-center p-8 text-center">
