@@ -2383,7 +2383,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Agrest',
-    icon: ' gooseberry ',
+    icon: '🫐',
     status: 'safe',
     cat_icon: '✅',
     category: '🫐 Kwaśny Owoc',
