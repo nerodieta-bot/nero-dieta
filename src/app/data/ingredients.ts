@@ -237,7 +237,7 @@ export const ingredients: Ingredient[] = [
     cat_icon: '☠️',
     category: '🍷 Niebezpieczny Napój',
     desc: 'Etanol jest szybko wchłaniany i powoduje zatrucie. Ze względu na mniejszą masę ciała, nawet niewielka ilość może prowadzić do uszkodzenia wątroby, mózgu, śpiączki i śmierci.',
-    WARNING: 'ŚMIERTELNE ZAGROŻENIE! Może powodować śpiączkę i śmierć.',
+    WARNING: 'ŚMIERTELNIE ZAGROŻENIE! Może powodować śpiączkę i śmierć.',
     nero: 'Pachnie fermentacją i kłopotami. Zostawiam to ludziom. Ja wolę czystą wodę, która nie plącze łap i nie mąci w głowie.',
     source: 'https://www.aspca.org/pet-care/animal-poison-control/people-foods-avoid-feeding-your-pets',
   },
@@ -248,7 +248,7 @@ export const ingredients: Ingredient[] = [
     cat_icon: '☠️',
     category: '🍬 Słodka Śmierć',
     desc: 'Sztuczny słodzik, który u psów powoduje gwałtowne uwolnienie insuliny, prowadząc do hipoglikemii (niebezpiecznego spadku cukru we krwi) i ostrej niewydolności wątroby.',
-    WARNING: 'ŚMIERTELNE ZAGROŻENIE! Sprawdzaj etykiety produktów "bez cukru".',
+    WARNING: 'ŚMIERTELNIE ZAGROŻENIE! Sprawdzaj etykiety produktów "bez cukru".',
     nero: 'To najgorszy wróg ukryty w słodkościach. Moi ludzie pilnują tego jak oka w głowie. Jeden lizak i mogę mieć poważne kłopoty.',
     source: 'https://www.fda.gov/consumers/consumer-updates/paws-away-xylitol-its-dangerous-dogs',
   },
@@ -1526,7 +1526,6 @@ export const ingredients: Ingredient[] = [
     nero: 'Pachnie ogniem! Jeden wdech i kicham przez pięć minut. To nie jest jedzenie, to broń! Trzymam się na bezpieczną odległość.',
     source: 'https://www.thesprucepets.com/can-dogs-eat-hot-peppers-4844519',
   },
-  // 100 new ingredients start here
   {
     name: 'Ser feta',
     icon: '🧀',
