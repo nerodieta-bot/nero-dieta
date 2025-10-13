@@ -68,7 +68,7 @@ export function Footer() {
                  {/* CTA for advertising */}
                 <Link href="/contact" className="flex flex-col items-center justify-center p-4 border border-dashed border-accent/50 rounded-lg bg-accent/10 h-full min-h-32 hover:bg-accent/20 hover:border-accent transition-colors group">
                     <BadgeDollarSign className="w-8 h-8 text-accent mb-2 transition-transform group-hover:scale-110" />
-                    <span className="text-sm font-semibold text-accent/80 group-hover:text-accent">Twoja firma tutaj?</span>
+                    <span className="text-sm font-semibold text-accent/80 group-hover:text-accent">Twój produkt tutaj?</span>
                 </Link>
               </div>
           </CollapsibleContent>
