@@ -74,10 +74,10 @@ export function IngredientCard({ ingredient, isOpen, onToggle }: IngredientCardP
             <div className="overflow-hidden">
               <p className={cn('text-sm mb-4', config.textColor, 'opacity-90')}>{ingredient.desc}</p>
               {ingredient.WARNING && (
-                <Badge variant="destructive" className="mb-4 whitespace-normal text-center bg-red-500/20 text-red-900 dark:text-red-200 border-red-500/30">
-                  <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
-                  <span className="text-left">{ingredient.WARNING}</span>
-                </Badge>
+                <div className="mb-4 p-3 rounded-md bg-red-500/20 text-red-900 dark:text-red-200 border border-red-500/30 flex items-start text-left">
+                  <AlertCircle className="w-5 h-5 mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="flex-grow text-sm">{ingredient.WARNING}</span>
+                </div>
               )}
               <div className="text-sm space-y-2">
                 {ingredient.portion && (
