@@ -34,6 +34,7 @@ export default function PrivacyPage() {
                   <strong>Dane wprowadzane w formularzach:</strong>
                   <ul>
                     <li>Podczas generowania planu posiłków: waga psa, wiek, poziom aktywności, lista składników.</li>
+                    <li>Podczas analizy etykiety za pomocą Skanera: obraz etykiety produktu.</li>
                     <li>Podczas zgłaszania nowego składnika: nazwa składnika, status, kategoria, opis, opcjonalny komentarz.</li>
                   </ul>
                 </li>
@@ -50,7 +51,7 @@ export default function PrivacyPage() {
             <section>
               <h3>§3 W jakim celu wykorzystujemy dane?</h3>
               <ol>
-                <li>Dane podane w formularzu generowania planu posiłków są przetwarzane wyłącznie w celu wygenerowania tego planu przez model AI i nie są trwale zapisywane w powiązaniu z Użytkownikiem.</li>
+                <li>Dane podane w formularzu generowania planu posiłków oraz obrazy przesyłane w Skanerze Etykiet są przetwarzane wyłącznie w celu wygenerowania odpowiedzi przez model AI i nie są trwale zapisywane w powiązaniu z Użytkownikiem.</li>
                 <li>Dane podane w formularzu zgłaszania składnika są przetwarzane w celu weryfikacji i ewentualnego dodania nowego składnika do publicznej bazy danych Serwisu.</li>
                 <li>Dane zbierane automatycznie mogą być użyte do analizy zachowań użytkowników w Serwisie (np. przy użyciu narzędzi analitycznych) w celu poprawy jego działania.</li>
               </ol>
@@ -67,9 +68,9 @@ export default function PrivacyPage() {
              <section>
               <h3>§5 Pliki Cookies</h3>
               <ol>
-                <li>Serwis może używać plików cookies (tzw. "ciasteczek"), które służą do identyfikacji przeglądarki Użytkownika podczas korzystania z Serwisu.</li>
-                <li>Ciasteczka nie zawierają żadnych danych osobowych i są używane w celach statystycznych oraz dla zapewnienia prawidłowego działania niektórych funkcji Serwisu.</li>
-                 <li>Użytkownik może w każdej chwili wyłączyć obsługę plików cookies w ustawieniach swojej przeglądarki internetowej.</li>
+                <li>Serwis używa plików cookies (tzw. "ciasteczek") w celu zapisania zgody na warunki Regulaminu i Polityki Prywatności. Jest to niezbędne do prawidłowego funkcjonowania Serwisu.</li>
+                <li>Ciasteczka mogą być również używane w celach statystycznych do analizy ruchu w Serwisie.</li>
+                 <li>Użytkownik może w każdej chwili wyłączyć obsługę plików cookies w ustawieniach swojej przeglądarki internetowej, jednak może to uniemożliwić korzystanie z Serwisu.</li>
               </ol>
             </section>
 
