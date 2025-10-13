@@ -42,27 +42,30 @@ const prompt = ai.definePrompt({
   name: 'analyzeLabelPrompt',
   input: {schema: AnalyzeLabelInputSchema},
   output: {schema: AnalyzeLabelOutputSchema},
-  prompt: `You are an expert dog nutritionist. Your task is to analyze the provided image of a pet food ingredient list and provide a detailed safety analysis for a dog.
+  prompt: `Jesteś ekspertem w dziedzinie żywienia psów. Twoim zadaniem jest przeanalizowanie dostarczonego obrazu etykiety z listą składników karmy dla zwierząt i przedstawienie szczegółowej analizy bezpieczeństwa dla psa.
 
-**Image of the ingredient list:**
+**CAŁA ODPOWIEDŹ MUSI BYĆ W JĘZYKU POLSKIM.**
+
+**Obraz listy składników:**
 {{media url=photoDataUri}}
 
-**Your Task:**
-1.  **Extract Ingredients:** Carefully extract all ingredients from the image.
-2.  **Analyze Each Ingredient:** For each ingredient, determine its safety status for a dog:
-    *   **safe:** Generally considered safe and beneficial.
-    *   **warning:** Safe in moderation, but can cause issues in large amounts, or is a common allergen.
-    *   **danger:** Toxic or harmful to dogs.
-    *   **unknown:** You cannot determine the status.
-3.  **Provide a Brief Reason:** For any ingredient marked as 'warning' or 'danger', provide a concise, one-sentence explanation for the classification.
-4.  **Generate an HTML Report:** Format the entire output as a single, self-contained HTML string.
-    *   Start with a summary paragraph explaining the overall quality of the ingredient list.
-    *   Use an \`<h3>\` for the title "Analiza Składników".
-    *   Create a \`<ul>\` list for the ingredients.
-    *   Each ingredient should be an \`<li>\` item.
-    *   Assign a class to each \`<li>\` based on its status: \`class="status-safe"\`, \`class="status-warning"\`, \`class="status-danger"\`, or \`class="status-unknown"\`.
-    *   Inside the \`<li>\`, display the ingredient name as a \`<strong>\` tag, followed by a dash and the reason (if any). Example: \`<li class="status-danger"><strong>Cebula</strong> – Toksyczna dla psów, może prowadzić do anemii.</li>\`
-    *   The tone should be professional, clear, and helpful.`,
+**Twoje zadanie:**
+1.  **Wyodrębnij składniki:** Dokładnie wyodrębnij wszystkie składniki z obrazu.
+2.  **Przeanalizuj każdy składnik:** Dla każdego składnika określ jego status bezpieczeństwa dla psa:
+    *   **safe:** Ogólnie uważany za bezpieczny i korzystny.
+    *   **warning:** Bezpieczny w umiarkowanych ilościach, ale może powodować problemy w dużych ilościach lub jest częstym alergenem.
+    *   **danger:** Toksyczny lub szkodliwy dla psów.
+    *   **unknown:** Nie można określić statusu.
+3.  **Podaj krótkie uzasadnienie:** Dla każdego składnika oznaczonego jako 'warning' lub 'danger' podaj zwięzłe, jednozdaniowe wyjaśnienie klasyfikacji.
+4.  **Wygeneruj raport HTML:** Sformatuj całą odpowiedź jako pojedynczy, samodzielny ciąg znaków HTML.
+    *   Zacznij od akapitu podsumowującego, wyjaśniającego ogólną jakość listy składników.
+    *   Użyj tagu \`<h3>\` dla tytułu "Analiza Składników".
+    *   Utwórz listę \`<ul>\` dla składników.
+    *   Każdy składnik powinien być elementem \`<li>\`.
+    *   Przypisz klasę do każdego \`<li>\` na podstawie jego statusu: \`class="status-safe"\`, \`class="status-warning"\`, \`class="status-danger"\` lub \`class="status-unknown"\`.
+    *   Wewnątrz \`<li>\` wyświetl nazwę składnika w tagu \`<strong>\`, a następnie myślnik i uzasadnienie (jeśli istnieje). Przykład: \`<li class="status-danger"><strong>Cebula</strong> – Toksyczna dla psów, może prowadzić do anemii.</li>\`
+    *   **Jeśli obraz jest nieczytelny, pusty lub nie przedstawia listy składników**, Twoja odpowiedź HTML powinna zawierać tylko podsumowanie informujące o tym problemie oraz jeden element listy o statusie "unknown" wyjaśniający, że nie można było odczytać składników. Przykład: \`<p>Niestety, dostarczony obraz jest nieczytelny. Proszę, prześlij wyraźne zdjęcie etykiety.</p><h3>Analiza Składników</h3><ul><li class="status-unknown"><strong>Brak możliwości odczytu składników</strong> – Obraz był nieczytelny.</li></ul>\`
+    *   Ton powinien być profesjonalny, klarowny i pomocny.`,
 });
 
 const analyzeLabelFlow = ai.defineFlow(
