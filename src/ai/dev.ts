@@ -3,3 +3,4 @@ config();
 
 import '@/ai/flows/generate-dog-meal-plan.ts';
 import '@/ai/flows/translate-text.ts';
+import '@/ai/flows/analyze-label-flow.ts';
