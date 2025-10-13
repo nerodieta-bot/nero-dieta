@@ -103,7 +103,7 @@ export function LoginForm() {
       setAuthState({ status: 'idle', message: '' });
       try {
         const actionCodeSettings = {
-          url: window.location.origin + '/profil', // Redirect to profile page after login
+          url: "https://nero-dieta.ch/profil", // Use custom domain
           handleCodeInApp: true,
         };
         await sendSignInLinkToEmail(auth, validation.data.email, actionCodeSettings);
