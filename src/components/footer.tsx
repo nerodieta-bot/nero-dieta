@@ -9,6 +9,25 @@ import {
 import { Button } from './ui/button';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
+
+const recommendations = [
+    {
+        name: 'FCI',
+        logoUrl: 'https://www.fci.be/img/logo_fci.png',
+        link: 'https://www.fci.be/en/',
+    },
+    {
+        name: 'ZKwP',
+        logoUrl: 'https://www.zkwp.pl/zg/images/logo_zkwp.png',
+        link: 'https://www.zkwp.pl/',
+    },
+    {
+        name: 'Silky Beauty',
+        logoUrl: '/Silky-Beauty.png',
+        link: 'https://www.silky-beauty.com/'
+    }
+];
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -29,16 +48,27 @@ export function Footer() {
             </CollapsibleTrigger>
           </div>
           <CollapsibleContent className="mb-8">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 items-center justify-center text-center">
-                {/* Placeholder for recommended products/logos */}
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="flex flex-col items-center justify-center p-4 border border-dashed rounded-lg bg-background/50 h-32">
-                    <span className="text-sm text-muted-foreground">Miejsce</span>
-                    <span className="text-xs text-muted-foreground/70">na logo</span>
-                  </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 items-stretch justify-center text-center">
+                {recommendations.map((rec) => (
+                  <Link 
+                    key={rec.name}
+                    href={rec.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center justify-center p-4 border rounded-lg bg-background/50 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
+                  >
+                    <div className='relative w-full h-20'>
+                         <Image
+                            src={rec.logoUrl}
+                            alt={`Logo ${rec.name}`}
+                            fill
+                            className='object-contain'
+                            />
+                    </div>
+                  </Link>
                 ))}
                  {/* CTA for advertising */}
-                <Link href="/contact" className="flex flex-col items-center justify-center p-4 border border-dashed border-accent/50 rounded-lg bg-accent/10 h-32 hover:bg-accent/20 hover:border-accent transition-colors group">
+                <Link href="/contact" className="flex flex-col items-center justify-center p-4 border border-dashed border-accent/50 rounded-lg bg-accent/10 h-full min-h-32 hover:bg-accent/20 hover:border-accent transition-colors group">
                     <BadgeDollarSign className="w-8 h-8 text-accent mb-2 transition-transform group-hover:scale-110" />
                     <span className="text-sm font-semibold text-accent/80 group-hover:text-accent">Twoja firma tutaj?</span>
                 </Link>
@@ -95,10 +125,10 @@ export function Footer() {
               </Link>
             </div>
             <div className="flex items-center justify-center md:justify-start gap-4">
-                <Link href="#" aria-label="YouTube" className="text-muted-foreground hover:text-primary">
+                <Link href="https://www.youtube.com/@DIETANERO" aria-label="YouTube" className="text-muted-foreground hover:text-primary">
                     <Youtube className="w-5 h-5"/>
                 </Link>
-                 <Link href="#" aria-label="Instagram" className="text-muted-foreground hover:text-primary">
+                 <Link href="https://www.instagram.com/dieta.nero/" aria-label="Instagram" className="text-muted-foreground hover:text-primary">
                     <Instagram className="w-5 h-5"/>
                 </Link>
             </div>
