@@ -82,8 +82,8 @@ export function LabelScanner() {
 
         // Zatrzymaj wideo po zrobieniu zdjęcia
         if (video.srcObject) {
-          const stream = video.srcObject as MediaStream;
-          stream.getTracks().forEach(track => track.stop());
+            const stream = video.srcObject as MediaStream;
+            stream.getTracks().forEach(track => track.stop());
         }
       }
     }
@@ -227,7 +227,7 @@ export function LabelScanner() {
                     Wyniki Analizy
                 </CardTitle>
                  <CardDescription>
-                  Poniżej znajduje się analiza składu produktu przeprowadzona przez AI. Pamiętaj, że jest to sugestia i nie zastępuje porady weterynarza.
+                  Wziąłem lupę i przyjrzałem się tej etykiecie. Oto moje wnioski! Pamiętaj jednak, że ostatnie słowo zawsze ma Twój weterynarz.
                 </CardDescription>
               </CardHeader>
               <CardContent>
