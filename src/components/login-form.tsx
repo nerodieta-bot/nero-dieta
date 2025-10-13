@@ -28,7 +28,7 @@ import { FirestorePermissionError } from '@/firebase/errors';
 import { useToast } from '@/hooks/use-toast';
 
 const PhoneSchema = z.string().regex(/^\+[1-9]\d{1,14}$/, 'Proszę podać numer w formacie międzynarodowym, np. +48123456789');
-const CodeSchema = z.string().length(6, 'Kod musi mieć 6 cyfr.');
+const CodeSchema = z.string().min(1, 'Kod nie może być pusty.');
 
 type AuthState = {
   status: 'idle' | 'error';
@@ -204,12 +204,12 @@ export function LoginForm() {
         <form onSubmit={handleVerifyCode}>
           <CardHeader>
             <CardTitle>Wprowadź kod weryfikacyjny</CardTitle>
-            <CardDescription>Wpisz 6-cyfrowy kod, który wysłaliśmy na numer {phoneNumber}.</CardDescription>
+            <CardDescription>Wpisz kod, który wysłaliśmy na numer {phoneNumber}.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="code">Kod weryfikacyjny</Label>
-              <Input id="code" name="code" type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder="123456" required disabled={isPending} maxLength={6} />
+              <Input id="code" name="code" type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Wpisz kod..." required disabled={isPending} maxLength={6} />
             </div>
           </CardContent>
           <CardFooter className="flex-col items-stretch gap-4">
