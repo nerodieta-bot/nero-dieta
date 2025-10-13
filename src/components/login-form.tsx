@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useActionState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { sendSignInLink, completeSignIn, type AuthState } from '@/app/login/actions';
+import { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { sendSignInLinkToEmail } from 'firebase/auth';
+import { useAuth } from '@/firebase/provider';
+import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -15,70 +17,55 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, Mail, CheckCircle, AlertTriangle } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { useUser } from '@/firebase/provider';
 
-const initialAuthState: AuthState = { status: 'idle', message: '' };
+const EmailSchema = z.string().email('Proszę podać poprawny adres e-mail.');
+
+type AuthState = {
+  status: 'idle' | 'success' | 'error';
+  message: string;
+};
 
 export function LoginForm() {
-  const [authState, formAction, isPending] = useActionState(sendSignInLink, initialAuthState);
-  const [emailForSignIn, setEmailForSignIn] = useState('');
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const { toast } = useToast();
-  const { user, isUserLoading } = useUser();
+  const [authState, setAuthState] = useState<AuthState>({ status: 'idle', message: '' });
+  const [isPending, startTransition] = useTransition();
+  const auth = useAuth();
 
-  useEffect(() => {
-    const completeSignInFlow = async () => {
-      if (searchParams.has('apiKey') && searchParams.has('oobCode')) {
-        const storedEmail = window.localStorage.getItem('emailForSignIn');
-        if (!storedEmail) {
-          toast({
-            variant: 'destructive',
-            title: 'Błąd logowania',
-            description: 'Nie znaleziono adresu e-mail. Spróbuj ponownie.',
-          });
-          router.push('/login');
-          return;
-        }
+  const handleSendSignInLink = (formData: FormData) => {
+    const email = formData.get('email');
+    
+    startTransition(async () => {
+      const validatedEmail = EmailSchema.safeParse(email);
 
-        const result = await completeSignIn(window.location.href, storedEmail);
-        toast({
-          title: result.status === 'success' ? 'Zalogowano pomyślnie!' : 'Błąd logowania',
-          description: result.message,
-          variant: result.status === 'success' ? 'default' : 'destructive',
+      if (!validatedEmail.success) {
+        setAuthState({
+          status: 'error',
+          message: validatedEmail.error.flatten().fieldErrors.root?.[0] || 'Nieprawidłowy e-mail.',
         });
-        window.localStorage.removeItem('emailForSignIn');
-        router.push('/');
+        return;
       }
-    };
-    completeSignInFlow();
-  }, [searchParams, router, toast]);
 
-   useEffect(() => {
-    if (user) {
-      router.replace('/');
-    }
-  }, [user, router]);
+      const actionCodeSettings = {
+        url: `${window.location.origin}/`,
+        handleCodeInApp: true,
+      };
 
-  if (isUserLoading || user) {
-     return (
-      <div className="flex flex-col items-center justify-center p-8 text-center">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="mt-4 text-muted-foreground">Sprawdzanie statusu logowania...</p>
-      </div>
-    );
-  }
-
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmailForSignIn(e.target.value);
+      try {
+        await sendSignInLinkToEmail(auth, validatedEmail.data, actionCodeSettings);
+        window.localStorage.setItem('emailForSignIn', validatedEmail.data);
+        setAuthState({
+          status: 'success',
+          message: `Wysłaliśmy link logujący na adres ${validatedEmail.data}. Otwórz go na tym samym urządzeniu, aby dokończyć.`,
+        });
+      } catch (error: any) {
+        console.error('Error sending sign-in link:', error.code, error.message);
+        let userMessage = 'Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.';
+        if (error.code === 'auth/invalid-email') {
+          userMessage = 'Podany adres e-mail jest nieprawidłowy.';
+        }
+        setAuthState({ status: 'error', message: userMessage });
+      }
+    });
   };
-  
-  const handleFormAction = (formData: FormData) => {
-    window.localStorage.setItem('emailForSignIn', emailForSignIn);
-    formAction(formData);
-  };
-
 
   if (authState.status === 'success') {
     return (
@@ -95,7 +82,7 @@ export function LoginForm() {
   }
 
   return (
-    <form action={handleFormAction}>
+    <form action={handleSendSignInLink}>
       <Card>
         <CardHeader>
           <CardTitle>Logowanie bez hasła</CardTitle>
@@ -115,8 +102,6 @@ export function LoginForm() {
               placeholder="np. nero@example.com"
               required
               disabled={isPending}
-              onChange={handleEmailChange}
-              value={emailForSignIn}
             />
           </div>
         </CardContent>
