@@ -118,7 +118,7 @@ export function Footer() {
           </CollapsibleContent>
         </Collapsible>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left mt-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
           {/* About Section */}
           <div>
             <Link href="/" className="flex items-center justify-center md:justify-start gap-2 mb-4">
@@ -185,8 +185,8 @@ export function Footer() {
                         Informacje o twórcy
                     </Button>
                 </CollapsibleTrigger>
-                <CollapsibleContent className="bg-card p-2 rounded-md">
-                    <p className="text-xs text-muted-foreground pt-2">
+                <CollapsibleContent className="bg-card p-4 rounded-md mt-2">
+                    <p className="text-xs text-muted-foreground">
                         Zaprojektowane i zbudowane od podstaw przez <Link href="/contact" className="font-semibold text-accent/90 hover:text-accent underline">NERO STUDIO</Link>.
                     </p>
                 </CollapsibleContent>
