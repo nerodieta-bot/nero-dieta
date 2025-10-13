@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { PawPrint, Mail, Youtube, Instagram, Award, BadgeDollarSign, Building } from 'lucide-react';
+import { PawPrint, Mail, Youtube, Instagram, Award, BadgeDollarSign, Building, Code } from 'lucide-react';
 import {
   Collapsible,
   CollapsibleContent,
@@ -167,17 +167,34 @@ export function Footer() {
               </Link>
             </div>
             <div className="flex items-center justify-center md:justify-start gap-4">
-                <Link href="https://www.youtube.com/@DIETANERO" aria-label="YouTube" className="text-muted-foreground hover:text-primary">
-                    <Youtube className="w-5 h-5"/>
+                <Link href="https://www.youtube.com/@DIETANERO" aria-label="YouTube" className="text-muted-foreground hover:text-accent transition-colors">
+                    <Youtube className="w-6 h-6"/>
                 </Link>
-                 <Link href="https://www.instagram.com/dieta.nero/" aria-label="Instagram" className="text-muted-foreground hover:text-primary">
-                    <Instagram className="w-5 h-5"/>
+                 <Link href="https://www.instagram.com/dieta.nero/" aria-label="Instagram" className="text-muted-foreground hover:text-accent transition-colors">
+                    <Instagram className="w-6 h-6"/>
                 </Link>
             </div>
           </div>
         </div>
+        
+        <div className="border-t mt-8 pt-6 text-center">
+            <Collapsible>
+                <CollapsibleTrigger asChild>
+                    <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-accent">
+                        <Code className="mr-2 h-3 w-3" />
+                        Informacje o twórcy
+                    </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                    <p className="text-xs text-muted-foreground pt-2">
+                        Zaprojektowane i zbudowane od podstaw przez <Link href="/contact" className="font-semibold text-accent/90 hover:text-accent underline">NERO STUDIO</Link>.
+                    </p>
+                </CollapsibleContent>
+            </Collapsible>
+        </div>
 
-        <div className="border-t mt-8 pt-6 text-center text-xs text-muted-foreground">
+
+        <div className="mt-4 pt-4 border-t text-center text-xs text-muted-foreground">
           <p>&copy; {year} Dieta Nero. Wszelkie prawa zastrzeżone.</p>
           <p className="mt-1">Stworzone z miłością dla Nero i wszystkich małych wojowników.</p>
         </div>
