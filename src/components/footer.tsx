@@ -175,10 +175,10 @@ export function Footer() {
               </Link>
             </div>
             <div className="flex items-center justify-center md:justify-start gap-4">
-                <Link href="https://www.youtube.com/@DIETANERO" aria-label="YouTube" className="text-foreground/90 hover:text-primary transition-colors">
+                <Link href="https://www.youtube.com/channel/UCD_UeKrGoBivKQEgolq2maQ" aria-label="YouTube" className="text-foreground/90 hover:text-primary transition-colors">
                     <Youtube className="w-6 h-6"/>
                 </Link>
-                 <Link href="https://www.instagram.com/dieta.nero/" aria-label="Instagram" className="text-foreground/90 hover:text-primary transition-colors">
+                 <Link href="https://www.instagram.com/nero_ai_error/" aria-label="Instagram" className="text-foreground/90 hover:text-primary transition-colors">
                     <Instagram className="w-6 h-6"/>
                 </Link>
             </div>

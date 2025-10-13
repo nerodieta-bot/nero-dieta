@@ -98,6 +98,37 @@
       "required": [
         "createdAt"
       ]
+    },
+    "ContactMessage": {
+      "title": "Contact Message",
+      "description": "Represents a message sent through the contact form.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the person who sent the message."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The email address of the sender."
+        },
+        "message": {
+          "type": "string",
+          "description": "The content of the message."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the message was sent."
+        }
+      },
+      "required": [
+        "name",
+        "email",
+        "message",
+        "createdAt"
+      ]
     }
   },
   "auth": {
@@ -139,8 +170,24 @@
             }
           ]
         }
+      },
+      {
+        "path": "/contact_messages/{messageId}",
+        "definition": {
+          "entityName": "ContactMessage",
+          "schema": {
+            "$ref": "#/backend/entities/ContactMessage"
+          },
+          "description": "Stores messages submitted through the contact form. Only accessible by administrators.",
+          "params": [
+            {
+              "name": "messageId",
+              "description": "The unique identifier for the contact message."
+            }
+          ]
+        }
       }
     ],
-    "reasoning": "The data structure is designed to store ingredient information for a dog food database, focusing on safety and providing detailed information for users. A single collection, `/ingredients`, is used to store all ingredient documents. This simplifies data access and security rules. Structural Segregation is maintained by ensuring all documents in the collection share the same security needs (publicly accessible ingredient data).\n\nAuthorization Independence is achieved because the ingredient data doesn't rely on parent documents or user-specific information. This avoids the need for `get()` calls in security rules and enables secure list operations. The application will retrieve documents from the /ingredients collection to display to the user.\n\nThe DBAC principle is followed because the data displayed will be the same for all users, no user based roles or custom claims are needed. \n\nThis structure supports the required QAPs by segregating all data into a single collection with a uniform security posture, enabling simple and secure `list` operations."
+    "reasoning": "The data structure is designed to store ingredient information for a dog food database, focusing on safety and providing detailed information for users. A single collection, `/ingredients`, is used to store all ingredient documents. This simplifies data access and security rules. Structural Segregation is maintained by ensuring all documents in the collection share the same security needs (publicly accessible ingredient data).\n\nAuthorization Independence is achieved because the ingredient data doesn't rely on parent documents or user-specific information. This avoids the need for `get()` calls in security rules and enables secure list operations. The application will retrieve documents from the /ingredients collection to display to the user.\n\nThe DBAC principle is followed because the data displayed will be the same for all users, no user based roles or custom claims are needed.\n\nA new collection `/contact_messages` has been added to store submissions from the contact form. This keeps user-submitted content separate from the public ingredient data and user profiles, allowing for more restrictive security rules (e.g., only admins can read/write). This follows the principle of least privilege and structural segregation."
   }
 }
