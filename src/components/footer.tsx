@@ -186,7 +186,7 @@ export function Footer() {
         <div className="border-t mt-8 pt-6 text-center">
             <Collapsible>
                 <CollapsibleTrigger asChild>
-                    <Button variant="ghost" size="sm" className="text-xs text-foreground/80 hover:text-accent">
+                    <Button variant="outline" size="sm" className="text-xs text-muted-foreground border-accent hover:text-accent hover:bg-transparent">
                         <Code className="mr-2 h-3 w-3" />
                         Informacje o twórcy
                     </Button>
