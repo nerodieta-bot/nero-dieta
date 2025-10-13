@@ -4,7 +4,7 @@ import { useUser } from '@/firebase/provider';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Loader2, PawPrint } from 'lucide-react';
-import { PhoneLoginForm } from '@/components/login-form';
+import { LoginForm } from '@/components/login-form';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -37,10 +37,10 @@ export default function LoginPage() {
                 Dołącz do stada Nero!
             </h1>
             <p className="mt-2 text-lg text-muted-foreground">
-                Zaloguj się, aby w pełni korzystać z Dieta Nero.
+                Zarejestruj się lub zaloguj, aby w pełni korzystać z Dieta Nero.
             </p>
         </div>
-        <PhoneLoginForm />
+        <LoginForm />
       </div>
     </div>
   );
