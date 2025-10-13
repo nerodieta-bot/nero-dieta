@@ -67,7 +67,7 @@ export function IngredientGrid({ ingredients }: IngredientGridProps) {
         </div>
         
         {/* Desktop Filters */}
-        <div className="hidden md:flex items-center justify-center gap-4">
+        <div className="hidden md:flex items-center justify-center gap-4 pt-4">
           {filterOptions.map(option => (
             <Button
               key={option.value}
