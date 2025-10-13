@@ -1,30 +1,28 @@
 /**
- * @fileoverview Firestore Security Rules for the Dog Food Ingredients Database.
+ * @fileoverview Firestore Security Rules for the dog food database application.
  *
  * Core Philosophy:
- * This ruleset provides public read access to ingredient data while restricting user profile creation to authenticated users, ensuring that a user can only create their own profile.
+ * This ruleset enforces a combination of public read access for ingredient data and user-ownership for user profile data.
  *
  * Data Structure:
- * - /ingredients/{ingredientId}: Stores ingredient data. All users can read ingredient data.
- * - /users/{userId}: Stores user profile information. Users can only create their own profile.
+ * - /ingredients/{ingredientId}: Stores publicly readable ingredient data.
+ * - /users/{userId}: Stores user profile information, accessible only to the owning user.
  *
  * Key Security Decisions:
- * - Ingredients are publicly readable.
- * - Users can only create their profile. No updates or deletes are allowed.
- *
- * Denormalization for Authorization: N/A (No denormalization needed for this ruleset).
- * Structural Segregation: N/A (No structural segregation needed for this ruleset).
+ * - Ingredient data is publicly readable but write access is not implemented, since there are no create/update/delete application features to handle this.
+ * - User profiles are strictly owned by the corresponding user; only the authenticated user can read/write their profile.
+ * - User listing is disabled; clients cannot enumerate all user profiles.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows public read access to ingredient data. Restricts writes.
+     * @description Grants public read access to ingredient documents. Write access is denied.
      * @path /ingredients/{ingredientId}
-     * @allow (get, list)
-     * @deny (create, update, delete)
-     * @principle Allows public read access to all ingredients and restricts creating, updating, or deleting ingredients.
+     * @allow (get, list) Any user can read ingredient data.
+     * @deny (create, update, delete) No one can modify ingredient data.
+     * @principle Allows public read access for ingredient data while restricting write access.
      */
     match /ingredients/{ingredientId} {
       allow get, list: if true;
@@ -32,35 +30,38 @@ service cloud.firestore {
     }
 
     /**
-     * @description Allows a user to create their own profile. No updates or deletes are allowed.
+     * @description Enforces user-ownership for user profile documents.
      * @path /users/{userId}
-     * @allow (create) User with ID matching {userId} can create a profile
-     * @deny (create) User with ID not matching {userId} cannot create a profile
-     * @deny (get, list, update, delete) No one can read, update, or delete user profiles.
-     * @principle Enforces user-ownership for profile creation.
+     * @allow (get) Authenticated user can read their own profile.
+     * @allow (create) Authenticated user can create their own profile if the userId matches their auth UID.
+     * @allow (update) Authenticated user can update their own profile if the userId matches their auth UID and the document exists.
+     * @allow (delete) Authenticated user can delete their own profile if the userId matches their auth UID and the document exists.
+     * @deny (get) Authenticated user cannot read other user profiles.
+     * @deny (create) Authenticated user cannot create a profile with a userId that does not match their auth UID.
+     * @deny (update) Authenticated user cannot update other user profiles.
+     * @deny (delete) Authenticated user cannot delete other user profiles.
+     * @principle Enforces document ownership for writes and reads.
      */
     match /users/{userId} {
-      allow create: if isSignedIn() && isOwner(userId);
-      allow get, list, update, delete: if false;
-    }
+      allow get: if isSignedIn() && isOwner(userId);
+      allow list: if false; // Listing users is not permitted
 
-    // --- Helper Functions ---
-
-    /**
-     * @description Checks if the user is signed in.
-     * @return {boolean} True if the user is signed in, false otherwise.
-     */
-    function isSignedIn() {
-      return request.auth != null;
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.get('createdAt', null) != null && request.auth.uid == userId;
+      allow update: if isSignedIn() && isExistingOwner(userId) && request.resource.data.get('createdAt', resource.data.createdAt) != null;
+      allow delete: if isSignedIn() && isExistingOwner(userId);
     }
+  }
 
-    /**
-     * @description Checks if the request is made by the owner of the resource.
-     * @param {string} userId The user ID to check against.
-     * @return {boolean} True if the user is the owner, false otherwise.
-     */
-    function isOwner(userId) {
-      return request.auth.uid == userId;
-    }
+  // Helper functions
+  function isSignedIn() {
+    return request.auth != null;
+  }
+
+  function isOwner(userId) {
+    return request.auth.uid == userId;
+  }
+
+  function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
   }
 }
