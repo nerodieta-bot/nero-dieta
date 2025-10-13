@@ -4,9 +4,8 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Button } from './ui/button';
-import { PawPrint, Home, Bot, PlusSquare, Dog, X, Menu, ScanLine, Award } from 'lucide-react';
+import { PawPrint, Home, Bot, PlusSquare, Dog, X, Menu, ScanLine, Award, LogIn } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sheet,
   SheetContent,
@@ -14,6 +13,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { UserNav } from './user-nav';
+import { useUser } from '@/firebase/provider';
 
 
 const navLinks = [
@@ -32,11 +33,29 @@ const mobileNavLinks = [
 export function Header() {
   const pathname = usePathname();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const { user, isUserLoading } = useUser();
 
 
   useEffect(() => {
     setIsSheetOpen(false);
   }, [pathname]);
+
+  const AuthButton = () => {
+    if (isUserLoading) {
+      return <Button variant="outline" size="icon" className="rounded-full w-auto px-4 h-10 animate-pulse"><div className="w-20 h-4 bg-muted rounded"></div></Button>;
+    }
+    if (user) {
+      return <UserNav />;
+    }
+    return (
+      <Button asChild variant='outline' className='rounded-full border-accent/50 text-accent hover:bg-accent/10 hover:text-accent font-bold transition-all duration-300 transform hover:scale-105'>
+        <Link href="/login">
+          <LogIn className="mr-2 h-4 w-4" />
+          Zaloguj się
+        </Link>
+      </Button>
+    );
+  };
 
   return (
     <>
@@ -46,7 +65,7 @@ export function Header() {
             <PawPrint className="w-6 h-6 text-accent" />
             <span className="font-headline">Dieta Nero</span>
           </Link>
-          <nav className="flex items-center gap-2">
+          <nav className="flex items-center gap-1">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
@@ -58,6 +77,9 @@ export function Header() {
                 </Button>
               );
             })}
+             <div className="ml-4">
+              <AuthButton />
+            </div>
           </nav>
         </div>
       </header>
@@ -71,39 +93,41 @@ export function Header() {
                   <PawPrint className="w-6 h-6 text-accent" />
                   <span className="font-headline">Dieta Nero</span>
               </Link>
-
-              <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-                  <SheetTrigger asChild>
-                      <Button variant="ghost" size="icon" aria-label="Otwórz menu">
-                          <Menu className="h-6 w-6"/>
-                      </Button>
-                  </SheetTrigger>
-                  <SheetContent side="right" className="w-[280px]">
-                      <SheetHeader>
-                        <SheetTitle className='font-headline text-primary'>Menu</SheetTitle>
-                      </SheetHeader>
-                      <nav className="flex flex-col gap-4 mt-8">
-                           {mobileNavLinks.map((link) => {
-                              const isActive = pathname === link.href;
-                              return (
-                                <Link
-                                  href={link.href}
-                                  key={link.href}
-                                  className={cn(
-                                    'flex items-center gap-3 p-3 rounded-lg text-lg font-medium transition-colors',
-                                    isActive && !link.href.startsWith('#')
-                                      ? 'bg-primary text-primary-foreground'
-                                      : 'text-foreground hover:bg-muted'
-                                  )}
-                                >
-                                  <link.icon className="h-6 w-6" />
-                                  <span>{link.label}</span>
-                                </Link>
-                              );
-                           })}
-                      </nav>
-                  </SheetContent>
-              </Sheet>
+              <div className='flex items-center gap-2'>
+                <AuthButton />
+                <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                    <SheetTrigger asChild>
+                        <Button variant="ghost" size="icon" aria-label="Otwórz menu">
+                            <Menu className="h-6 w-6"/>
+                        </Button>
+                    </SheetTrigger>
+                    <SheetContent side="right" className="w-[280px]">
+                        <SheetHeader>
+                          <SheetTitle className='font-headline text-primary'>Menu</SheetTitle>
+                        </SheetHeader>
+                        <nav className="flex flex-col gap-4 mt-8">
+                             {mobileNavLinks.map((link) => {
+                                const isActive = pathname === link.href;
+                                return (
+                                  <Link
+                                    href={link.href}
+                                    key={link.href}
+                                    className={cn(
+                                      'flex items-center gap-3 p-3 rounded-lg text-lg font-medium transition-colors',
+                                      isActive && !link.href.startsWith('#')
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'text-foreground hover:bg-muted'
+                                    )}
+                                  >
+                                    <link.icon className="h-6 w-6" />
+                                    <span>{link.label}</span>
+                                  </Link>
+                                );
+                             })}
+                        </nav>
+                    </SheetContent>
+                </Sheet>
+              </div>
           </div>
       </header>
     </>
