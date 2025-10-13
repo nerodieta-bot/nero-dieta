@@ -49,14 +49,9 @@ export default function LoginPage() {
           const userCred = result.userCredential as UserCredential;
           const { user } = userCred;
 
-          const displayName = window.localStorage.getItem('displayName');
-          const dogName = window.localStorage.getItem('dogName');
-
           const userRef = doc(firestore, 'users', user.uid);
            setDoc(userRef, {
               email: user.email,
-              displayName: displayName,
-              dogName: dogName,
               createdAt: serverTimestamp(),
             }, { merge: true }).catch(error => {
                 errorEmitter.emit(
@@ -66,8 +61,6 @@ export default function LoginPage() {
                     operation: 'write',
                     requestResourceData: {
                       email: user.email,
-                      displayName: displayName,
-                      dogName: dogName,
                     },
                   })
                 )
@@ -79,8 +72,6 @@ export default function LoginPage() {
           });
 
           window.localStorage.removeItem('emailForSignIn');
-          window.localStorage.removeItem('displayName');
-          window.localStorage.removeItem('dogName');
           router.push('/');
 
         } else {
@@ -93,8 +84,6 @@ export default function LoginPage() {
         }
         // Always remove the email from local storage after attempting sign-in
         window.localStorage.removeItem('emailForSignIn');
-        window.localStorage.removeItem('displayName');
-        window.localStorage.removeItem('dogName');
       }
     };
     if (firestore) {
