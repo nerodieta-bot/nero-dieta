@@ -88,6 +88,10 @@ export function PhoneLoginForm() {
         setStep('code');
       } catch (error: any) {
         console.error('SMS Send Error:', error);
+        if (error.code === 'auth/popup-closed-by-user') {
+          setAuthState({ status: 'error', message: 'Logowanie zostało anulowane.' });
+          return;
+        }
         let userMessage = 'Nie udało się wysłać kodu. Spróbuj ponownie.';
         if (error.code === 'auth/invalid-phone-number') {
             userMessage = 'Nieprawidłowy format numeru telefonu. Podaj go w formacie międzynarodowym, np. +41790000000.';
@@ -128,13 +132,13 @@ export function PhoneLoginForm() {
                 createdAt: serverTimestamp(),
                 provider: 'phone',
             };
-            await setDoc(userRef, userData, { merge: true }).catch(error => {
+            setDoc(userRef, userData, { merge: true }).catch(error => {
                 errorEmitter.emit('permission-error', new FirestorePermissionError({
                     path: userRef.path,
                     operation: 'write',
                     requestResourceData: userData
                 }));
-                throw error;
+                // We do not re-throw here to allow UI to proceed. Error is handled globally.
             });
         }
         
@@ -145,6 +149,10 @@ export function PhoneLoginForm() {
         router.push('/');
       } catch (error: any) {
         console.error('Code Verification Error:', error);
+        if (error.code === 'auth/popup-closed-by-user') {
+          setAuthState({ status: 'error', message: 'Logowanie zostało anulowane.' });
+          return;
+        }
         let userMessage = 'Wystąpił nieoczekiwany błąd. Spróbuj ponownie.';
         if (error.code === 'auth/invalid-verification-code') {
             userMessage = 'Nieprawidłowy kod weryfikacyjny. Sprawdź go i spróbuj ponownie.';
