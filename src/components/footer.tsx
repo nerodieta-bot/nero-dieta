@@ -42,6 +42,7 @@ export function Footer() {
   const [isRecsOpen, setIsRecsOpen] = useState(false);
 
   useEffect(() => {
+    // This will only run on the client, after hydration
     setYear(new Date().getFullYear());
   }, []);
 
@@ -130,7 +131,7 @@ export function Footer() {
               <PawPrint className="w-6 h-6 text-accent" />
               <span className="font-bold text-lg font-headline text-primary">Dieta Nero</span>
             </Link>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground/90">
               Twój przewodnik po zdrowym żywieniu psa, stworzony z miłości do małych wielkich przyjaciół.
             </p>
           </div>
@@ -140,22 +141,22 @@ export function Footer() {
             <h3 className="font-semibold text-foreground mb-4">Ważne linki</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link href="/terms" className="text-sm text-foreground/90 hover:text-primary transition-colors">
                   Regulamin
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link href="/privacy" className="text-sm text-foreground/90 hover:text-primary transition-colors">
                   Polityka Prywatności
                 </Link>
               </li>
                <li>
-                <Link href="/submit" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link href="/submit" className="text-sm text-foreground/90 hover:text-primary transition-colors">
                   Zgłoś składnik
                 </Link>
               </li>
               <li>
-                <Link href="/report-bug" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Link href="/report-bug" className="text-sm text-foreground/90 hover:text-primary transition-colors">
                   Zgłoś błąd
                 </Link>
               </li>
@@ -165,17 +166,17 @@ export function Footer() {
           {/* Contact Section */}
           <div>
             <h3 className="font-semibold text-foreground mb-4">Kontakt</h3>
-            <div className="flex items-center justify-center md:justify-start gap-2 text-muted-foreground mb-4">
+            <div className="flex items-center justify-center md:justify-start gap-2 text-foreground/90 mb-4">
               <Mail className="w-4 h-4" />
               <Link href="/contact" className="text-sm hover:text-primary transition-colors">
                 Napisz do nas
               </Link>
             </div>
             <div className="flex items-center justify-center md:justify-start gap-4">
-                <Link href="https://www.youtube.com/@DIETANERO" aria-label="YouTube" className="text-muted-foreground hover:text-accent transition-colors">
+                <Link href="https://www.youtube.com/@DIETANERO" aria-label="YouTube" className="text-foreground/90 hover:text-accent transition-colors">
                     <Youtube className="w-6 h-6"/>
                 </Link>
-                 <Link href="https://www.instagram.com/dieta.nero/" aria-label="Instagram" className="text-muted-foreground hover:text-accent transition-colors">
+                 <Link href="https://www.instagram.com/dieta.nero/" aria-label="Instagram" className="text-foreground/90 hover:text-accent transition-colors">
                     <Instagram className="w-6 h-6"/>
                 </Link>
             </div>
@@ -185,13 +186,13 @@ export function Footer() {
         <div className="border-t mt-8 pt-6 text-center">
             <Collapsible>
                 <CollapsibleTrigger asChild>
-                    <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-accent">
+                    <Button variant="ghost" size="sm" className="text-xs text-foreground/80 hover:text-accent">
                         <Code className="mr-2 h-3 w-3" />
                         Informacje o twórcy
                     </Button>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="bg-card p-4 rounded-md mt-2">
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-foreground/90">
                         Zaprojektowane i zbudowane od podstaw przez <Link href="/contact" className="font-semibold text-accent/90 hover:text-accent underline">NERO STUDIO</Link>.
                     </p>
                 </CollapsibleContent>
@@ -199,8 +200,8 @@ export function Footer() {
         </div>
 
 
-        <div className="mt-4 pt-4 border-t text-center text-xs text-muted-foreground">
-          <p>&copy; {year} Dieta Nero. Wszelkie prawa zastrzeżone.</p>
+        <div className="mt-4 pt-4 border-t text-center text-xs text-foreground/70">
+          {year && <p>&copy; {year} Dieta Nero. Wszelkie prawa zastrzeżone.</p>}
           <p className="mt-1">Stworzone z miłością dla Nero i wszystkich małych wojowników.</p>
         </div>
       </div>
