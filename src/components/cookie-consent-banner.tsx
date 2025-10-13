@@ -10,9 +10,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import Link from 'next/link';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { ScrollArea } from './ui/scroll-area';
+import { TermsContent } from './terms-content';
+import { PrivacyContent } from './privacy-content';
+
 import { Cookie, FileText, ShieldCheck } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 export function CookieConsentBanner() {
   const [isClient, setIsClient] = useState(false);
@@ -55,15 +66,46 @@ export function CookieConsentBanner() {
             <p>
                 Korzystając z serwisu, potwierdzasz, że rozumiesz i akceptujesz, iż wszystkie treści, w tym te generowane przez AI, mają charakter wyłącznie informacyjny i <strong>nie zastępują profesjonalnej porady weterynaryjnej</strong>.
             </p>
-            <div className='flex flex-col space-y-2'>
-                 <Link href="/terms" target="_blank" className='flex items-center gap-2 hover:text-primary transition-colors'>
-                    <FileText className='h-4 w-4 text-muted-foreground'/>
-                    <span>Przeczytaj Regulamin</span>
-                </Link>
-                 <Link href="/privacy" target="_blank" className='flex items-center gap-2 hover:text-primary transition-colors'>
-                    <ShieldCheck className='h-4 w-4 text-muted-foreground'/>
-                    <span>Przeczytaj Politykę Prywatności</span>
-                </Link>
+            <div className='flex flex-col sm:flex-row gap-2'>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" className="w-full">
+                    <FileText className='mr-2 h-4 w-4'/>
+                    Przeczytaj Regulamin
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="max-w-3xl">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Regulamin Serwisu Dieta Nero</AlertDialogTitle>
+                  </AlertDialogHeader>
+                  <ScrollArea className="h-[60vh] pr-6">
+                    <TermsContent />
+                  </ScrollArea>
+                  <AlertDialogFooter>
+                    <AlertDialogAction>Zamknij</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" className="w-full">
+                    <ShieldCheck className='mr-2 h-4 w-4'/>
+                    Przeczytaj Politykę Prywatności
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="max-w-3xl">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Polityka Prywatności Dieta Nero</AlertDialogTitle>
+                  </AlertDialogHeader>
+                  <ScrollArea className="h-[60vh] pr-6">
+                    <PrivacyContent />
+                  </ScrollArea>
+                  <AlertDialogFooter>
+                    <AlertDialogAction>Zamknij</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
         </div>
 
