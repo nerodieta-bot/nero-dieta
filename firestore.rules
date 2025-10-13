@@ -1,29 +1,66 @@
 /**
- * @file Firestore Security Rules
- * @description This ruleset allows public read access to the /ingredients collection
- * and prevents any write access (create, update, delete) to the /ingredients collection, since it is meant to be populated and maintained by admins only.
+ * @fileoverview Firestore Security Rules for the Dog Food Ingredients Database.
+ *
+ * Core Philosophy:
+ * This ruleset provides public read access to ingredient data while restricting user profile creation to authenticated users, ensuring that a user can only create their own profile.
  *
  * Data Structure:
- * - /ingredients/{ingredientId}: Contains ingredient information (name, status, category, description, etc.).
+ * - /ingredients/{ingredientId}: Stores ingredient data. All users can read ingredient data.
+ * - /users/{userId}: Stores user profile information. Users can only create their own profile.
  *
  * Key Security Decisions:
- * - Public read access to the /ingredients collection is allowed.
- * - Write access to the /ingredients collection is denied.
+ * - Ingredients are publicly readable.
+ * - Users can only create their profile. No updates or deletes are allowed.
+ *
+ * Denormalization for Authorization: N/A (No denormalization needed for this ruleset).
+ * Structural Segregation: N/A (No structural segregation needed for this ruleset).
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows public read access to ingredient documents.
+     * @description Allows public read access to ingredient data. Restricts writes.
      * @path /ingredients/{ingredientId}
-     * @allow (get, list) Any unauthenticated user can retrieve the ingredient document.
-     * @deny (create, update, delete) No user can create, update, or delete ingredient documents.
-     * @principle Grants public read access while restricting write access.
+     * @allow (get, list)
+     * @deny (create, update, delete)
+     * @principle Allows public read access to all ingredients and restricts creating, updating, or deleting ingredients.
      */
     match /ingredients/{ingredientId} {
       allow get, list: if true;
       allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Allows a user to create their own profile. No updates or deletes are allowed.
+     * @path /users/{userId}
+     * @allow (create) User with ID matching {userId} can create a profile
+     * @deny (create) User with ID not matching {userId} cannot create a profile
+     * @deny (get, list, update, delete) No one can read, update, or delete user profiles.
+     * @principle Enforces user-ownership for profile creation.
+     */
+    match /users/{userId} {
+      allow create: if isSignedIn() && isOwner(userId);
+      allow get, list, update, delete: if false;
+    }
+
+    // --- Helper Functions ---
+
+    /**
+     * @description Checks if the user is signed in.
+     * @return {boolean} True if the user is signed in, false otherwise.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description Checks if the request is made by the owner of the resource.
+     * @param {string} userId The user ID to check against.
+     * @return {boolean} True if the user is the owner, false otherwise.
+     */
+    function isOwner(userId) {
+      return request.auth.uid == userId;
     }
   }
 }
