@@ -15,12 +15,14 @@ const filterOptions: {
   label: string;
   value: IngredientStatus | 'all';
   icon: React.ElementType;
-  className: string;
+  baseClass: string;
+  hoverClass: string;
+  activeClass: string;
 }[] = [
-  { label: 'Wszystkie', value: 'all', icon: List, className: 'hover:bg-secondary/50 focus:bg-secondary/50' },
-  { label: 'Bezpieczne', value: 'safe', icon: CheckCircle, className: 'hover:bg-status-safe focus:bg-status-safe dark:hover:bg-status-safe/30 dark:focus:bg-status-safe/30 text-status-safe-foreground' },
-  { label: 'Umiarkowane', value: 'warning', icon: AlertTriangle, className: 'hover:bg-status-warning focus:bg-status-warning dark:hover:bg-status-warning/30 dark:focus:bg-status-warning/30 text-status-warning-foreground' },
-  { label: 'Zakazane', value: 'danger', icon: XCircle, className: 'hover:bg-status-danger focus:bg-status-danger dark:hover:bg-status-danger/30 dark:focus:bg-status-danger/30 text-status-danger-foreground' },
+  { label: 'Wszystkie', value: 'all', icon: List, baseClass: 'bg-secondary text-secondary-foreground', hoverClass: 'hover:bg-secondary/80', activeClass: 'ring-primary' },
+  { label: 'Bezpieczne', value: 'safe', icon: CheckCircle, baseClass: 'bg-green-600 text-white', hoverClass: 'hover:bg-green-700', activeClass: 'ring-green-700' },
+  { label: 'Umiarkowane', value: 'warning', icon: AlertTriangle, baseClass: 'bg-yellow-500 text-yellow-900', hoverClass: 'hover:bg-yellow-600', activeClass: 'ring-yellow-600' },
+  { label: 'Zakazane', value: 'danger', icon: XCircle, baseClass: 'bg-red-600 text-white', hoverClass: 'hover:bg-red-700', activeClass: 'ring-red-700' },
 ];
 
 export function IngredientGrid({ ingredients }: IngredientGridProps) {
@@ -56,14 +58,16 @@ export function IngredientGrid({ ingredients }: IngredientGridProps) {
           {filterOptions.map(option => (
             <Button
               key={option.value}
-              variant="outline"
+              variant="default"
               onClick={() => setFilter(option.value)}
               className={cn(
-                'rounded-full transition-all duration-200 border-2',
+                'rounded-full transition-all duration-200 shadow-sm border-0',
+                'focus-visible:ring-2 focus-visible:ring-offset-2',
+                 option.baseClass,
+                 option.hoverClass,
                 filter === option.value
-                  ? 'border-primary font-bold'
-                  : 'border-transparent',
-                option.className
+                  ? `ring-2 ring-offset-2 ${option.activeClass}`
+                  : ''
               )}
             >
               <option.icon className="mr-2 h-4 w-4" />
