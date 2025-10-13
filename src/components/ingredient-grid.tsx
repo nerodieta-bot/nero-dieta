@@ -61,7 +61,7 @@ export function IngredientGrid({ ingredients }: IngredientGridProps) {
               variant="default"
               onClick={() => setFilter(option.value)}
               className={cn(
-                'rounded-full transition-all duration-200 shadow-sm border-0',
+                'transition-all duration-200 shadow-sm border-0',
                 'focus-visible:ring-2 focus-visible:ring-offset-2',
                  option.baseClass,
                  option.hoverClass,
