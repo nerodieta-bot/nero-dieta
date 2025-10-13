@@ -38,7 +38,7 @@ const recommendations = [
 ];
 
 export function Footer() {
-  const year = new Date().getFullYear();
+  const year = 2024;
   const [isRecsOpen, setIsRecsOpen] = useState(false);
 
   return (
