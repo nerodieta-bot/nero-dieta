@@ -173,10 +173,10 @@ export function Footer() {
               </Link>
             </div>
             <div className="flex items-center justify-center md:justify-start gap-4">
-                <Link href="https://www.youtube.com/@DIETANERO" aria-label="YouTube" className="text-foreground/90 hover:text-accent transition-colors">
+                <Link href="https://www.youtube.com/@DIETANERO" aria-label="YouTube" className="text-foreground/90 hover:text-primary transition-colors">
                     <Youtube className="w-6 h-6"/>
                 </Link>
-                 <Link href="https://www.instagram.com/dieta.nero/" aria-label="Instagram" className="text-foreground/90 hover:text-accent transition-colors">
+                 <Link href="https://www.instagram.com/dieta.nero/" aria-label="Instagram" className="text-foreground/90 hover:text-primary transition-colors">
                     <Instagram className="w-6 h-6"/>
                 </Link>
             </div>
@@ -186,7 +186,7 @@ export function Footer() {
         <div className="border-t mt-8 pt-6 text-center">
             <Collapsible>
                 <CollapsibleTrigger asChild>
-                    <Button variant="ghost" size="sm" className="text-xs text-foreground/90 border border-transparent hover:border-accent hover:text-accent">
+                    <Button variant="ghost" size="sm" className="text-xs text-foreground/90 border border-transparent hover:border-accent hover:text-accent transition-transform hover:-translate-y-0.5">
                         <Code className="mr-2 h-3 w-3" />
                         Informacje o twórcy
                     </Button>
