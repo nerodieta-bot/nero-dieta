@@ -14,12 +14,12 @@ import Image from 'next/image';
 const organizations = [
     {
         name: 'FCI',
-        logoUrl: 'https://www.fci.be/img/logo_fci.png',
+        logoUrl: '/images/fci-logo.png',
         link: 'https://www.fci.be/en/',
     },
     {
         name: 'ZKwP',
-        logoUrl: 'https://www.zkwp.pl/zg/images/logo_zkwp.png',
+        logoUrl: '/images/zkwp-logo.png',
         link: 'https://www.zkwp.pl/',
     },
 ];
@@ -57,23 +57,25 @@ export function Footer() {
               </Button>
             </CollapsibleTrigger>
           </div>
-          <CollapsibleContent className="mt-4 mb-8">
-              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 items-start justify-center text-center">
+          <CollapsibleContent className="mt-4">
+              <div className="flex flex-wrap items-stretch justify-center gap-4 text-center">
                 {organizations.map((org) => (
                    <Link 
                     key={org.name}
                     href={org.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex flex-col items-center justify-start p-4 border rounded-lg bg-background/50 h-full min-h-32 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
+                    className="flex flex-col items-center justify-start p-4 border rounded-lg bg-background/50 h-32 w-40 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
                   >
-                     <img
-                        src={org.logoUrl}
-                        alt={`Logo ${org.name}`}
-                        className="max-h-16 w-auto mb-2"
-                        loading="lazy"
-                    />
-                    <span className="text-xs font-semibold text-muted-foreground mt-auto group-hover:text-primary transition-colors">{org.name}</span>
+                     <div className='relative w-full flex-grow'>
+                        <img
+                          src={org.logoUrl}
+                          alt={`Logo ${org.name}`}
+                          className="absolute inset-0 w-full h-full object-contain"
+                          loading="lazy"
+                        />
+                     </div>
+                    <span className="text-xs font-semibold text-muted-foreground mt-2 pt-2 border-t w-full group-hover:text-primary transition-colors">{org.name}</span>
                   </Link>
                 ))}
               </div>
@@ -81,8 +83,8 @@ export function Footer() {
         </Collapsible>
         
         {/* Recommended by Nero Section */}
-        <Collapsible open={isRecsOpen} onOpenChange={setIsRecsOpen}>
-          <div className="text-center mb-8">
+        <Collapsible open={isRecsOpen} onOpenChange={setIsRecsOpen} className='mb-8'>
+          <div className="text-center">
             <CollapsibleTrigger asChild>
               <Button variant="ghost" className="text-lg font-headline text-primary hover:bg-accent/20 transition-all p-4 rounded-lg group">
                 <Award className="w-6 h-6 mr-3 text-accent group-hover:scale-110 transition-transform" />
@@ -91,31 +93,33 @@ export function Footer() {
               </Button>
             </CollapsibleTrigger>
           </div>
-          <CollapsibleContent className="mb-8">
-              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 items-start justify-center text-center">
+          <CollapsibleContent className="mt-4">
+              <div className="flex flex-wrap items-stretch justify-center gap-4 text-center">
                 {recommendations.map((rec) => (
                   <Link 
                     key={rec.name}
                     href={rec.link}
                     target={rec.link.startsWith('http') ? '_blank' : '_self'}
                     rel="noopener noreferrer"
-                    className="flex flex-col items-center justify-start p-4 border rounded-lg bg-background/50 h-full min-h-32 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
+                     className="flex flex-col items-center justify-start p-4 border rounded-lg bg-background/50 h-32 w-40 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
                   >
-                     <img
-                        src={rec.logoUrl}
-                        alt={`Logo ${rec.name}`}
-                        className="max-h-16 w-auto mb-2"
-                        loading="lazy"
-                    />
-                    <span className="text-xs font-semibold text-muted-foreground mt-auto group-hover:text-primary transition-colors">{rec.name}</span>
+                     <div className='relative w-full flex-grow'>
+                        <img
+                          src={rec.logoUrl}
+                          alt={`Logo ${rec.name}`}
+                          className="absolute inset-0 w-full h-full object-contain"
+                          loading="lazy"
+                        />
+                     </div>
+                    <span className="text-xs font-semibold text-muted-foreground mt-2 pt-2 border-t w-full group-hover:text-primary transition-colors">{rec.name}</span>
                   </Link>
                 ))}
                  {/* CTA for advertising */}
-                <Link href="/contact" className="flex flex-col items-center justify-center p-4 border border-dashed border-accent/50 rounded-lg bg-accent/10 h-full min-h-32 hover:bg-accent/20 hover:border-accent transition-colors group">
+                <Link href="/contact" className="flex flex-col items-center justify-center p-4 border border-dashed border-accent/50 rounded-lg bg-accent/10 h-32 w-40 hover:bg-accent/20 hover:border-accent transition-colors group">
                     <BadgeDollarSign className="w-8 h-8 text-accent mb-2 transition-transform group-hover:scale-110" />
                     <span className="text-sm font-semibold text-accent/80 group-hover:text-accent">Twój produkt tutaj?</span>
                 </Link>
-                <Link href="/contact" className="flex flex-col items-center justify-center p-4 border border-dashed border-accent/50 rounded-lg bg-accent/10 h-full min-h-32 hover:bg-accent/20 hover:border-accent transition-colors group">
+                <Link href="/contact" className="flex flex-col items-center justify-center p-4 border border-dashed border-accent/50 rounded-lg bg-accent/10 h-32 w-40 hover:bg-accent/20 hover:border-accent transition-colors group">
                     <BadgeDollarSign className="w-8 h-8 text-accent mb-2 transition-transform group-hover:scale-110" />
                     <span className="text-sm font-semibold text-accent/80 group-hover:text-accent">Twoja firma tutaj?</span>
                 </Link>
@@ -123,7 +127,7 @@ export function Footer() {
           </CollapsibleContent>
         </Collapsible>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left mt-16">
           {/* About Section */}
           <div>
             <Link href="/" className="flex items-center justify-center md:justify-start gap-2 mb-4">
