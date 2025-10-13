@@ -1,12 +1,51 @@
+'use client';
 import Link from 'next/link';
-import { PawPrint, Mail, Youtube, Instagram } from 'lucide-react';
+import { PawPrint, Mail, Youtube, Instagram, Award, Sparkles, BadgeDollarSign } from 'lucide-react';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import { Button } from './ui/button';
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
 
 export function Footer() {
   const year = new Date().getFullYear();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <footer className="bg-card border-t mt-auto">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Recommended by Nero Section */}
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+          <div className="text-center mb-8">
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" className="text-lg font-headline text-primary hover:bg-accent/20 transition-all p-4 rounded-lg group">
+                <Award className="w-6 h-6 mr-3 text-accent group-hover:scale-110 transition-transform" />
+                <span className='group-hover:text-foreground'>Polecane przez Nero</span>
+                 <ChevronDown className={cn("ml-2 h-5 w-5 transition-transform duration-300", isOpen && "rotate-180")} />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+          <CollapsibleContent className="mb-8">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 items-center justify-center text-center">
+                {/* Placeholder for recommended products/logos */}
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="flex flex-col items-center justify-center p-4 border border-dashed rounded-lg bg-background/50 h-32">
+                    <span className="text-sm text-muted-foreground">Miejsce</span>
+                    <span className="text-xs text-muted-foreground/70">na logo</span>
+                  </div>
+                ))}
+                 {/* CTA for advertising */}
+                <Link href="/contact" className="flex flex-col items-center justify-center p-4 border border-dashed border-accent/50 rounded-lg bg-accent/10 h-32 hover:bg-accent/20 hover:border-accent transition-colors group">
+                    <BadgeDollarSign className="w-8 h-8 text-accent mb-2 transition-transform group-hover:scale-110" />
+                    <span className="text-sm font-semibold text-accent/80 group-hover:text-accent">Twoja firma tutaj?</span>
+                </Link>
+              </div>
+          </CollapsibleContent>
+        </Collapsible>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
           {/* About Section */}
           <div>
@@ -74,3 +113,21 @@ export function Footer() {
     </footer>
   );
 }
+
+
+const ChevronDown = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="m6 9 6 6 6-6" />
+  </svg>
+);
