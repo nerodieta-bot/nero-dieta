@@ -4,7 +4,14 @@ import type { Ingredient, IngredientStatus } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { IngredientCard } from './ingredient-card';
-import { Search, CheckCircle, AlertTriangle, XCircle, List } from 'lucide-react';
+import { Search, CheckCircle, AlertTriangle, XCircle, List, ChevronsUpDown } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { cn } from '@/lib/utils';
 
 type IngredientGridProps = {
@@ -40,6 +47,10 @@ export function IngredientGrid({ ingredients }: IngredientGridProps) {
       );
   }, [ingredients, filter, searchQuery]);
   
+  const handleFilterChange = (value: IngredientStatus | 'all') => {
+    setFilter(value);
+  }
+
   return (
     <div>
       <div className="flex flex-col gap-4 mb-8 sticky top-[63px] md:top-16 bg-background/80 backdrop-blur-sm z-10 py-4">
@@ -54,29 +65,52 @@ export function IngredientGrid({ ingredients }: IngredientGridProps) {
             className="pl-10 text-lg shadow-sm"
           />
         </div>
-        <div className="w-full overflow-x-auto pb-2">
-          <div className="flex items-center justify-start md:justify-center gap-4">
-            {filterOptions.map(option => (
-              <Button
-                key={option.value}
-                variant="default"
-                onClick={() => setFilter(option.value)}
-                className={cn(
-                  'transition-all duration-200 shadow-sm border-0 w-36 flex-shrink-0',
-                  'focus-visible:ring-2 focus-visible:ring-offset-2',
-                  option.baseClass,
-                  option.hoverClass,
-                  filter === option.value
-                    ? `ring-2 ring-offset-2 ${option.activeClass}`
-                    : ''
-                )}
-              >
-                <option.icon className="mr-2 h-4 w-4" />
-                {option.label}
-              </Button>
-            ))}
-          </div>
+        
+        {/* Desktop Filters */}
+        <div className="hidden md:flex items-center justify-center gap-4">
+          {filterOptions.map(option => (
+            <Button
+              key={option.value}
+              variant="default"
+              onClick={() => handleFilterChange(option.value)}
+              className={cn(
+                'transition-all duration-200 shadow-sm border-0 w-36',
+                'focus-visible:ring-2 focus-visible:ring-offset-2',
+                option.baseClass,
+                option.hoverClass,
+                filter === option.value
+                  ? `ring-2 ring-offset-2 ${option.activeClass}`
+                  : ''
+              )}
+            >
+              <option.icon className="mr-2 h-4 w-4" />
+              {option.label}
+            </Button>
+          ))}
         </div>
+        
+        {/* Mobile Filter */}
+        <div className='md:hidden'>
+            <Select value={filter} onValueChange={(value: IngredientStatus | 'all') => handleFilterChange(value)}>
+              <SelectTrigger className="w-full text-base py-6">
+                 <div className="flex items-center gap-2">
+                    <ChevronsUpDown className="h-5 w-5 text-muted-foreground" />
+                    <span>Filtruj: <span className='font-bold'>{filterOptions.find(o => o.value === filter)?.label}</span></span>
+                 </div>
+              </SelectTrigger>
+              <SelectContent>
+                {filterOptions.map(option => (
+                  <SelectItem key={option.value} value={option.value} className="text-base py-2">
+                     <div className="flex items-center gap-2">
+                        <option.icon className="h-5 w-5" />
+                        {option.label}
+                      </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+        </div>
+
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
