@@ -48,23 +48,22 @@ export function Footer() {
             </CollapsibleTrigger>
           </div>
           <CollapsibleContent className="mb-8">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 items-stretch justify-center text-center">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 items-center justify-center text-center">
                 {recommendations.map((rec) => (
                   <Link 
                     key={rec.name}
                     href={rec.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex flex-col items-center justify-center p-4 border rounded-lg bg-background/50 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
+                    className="flex flex-col items-center justify-center p-4 border rounded-lg bg-background/50 hover:bg-accent/10 hover:border-accent/50 transition-colors group h-32"
                   >
-                    <div className='relative w-full h-20'>
-                         <Image
-                            src={rec.logoUrl}
-                            alt={`Logo ${rec.name}`}
-                            fill
-                            className='object-contain'
-                            />
-                    </div>
+                     <Image
+                        src={rec.logoUrl}
+                        alt={`Logo ${rec.name}`}
+                        width={120}
+                        height={60}
+                        className='object-contain'
+                        />
                   </Link>
                 ))}
                  {/* CTA for advertising */}
