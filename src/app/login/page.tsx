@@ -91,7 +91,10 @@ export default function LoginPage() {
           });
           setIsCompletingSignIn(false);
         }
+        // Always remove the email from local storage after attempting sign-in
         window.localStorage.removeItem('emailForSignIn');
+        window.localStorage.removeItem('displayName');
+        window.localStorage.removeItem('dogName');
       }
     };
     if (firestore) {
