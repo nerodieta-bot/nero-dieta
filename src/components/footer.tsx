@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { PawPrint, Mail, Youtube, Instagram, Award, BadgeDollarSign, ChevronDown, Building } from 'lucide-react';
+import { PawPrint, Mail, Youtube, Instagram, Award, BadgeDollarSign, Building } from 'lucide-react';
 import {
   Collapsible,
   CollapsibleContent,
@@ -9,7 +9,6 @@ import {
 import { Button } from './ui/button';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import Image from 'next/image';
 import { Separator } from './ui/separator';
 
 const organizations = [
@@ -43,21 +42,21 @@ export function Footer() {
   const [isRecsOpen, setIsRecsOpen] = useState(false);
 
   return (
-    <footer className="bg-card border-t mt-auto">
+    <footer className="bg-card border-t mt-auto" id="recommendations">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         {/* Combined Collapsible Section */}
         <Collapsible open={isRecsOpen} onOpenChange={setIsRecsOpen} className='mb-8'>
-          <div className="text-center">
-            <CollapsibleTrigger asChild>
-              <Button variant="ghost" className="text-lg font-headline text-primary hover:bg-accent/20 transition-all p-4 rounded-lg group">
-                <Award className="w-6 h-6 mr-3 text-accent group-hover:scale-110 transition-transform" />
-                <span className='group-hover:text-foreground'>Polecane przez Nero</span>
-                 <ChevronDown className={cn("ml-2 h-5 w-5 transition-transform duration-300", isRecsOpen && "rotate-180")} />
-              </Button>
-            </CollapsibleTrigger>
-          </div>
-          <CollapsibleContent className="mt-4 space-y-8">
+           <CollapsibleTrigger asChild>
+              <div className={cn("gradient-background flex items-center justify-center p-6 rounded-lg text-primary-foreground text-center cursor-pointer hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group", isRecsOpen && "rounded-b-none")}>
+                <Award className="w-10 h-10 mr-4 text-yellow-300 drop-shadow-lg transform group-hover:scale-110 transition-transform" />
+                <div>
+                    <h3 className="text-2xl font-bold font-headline tracking-wider">Polecane przez Nero</h3>
+                    <p className="text-sm opacity-80">Sprawdzone miejsca i produkty</p>
+                </div>
+              </div>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-0 border-x border-b rounded-b-lg p-6 bg-background/30">
               {/* Recommendations */}
               <div className="flex flex-wrap items-stretch justify-center gap-4 text-center">
                 {recommendations.map((rec) => (
@@ -88,7 +87,7 @@ export function Footer() {
                 </Link>
               </div>
 
-              <Separator />
+              <Separator className='my-8' />
 
               {/* Organizations */}
               <div>

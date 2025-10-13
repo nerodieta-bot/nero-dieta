@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Button } from './ui/button';
-import { PawPrint, Home, Bot, PlusSquare, Dog, X, Menu, ScanLine } from 'lucide-react';
+import { PawPrint, Home, Bot, PlusSquare, Dog, X, Menu, ScanLine, Award } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -22,6 +22,11 @@ const navLinks = [
   { href: '/scan', label: 'Skaner', icon: ScanLine },
   { href: '/submit', label: 'Dodaj', icon: PlusSquare },
   { href: '/nero', label: 'O Nero', icon: Dog },
+];
+
+const mobileNavLinks = [
+  ...navLinks,
+  { href: '#recommendations', label: 'Polecane', icon: Award },
 ];
 
 export function Header() {
@@ -78,7 +83,7 @@ export function Header() {
                         <SheetTitle className='font-headline text-primary'>Menu</SheetTitle>
                       </SheetHeader>
                       <nav className="flex flex-col gap-4 mt-8">
-                           {navLinks.map((link) => {
+                           {mobileNavLinks.map((link) => {
                               const isActive = pathname === link.href;
                               return (
                                 <Link
@@ -86,7 +91,7 @@ export function Header() {
                                   key={link.href}
                                   className={cn(
                                     'flex items-center gap-3 p-3 rounded-lg text-lg font-medium transition-colors',
-                                    isActive
+                                    isActive && !link.href.startsWith('#')
                                       ? 'bg-primary text-primary-foreground'
                                       : 'text-foreground hover:bg-muted'
                                   )}
