@@ -90,14 +90,16 @@ export function LoginForm() {
         router.push('/');
 
       } catch (error: any) {
-        console.error('Google Sign-In Error:', error);
-        let userMessage = 'Wystąpił nieoczekiwany błąd podczas logowania przez Google.';
         if (error.code === 'auth/popup-closed-by-user') {
-          userMessage = 'Logowanie przez Google zostało anulowane.';
-        } else if (error.code === 'auth/account-exists-with-different-credential') {
-          userMessage = 'Konto z tym adresem e-mail już istnieje, ale jest powiązane z inną metodą logowania.';
+          setAuthState({ status: 'error', message: 'Logowanie przez Google zostało anulowane.' });
+        } else {
+            console.error('Google Sign-In Error:', error);
+            let userMessage = 'Wystąpił nieoczekiwany błąd podczas logowania przez Google.';
+            if (error.code === 'auth/account-exists-with-different-credential') {
+            userMessage = 'Konto z tym adresem e-mail już istnieje, ale jest powiązane z inną metodą logowania.';
+            }
+            setAuthState({ status: 'error', message: userMessage });
         }
-        setAuthState({ status: 'error', message: userMessage });
       }
     });
   };
@@ -120,7 +122,7 @@ export function LoginForm() {
     
     startTransition(async () => {
       const actionCodeSettings = {
-        url: `${window.location.origin}`,
+        url: `${window.location.origin}/login`,
         handleCodeInApp: true,
       };
 
@@ -130,7 +132,7 @@ export function LoginForm() {
         }
         await sendSignInLinkToEmail(auth, email, actionCodeSettings);
 
-        const userData = { name, dogName, email };
+        const userData = { name, dogName };
         window.localStorage.setItem('emailForSignIn', email);
         window.localStorage.setItem('userDataForSignIn', JSON.stringify(userData));
 
