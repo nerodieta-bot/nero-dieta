@@ -42,7 +42,7 @@ export function IngredientGrid({ ingredients }: IngredientGridProps) {
   
   return (
     <div>
-      <div className="flex flex-col gap-4 mb-8 sticky top-16 bg-background/80 backdrop-blur-sm z-10 py-4">
+      <div className="flex flex-col gap-4 mb-8 sticky top-[63px] md:top-16 bg-background/80 backdrop-blur-sm z-10 py-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
@@ -54,26 +54,28 @@ export function IngredientGrid({ ingredients }: IngredientGridProps) {
             className="pl-10 text-lg shadow-sm"
           />
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-4">
-          {filterOptions.map(option => (
-            <Button
-              key={option.value}
-              variant="default"
-              onClick={() => setFilter(option.value)}
-              className={cn(
-                'transition-all duration-200 shadow-sm border-0 w-36',
-                'focus-visible:ring-2 focus-visible:ring-offset-2',
-                 option.baseClass,
-                 option.hoverClass,
-                filter === option.value
-                  ? `ring-2 ring-offset-2 ${option.activeClass}`
-                  : ''
-              )}
-            >
-              <option.icon className="mr-2 h-4 w-4" />
-              {option.label}
-            </Button>
-          ))}
+        <div className="w-full overflow-x-auto pb-2">
+          <div className="flex items-center justify-start md:justify-center gap-4">
+            {filterOptions.map(option => (
+              <Button
+                key={option.value}
+                variant="default"
+                onClick={() => setFilter(option.value)}
+                className={cn(
+                  'transition-all duration-200 shadow-sm border-0 w-36 flex-shrink-0',
+                  'focus-visible:ring-2 focus-visible:ring-offset-2',
+                  option.baseClass,
+                  option.hoverClass,
+                  filter === option.value
+                    ? `ring-2 ring-offset-2 ${option.activeClass}`
+                    : ''
+                )}
+              >
+                <option.icon className="mr-2 h-4 w-4" />
+                {option.label}
+              </Button>
+            ))}
+          </div>
         </div>
       </div>
 
