@@ -40,10 +40,12 @@ const recommendations = [
 export function Footer() {
   const [year, setYear] = useState<number | null>(null);
   const [isRecsOpen, setIsRecsOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     // This will only run on the client, after hydration
     setYear(new Date().getFullYear());
+    setIsClient(true);
   }, []);
 
 
@@ -186,7 +188,7 @@ export function Footer() {
         <div className="border-t mt-8 pt-6 text-center">
             <Collapsible>
                 <CollapsibleTrigger asChild>
-                    <Button variant="ghost" className="text-xs text-foreground/90 hover:text-accent-foreground hover:font-bold transition-transform hover:-translate-y-0.5 hover:bg-accent border border-transparent rounded-md">
+                    <Button variant="ghost" className="text-xs text-foreground/90 hover:text-accent-foreground hover:font-bold transition-transform hover:-translate-y-0.5 hover:bg-accent border border-transparent hover:border-accent rounded-md">
                         <Code className="mr-2 h-3 w-3" />
                         Informacje o twórcy
                     </Button>
@@ -201,7 +203,7 @@ export function Footer() {
 
 
         <div className="mt-4 pt-4 border-t text-center text-xs text-foreground/70">
-           <p>&copy; {year || new Date().getFullYear()} Dieta Nero. Wszelkie prawa zastrzeżone.</p>
+           {isClient && <p>&copy; {year} Dieta Nero. Wszelkie prawa zastrzeżone.</p>}
           <p className="mt-1">Stworzone z miłością dla Nero i wszystkich małych wojowników.</p>
         </div>
       </div>

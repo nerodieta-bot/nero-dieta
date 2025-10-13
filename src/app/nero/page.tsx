@@ -30,7 +30,7 @@ export default function NeroPage() {
                 />
                 <CardHeader>
                   <CardTitle className="text-primary font-headline">Nero Silky Beauty</CardTitle>
-                  <CardDescription>Urodzony: 28 października 2024 r.</CardDescription>
+                  <CardDescription>Urodzony: 28 października 2023 r.</CardDescription>
                 </CardHeader>
                 <CardContent className='text-sm text-muted-foreground'>
                   Syn <span className='font-semibold text-foreground'>LUXURY OF NADIN GLORIA DIOS</span> & <span className='font-semibold text-foreground'>ADONIS SILKY BEAUTY</span>
@@ -40,7 +40,7 @@ export default function NeroPage() {
 
             <div className="md:col-span-3 space-y-8">
                 <p className="text-lg leading-relaxed text-foreground/90">
-                  Nero to młody samiec rasy Chihuahua o wyjątkowym rodowodzie i niezwykłej osobowości. Urodził się 28 października 2024 roku w hodowli Silky Beauty FCI, jako przedstawiciel prestiżowego miotu „D”. Od pierwszych dni zachwycał spokojem, pewnością siebie i tym charakterystycznym, przenikliwym spojrzeniem, które wydaje się rozumieć więcej, niż mówi świat wokół.
+                  Nero to młody samiec rasy Chihuahua o wyjątkowym rodowodzie i niezwykłej osobowości. Urodził się 28 października 2023 roku w hodowli Silky Beauty FCI, jako przedstawiciel prestiżowego miotu „D”. Od pierwszych dni zachwycał spokojem, pewnością siebie i tym charakterystycznym, przenikliwym spojrzeniem, które wydaje się rozumieć więcej, niż mówi świat wokół.
                 </p>
 
                 <div className="bg-card p-6 rounded-lg border">
