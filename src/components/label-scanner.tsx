@@ -1,3 +1,4 @@
+
 'use client';
 import { useActionState, useState, useRef, useEffect } from 'react';
 import { analyzeLabelAction, type ScanFormState } from '@/app/scan/actions';
@@ -80,8 +81,10 @@ export function LabelScanner() {
         setImage(dataUrl);
 
         // Zatrzymaj wideo po zrobieniu zdjęcia
-        const stream = video.srcObject as MediaStream;
-        stream.getTracks().forEach(track => track.stop());
+        if (video.srcObject) {
+          const stream = video.srcObject as MediaStream;
+          stream.getTracks().forEach(track => track.stop());
+        }
       }
     }
   };
@@ -258,3 +261,5 @@ export function LabelScanner() {
     </Card>
   );
 }
+
+    
