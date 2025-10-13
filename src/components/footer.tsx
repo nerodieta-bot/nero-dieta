@@ -7,7 +7,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import { Button } from './ui/button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Separator } from './ui/separator';
 
@@ -38,8 +38,13 @@ const recommendations = [
 ];
 
 export function Footer() {
-  const year = 2024;
+  const [year, setYear] = useState(new Date().getFullYear());
   const [isRecsOpen, setIsRecsOpen] = useState(false);
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
+
 
   return (
     <footer className="bg-card border-t mt-auto" id="recommendations">
@@ -202,3 +207,5 @@ export function Footer() {
     </footer>
   );
 }
+
+    
