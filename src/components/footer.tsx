@@ -47,7 +47,7 @@ export function Footer() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         {/* Organizations Section */}
-        <Collapsible open={isOrgsOpen} onOpenChange={setIsOrgsOpen} className='mb-4'>
+        <Collapsible open={isOrgsOpen} onOpenChange={setIsOrgsOpen} className='mb-8'>
           <div className="text-center">
             <CollapsibleTrigger asChild>
               <Button variant="ghost" className="text-lg font-headline text-primary hover:bg-accent/20 transition-all p-4 rounded-lg group">
@@ -58,21 +58,22 @@ export function Footer() {
             </CollapsibleTrigger>
           </div>
           <CollapsibleContent className="mt-4 mb-8">
-              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 items-center justify-center text-center">
+              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 items-start justify-center text-center">
                 {organizations.map((org) => (
                    <Link 
                     key={org.name}
                     href={org.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex flex-col items-center justify-center p-4 border rounded-lg bg-background/50 h-32 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
+                    className="flex flex-col items-center justify-start p-4 border rounded-lg bg-background/50 h-full min-h-32 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
                   >
                      <img
                         src={org.logoUrl}
                         alt={`Logo ${org.name}`}
-                        className="max-h-16 w-auto"
+                        className="max-h-16 w-auto mb-2"
                         loading="lazy"
                     />
+                    <span className="text-xs font-semibold text-muted-foreground mt-auto group-hover:text-primary transition-colors">{org.name}</span>
                   </Link>
                 ))}
               </div>
@@ -91,21 +92,22 @@ export function Footer() {
             </CollapsibleTrigger>
           </div>
           <CollapsibleContent className="mb-8">
-              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 items-center justify-center text-center">
+              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 items-start justify-center text-center">
                 {recommendations.map((rec) => (
                   <Link 
                     key={rec.name}
                     href={rec.link}
                     target={rec.link.startsWith('http') ? '_blank' : '_self'}
                     rel="noopener noreferrer"
-                    className="flex flex-col items-center justify-center p-4 border rounded-lg bg-background/50 h-32 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
+                    className="flex flex-col items-center justify-start p-4 border rounded-lg bg-background/50 h-full min-h-32 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
                   >
                      <img
                         src={rec.logoUrl}
                         alt={`Logo ${rec.name}`}
-                        className="max-h-16 w-auto"
+                        className="max-h-16 w-auto mb-2"
                         loading="lazy"
                     />
+                    <span className="text-xs font-semibold text-muted-foreground mt-auto group-hover:text-primary transition-colors">{rec.name}</span>
                   </Link>
                 ))}
                  {/* CTA for advertising */}
