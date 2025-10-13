@@ -66,7 +66,7 @@ export function LabelScanner() {
               >
                 <div className='flex flex-col items-center gap-2'>
                     <Camera className="h-8 w-8 text-muted-foreground" />
-                    <span className="text-base font-medium">{preview ? "Zmień zdjęcie" : "Wybierz lub zrób zdjęcie"}</span>
+                    <span className="text-base font-medium">{preview ? "Zmień zdjęcie" : "Zrób lub wybierz zdjęcie"}</span>
                 </div>
               </Button>
               <Input
