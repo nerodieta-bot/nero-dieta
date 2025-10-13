@@ -1,7 +1,12 @@
 'use client';
 
-import { useState, useTransition } from 'react';
-import { sendSignInLinkToEmail, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { useState, useTransition, useEffect } from 'react';
+import { 
+  signInWithPhoneNumber, 
+  RecaptchaVerifier, 
+  ConfirmationResult, 
+  UserCredential 
+} from 'firebase/auth';
 import { useAuth, useFirestore } from '@/firebase/provider';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
@@ -15,201 +20,217 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, Mail, CheckCircle, AlertTriangle } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
+import { Loader2, Phone, MessageSquareCode, AlertTriangle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { useToast } from '@/hooks/use-toast';
 
-
-const NameSchema = z.string().min(2, 'Imię musi mieć co najmniej 2 znaki.');
-const DogNameSchema = z.string().min(2, 'Imię psa musi mieć co najmniej 2 znaki.');
-const EmailSchema = z.string().email('Proszę podać poprawny adres e-mail.');
+const PhoneSchema = z.string().regex(/^\+[1-9]\d{1,14}$/, 'Proszę podać numer w formacie międzynarodowym, np. +48123456789');
+const CodeSchema = z.string().length(6, 'Kod musi mieć 6 cyfr.');
 
 type AuthState = {
-  status: 'idle' | 'success' | 'error';
+  status: 'idle' | 'error';
   message: string;
 };
 
-type Step = 'initial' | 'emailSent';
+type Step = 'enterPhone' | 'enterCode';
 
-const GoogleIcon = () => (
-    <svg className="mr-2 h-4 w-4" viewBox="0 0 48 48">
-        <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z" />
-        <path fill="#FF3D00" d="M6.306 14.691c-2.242 3.756-3.086 8.514-2.222 13.011l6.75-5.238C8.921 19.34 7.822 16.81 6.306 14.691z" />
-        <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-4.819C28.91 37.297 26.61 38 24 38c-3.866 0-7.22-1.722-9.408-4.417l-6.75 5.238C11.086 40.822 17.15 44 24 44z" />
-        <path fill="#1976D2" d="M43.611 20.083H24v8h11.303c-.792 2.443-2.67 4.333-5.073 5.602l6.19 4.819c3.918-3.596 6.375-8.942 6.375-14.821c0-1.341-.138-2.65-.389-3.917z" />
-    </svg>
-);
-
+declare global {
+  interface Window {
+    recaptchaVerifier?: RecaptchaVerifier;
+    confirmationResult?: ConfirmationResult;
+  }
+}
 
 export function LoginForm() {
-  const [step, setStep] = useState<Step>('initial');
+  const [step, setStep] = useState<Step>('enterPhone');
   const [authState, setAuthState] = useState<AuthState>({ status: 'idle', message: '' });
   const [isPending, startTransition] = useTransition();
-  const [isGooglePending, startGoogleTransition] = useTransition();
 
-  const [name, setName] = useState('');
-  const [dogName, setDogName] = useState('');
-  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [code, setCode] = useState('');
   
   const auth = useAuth();
   const firestore = useFirestore();
   const router = useRouter();
+  const { toast } = useToast();
 
-
-  const handleGoogleSignIn = () => {
-    startGoogleTransition(async () => {
-      if (!auth || !firestore) {
-        setAuthState({ status: 'error', message: 'Błąd inicjalizacji. Spróbuj ponownie za chwilę.' });
-        return;
-      }
-      
-      const provider = new GoogleAuthProvider();
-      try {
-        const userCredential = await signInWithPopup(auth, provider);
-        const user = userCredential.user;
-
-        const userRef = doc(firestore, 'users', user.uid);
-        const userData = {
-            email: user.email,
-            displayName: user.displayName,
-            createdAt: serverTimestamp(),
-        };
-
-        await setDoc(userRef, userData, { merge: true }).catch(error => {
-          errorEmitter.emit('permission-error', new FirestorePermissionError({
-            path: userRef.path,
-            operation: 'write',
-            requestResourceData: userData
-          }))
-          throw error;
-        });
-
-        router.push('/');
-
-      } catch (error: any) {
-        if (error.code === 'auth/popup-closed-by-user') {
-          setAuthState({ status: 'error', message: 'Logowanie przez Google zostało anulowane.' });
-        } else {
-            console.error('Google Sign-In Error:', error);
-            let userMessage = 'Wystąpił nieoczekiwany błąd podczas logowania przez Google.';
-            if (error.code === 'auth/account-exists-with-different-credential') {
-            userMessage = 'Konto z tym adresem e-mail już istnieje, ale jest powiązane z inną metodą logowania.';
-            }
-            setAuthState({ status: 'error', message: userMessage });
+  useEffect(() => {
+    if (!auth) return;
+    
+    // Initialize reCAPTCHA verifier
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        'size': 'invisible',
+        'callback': (response: any) => {
+          // reCAPTCHA solved, allow signInWithPhoneNumber.
+        },
+        'expired-callback': () => {
+          // Response expired. Ask user to solve reCAPTCHA again.
+          toast({
+            variant: 'destructive',
+            title: 'Sesja reCAPTCHA wygasła',
+            description: 'Proszę spróbować ponownie.',
+          });
         }
-      }
-    });
-  };
-  
+      });
+    }
+  }, [auth, toast]);
 
-  const handleSendSignInLink = (e: React.FormEvent) => {
+  const handleSendCode = (e: React.FormEvent) => {
     e.preventDefault();
-    const nameValidation = NameSchema.safeParse(name);
-    const dogNameValidation = DogNameSchema.safeParse(dogName);
-    const emailValidation = EmailSchema.safeParse(email);
+    const phoneValidation = PhoneSchema.safeParse(phoneNumber);
 
-    if (!nameValidation.success || !dogNameValidation.success || !emailValidation.success) {
-      let errorMessages = [];
-      if (!nameValidation.success) errorMessages.push(nameValidation.error.flatten().formErrors[0]);
-      if (!dogNameValidation.success) errorMessages.push(dogNameValidation.error.flatten().formErrors[0]);
-      if (!emailValidation.success) errorMessages.push(emailValidation.error.flatten().formErrors[0]);
-      setAuthState({ status: 'error', message: errorMessages.join(' ') });
+    if (!phoneValidation.success) {
+      setAuthState({ status: 'error', message: phoneValidation.error.flatten().formErrors[0] });
       return;
     }
     
     startTransition(async () => {
-      const actionCodeSettings = {
-        url: `${window.location.origin}/login`,
-        handleCodeInApp: true,
-      };
-
+      setAuthState({ status: 'idle', message: '' });
       try {
-        if (!auth) {
+        if (!auth || !window.recaptchaVerifier) {
           throw new Error("Błąd inicjalizacji Firebase. Spróbuj ponownie za chwilę.");
         }
-        await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-
-        const userData = { name, dogName };
-        window.localStorage.setItem('emailForSignIn', email);
-        window.localStorage.setItem('userDataForSignIn', JSON.stringify(userData));
-
-        setAuthState({
-          status: 'success',
-          message: `Wysłaliśmy link logujący na adres ${email}. Otwórz go na tym samym urządzeniu, aby dokończyć.`,
+        const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
+        window.confirmationResult = confirmationResult;
+        setStep('enterCode');
+        toast({
+          title: 'Kod wysłany!',
+          description: `Wysłaliśmy kod weryfikacyjny na numer ${phoneNumber}.`,
         });
-        setStep('emailSent');
       } catch (error: any) {
-        console.error('Error sending sign-in link:', error.code, error.message);
-        let userMessage = 'Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.';
-        if (error.code === 'auth/invalid-email') {
-          userMessage = 'Podany adres e-mail jest nieprawidłowy.';
+        console.error('Error sending phone code:', error);
+        let userMessage = 'Wystąpił nieoczekiwany błąd. Spróbuj ponownie.';
+        if (error.code === 'auth/invalid-phone-number') {
+          userMessage = 'Podany numer telefonu jest nieprawidłowy.';
+        } else if (error.code === 'auth/too-many-requests') {
+          userMessage = 'Wykryliśmy zbyt wiele prób. Spróbuj ponownie później.';
         }
         setAuthState({ status: 'error', message: userMessage });
       }
     });
   };
-  
-  if (step === 'emailSent') {
+
+  const handleVerifyCode = (e: React.FormEvent) => {
+    e.preventDefault();
+    const codeValidation = CodeSchema.safeParse(code);
+
+    if (!codeValidation.success) {
+      setAuthState({ status: 'error', message: codeValidation.error.flatten().formErrors[0] });
+      return;
+    }
+    
+    startTransition(async () => {
+      setAuthState({ status: 'idle', message: '' });
+      try {
+        if (!window.confirmationResult) {
+          throw new Error('Brak wyniku potwierdzenia. Spróbuj wysłać kod ponownie.');
+        }
+        const userCredential: UserCredential = await window.confirmationResult.confirm(code);
+        const user = userCredential.user;
+
+        if (firestore) {
+          const userRef = doc(firestore, 'users', user.uid);
+          const userData = {
+            phoneNumber: user.phoneNumber,
+            createdAt: serverTimestamp(),
+          };
+          await setDoc(userRef, userData, { merge: true }).catch(error => {
+            errorEmitter.emit('permission-error', new FirestorePermissionError({
+              path: userRef.path,
+              operation: 'write',
+              requestResourceData: userData
+            }));
+            throw error;
+          });
+        }
+        
+        toast({
+          title: 'Witaj w stadzie!',
+          description: 'Logowanie zakończone pomyślnie.',
+        });
+        router.push('/');
+
+      } catch (error: any) {
+        console.error('Error verifying code:', error);
+        let userMessage = 'Wystąpił nieoczekiwany błąd. Spróbuj ponownie.';
+        if (error.code === 'auth/invalid-verification-code') {
+          userMessage = 'Podany kod jest nieprawidłowy.';
+        } else if (error.code === 'auth/code-expired') {
+            userMessage = 'Kod weryfikacyjny wygasł. Poproś o nowy.';
+        }
+        setAuthState({ status: 'error', message: userMessage });
+      }
+    });
+  };
+
+  if (step === 'enterPhone') {
     return (
-      <Card className="border-green-500/50 bg-green-500/10">
-        <CardHeader className="items-center text-center">
-          <CheckCircle className="h-16 w-16 text-green-600" />
-          <CardTitle className="text-2xl text-green-800 dark:text-green-300">Sprawdź swoją skrzynkę!</CardTitle>
-          <CardDescription className="text-green-700 dark:text-green-400">
-            {authState.message}
-          </CardDescription>
-        </CardHeader>
+      <Card>
+        <form onSubmit={handleSendCode}>
+          <CardHeader>
+            <CardTitle>Logowanie numerem telefonu</CardTitle>
+            <CardDescription>Podaj swój numer telefonu, a my wyślemy Ci kod weryfikacyjny SMS.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="phone">Numer telefonu</Label>
+              <Input id="phone" name="phone" type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} placeholder="+48 123 456 789" required disabled={isPending} />
+            </div>
+          </CardContent>
+          <CardFooter className="flex-col items-stretch gap-4">
+            <Button type="submit" disabled={isPending}>
+              {isPending ? <Loader2 className="mr-2 animate-spin" /> : <Phone className="mr-2" />}
+              {isPending ? 'Wysyłanie...' : 'Wyślij kod'}
+            </Button>
+            {authState.status === 'error' && authState.message && (
+              <div className="flex items-center gap-2 text-sm text-destructive">
+                <AlertTriangle className="h-4 w-4" />
+                {authState.message}
+              </div>
+            )}
+          </CardFooter>
+        </form>
       </Card>
     );
   }
 
-  return (
+  if (step === 'enterCode') {
+     return (
       <Card>
-        <CardHeader>
-            <CardTitle>Utwórz konto lub zaloguj się</CardTitle>
-            <CardDescription>Dołącz do stada, aby w pełni korzystać z możliwości Dieta Nero.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-            <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isGooglePending || isPending}>
-                {isGooglePending ? <Loader2 className="mr-2 animate-spin" /> : <GoogleIcon />}
-                {isGooglePending ? 'Logowanie...' : 'Kontynuuj z Google'}
-            </Button>
-            <div className="relative">
-                <Separator />
-                <span className="absolute left-1/2 -translate-x-1/2 top-[-0.7rem] bg-card px-2 text-sm text-muted-foreground">LUB</span>
+        <form onSubmit={handleVerifyCode}>
+          <CardHeader>
+            <CardTitle>Wprowadź kod weryfikacyjny</CardTitle>
+            <CardDescription>Wpisz 6-cyfrowy kod, który wysłaliśmy na numer {phoneNumber}.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="code">Kod weryfikacyjny</Label>
+              <Input id="code" name="code" type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder="123456" required disabled={isPending} maxLength={6} />
             </div>
-        </CardContent>
-        <form onSubmit={handleSendSignInLink}>
-            <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Twoje imię</Label>
-                  <Input id="name" name="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="np. Anna" required disabled={isPending || isGooglePending} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="dogName">Imię psa</Label>
-                  <Input id="dogName" name="dogName" value={dogName} onChange={(e) => setDogName(e.target.value)} placeholder="np. Nero" required disabled={isPending || isGooglePending}/>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">E-mail</Label>
-                  <Input id="email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="np. anna@example.com" required disabled={isPending || isGooglePending} />
-                </div>
-            </CardContent>
-            <CardFooter className="flex-col items-stretch gap-4">
-                <Button type="submit" disabled={isPending || isGooglePending}>
-                    {isPending ? <Loader2 className="mr-2 animate-spin" /> : <Mail className="mr-2" />}
-                    {isPending ? 'Wysyłanie...' : 'Wyślij link do logowania'}
-                </Button>
-                {authState.status === 'error' && (
-                    <div className="flex items-center gap-2 text-sm text-destructive">
-                        <AlertTriangle className="h-4 w-4" />
-                        {authState.message}
-                    </div>
-                )}
-            </CardFooter>
+          </CardContent>
+          <CardFooter className="flex-col items-stretch gap-4">
+            <Button type="submit" disabled={isPending}>
+              {isPending ? <Loader2 className="mr-2 animate-spin" /> : <MessageSquareCode className="mr-2" />}
+              {isPending ? 'Weryfikowanie...' : 'Zaloguj się'}
+            </Button>
+             <Button variant="link" size="sm" onClick={() => { setStep('enterPhone'); setAuthState({status: 'idle', message: ''}); setCode(''); }} disabled={isPending}>
+                Wpisano zły numer? Wróć
+            </Button>
+            {authState.status === 'error' && authState.message && (
+              <div className="flex items-center gap-2 text-sm text-destructive">
+                <AlertTriangle className="h-4 w-4" />
+                {authState.message}
+              </div>
+            )}
+          </CardFooter>
         </form>
       </Card>
-  );
+    );
+  }
+
+  return null;
 }

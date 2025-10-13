@@ -99,7 +99,8 @@
       "password",
       "anonymous",
       "emailLink",
-      "google.com"
+      "google.com",
+      "phone"
     ]
   },
   "firestore": {
