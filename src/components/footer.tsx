@@ -46,6 +46,51 @@ export function Footer() {
     <footer className="bg-card border-t mt-auto">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
+        {/* Recommended by Nero Section */}
+        <Collapsible open={isRecsOpen} onOpenChange={setIsRecsOpen} className='mb-4'>
+          <div className="text-center">
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" className="text-lg font-headline text-primary hover:bg-accent/20 transition-all p-4 rounded-lg group">
+                <Award className="w-6 h-6 mr-3 text-accent group-hover:scale-110 transition-transform" />
+                <span className='group-hover:text-foreground'>Polecane przez Nero</span>
+                 <ChevronDown className={cn("ml-2 h-5 w-5 transition-transform duration-300", isRecsOpen && "rotate-180")} />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+          <CollapsibleContent className="mt-4">
+              <div className="flex flex-wrap items-stretch justify-center gap-4 text-center">
+                {recommendations.map((rec) => (
+                  <Link 
+                    key={rec.name}
+                    href={rec.link}
+                    target={rec.link.startsWith('http') ? '_blank' : '_self'}
+                    rel="noopener noreferrer"
+                     className="flex flex-col items-center justify-between p-4 border rounded-lg bg-background/50 w-40 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
+                  >
+                     <div className='relative w-full h-16'>
+                        <img
+                          src={rec.logoUrl}
+                          alt={`Logo ${rec.name}`}
+                          className="absolute inset-0 w-full h-full object-contain"
+                          loading="lazy"
+                        />
+                     </div>
+                    <span className="text-xs font-semibold text-muted-foreground mt-2 pt-2 border-t w-full group-hover:text-primary transition-colors">{rec.name}</span>
+                  </Link>
+                ))}
+                 {/* CTA for advertising */}
+                <Link href="/contact" className="flex flex-col items-center justify-center p-4 border border-dashed border-accent/50 rounded-lg bg-accent/10 w-40 hover:bg-accent/20 hover:border-accent transition-colors group">
+                    <BadgeDollarSign className="w-8 h-8 text-accent mb-2 transition-transform group-hover:scale-110" />
+                    <span className="text-sm text-center font-semibold text-accent/80 group-hover:text-accent">Twój produkt tutaj?</span>
+                </Link>
+                <Link href="/contact" className="flex flex-col items-center justify-center p-4 border border-dashed border-accent/50 rounded-lg bg-accent/10 w-40 hover:bg-accent/20 hover:border-accent transition-colors group">
+                    <BadgeDollarSign className="w-8 h-8 text-accent mb-2 transition-transform group-hover:scale-110" />
+                    <span className="text-sm text-center font-semibold text-accent/80 group-hover:text-accent">Twoja firma tutaj?</span>
+                </Link>
+              </div>
+          </CollapsibleContent>
+        </Collapsible>
+
         {/* Organizations Section */}
         <Collapsible open={isOrgsOpen} onOpenChange={setIsOrgsOpen} className='mb-8'>
           <div className="text-center">
@@ -65,9 +110,9 @@ export function Footer() {
                     href={org.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex flex-col items-center justify-start p-4 border rounded-lg bg-background/50 h-32 w-40 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
+                    className="flex flex-col items-center justify-between p-4 border rounded-lg bg-background/50 w-40 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
                   >
-                     <div className='relative w-full flex-grow'>
+                     <div className='relative w-full h-16'>
                         <img
                           src={org.logoUrl}
                           alt={`Logo ${org.name}`}
@@ -82,50 +127,6 @@ export function Footer() {
           </CollapsibleContent>
         </Collapsible>
         
-        {/* Recommended by Nero Section */}
-        <Collapsible open={isRecsOpen} onOpenChange={setIsRecsOpen} className='mb-8'>
-          <div className="text-center">
-            <CollapsibleTrigger asChild>
-              <Button variant="ghost" className="text-lg font-headline text-primary hover:bg-accent/20 transition-all p-4 rounded-lg group">
-                <Award className="w-6 h-6 mr-3 text-accent group-hover:scale-110 transition-transform" />
-                <span className='group-hover:text-foreground'>Polecane przez Nero</span>
-                 <ChevronDown className={cn("ml-2 h-5 w-5 transition-transform duration-300", isRecsOpen && "rotate-180")} />
-              </Button>
-            </CollapsibleTrigger>
-          </div>
-          <CollapsibleContent className="mt-4">
-              <div className="flex flex-wrap items-stretch justify-center gap-4 text-center">
-                {recommendations.map((rec) => (
-                  <Link 
-                    key={rec.name}
-                    href={rec.link}
-                    target={rec.link.startsWith('http') ? '_blank' : '_self'}
-                    rel="noopener noreferrer"
-                     className="flex flex-col items-center justify-start p-4 border rounded-lg bg-background/50 h-32 w-40 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
-                  >
-                     <div className='relative w-full flex-grow'>
-                        <img
-                          src={rec.logoUrl}
-                          alt={`Logo ${rec.name}`}
-                          className="absolute inset-0 w-full h-full object-contain"
-                          loading="lazy"
-                        />
-                     </div>
-                    <span className="text-xs font-semibold text-muted-foreground mt-2 pt-2 border-t w-full group-hover:text-primary transition-colors">{rec.name}</span>
-                  </Link>
-                ))}
-                 {/* CTA for advertising */}
-                <Link href="/contact" className="flex flex-col items-center justify-center p-4 border border-dashed border-accent/50 rounded-lg bg-accent/10 h-32 w-40 hover:bg-accent/20 hover:border-accent transition-colors group">
-                    <BadgeDollarSign className="w-8 h-8 text-accent mb-2 transition-transform group-hover:scale-110" />
-                    <span className="text-sm font-semibold text-accent/80 group-hover:text-accent">Twój produkt tutaj?</span>
-                </Link>
-                <Link href="/contact" className="flex flex-col items-center justify-center p-4 border border-dashed border-accent/50 rounded-lg bg-accent/10 h-32 w-40 hover:bg-accent/20 hover:border-accent transition-colors group">
-                    <BadgeDollarSign className="w-8 h-8 text-accent mb-2 transition-transform group-hover:scale-110" />
-                    <span className="text-sm font-semibold text-accent/80 group-hover:text-accent">Twoja firma tutaj?</span>
-                </Link>
-              </div>
-          </CollapsibleContent>
-        </Collapsible>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left mt-16">
           {/* About Section */}
