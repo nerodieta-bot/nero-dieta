@@ -55,16 +55,16 @@ export function Footer() {
                     href={rec.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex flex-col items-center justify-center p-4 border rounded-lg bg-background/50 hover:bg-accent/10 hover:border-accent/50 transition-colors group h-32"
+                    className="flex flex-col items-center justify-center p-4 border rounded-lg bg-background/50 h-32 hover:bg-accent/10 hover:border-accent/50 transition-colors group"
                   >
-                     <div className="relative w-32 h-16">
-                        <Image
-                            src={rec.logoUrl}
-                            alt={`Logo ${rec.name}`}
-                            fill
-                            className='object-contain'
-                        />
-                     </div>
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={rec.logoUrl}
+                        alt={`Logo ${rec.name}`}
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
                   </Link>
                 ))}
                  {/* CTA for advertising */}
