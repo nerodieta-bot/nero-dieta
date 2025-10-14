@@ -25,9 +25,15 @@ export default function Home() {
         const sortedIngredients = [...ingredients].sort((a, b) => a.name.localeCompare(b.name));
         setIngredientsToShow(sortedIngredients);
       } else {
-        // Niezalogowany użytkownik widzi 10 losowych składników
-        const shuffled = [...ingredients].sort(() => 0.5 - Math.random());
-        setIngredientsToShow(shuffled.slice(0, 10));
+        // Niezalogowany użytkownik widzi 4 bezpieczne, 4 umiarkowane i 4 zakazane
+        const shuffle = (arr: typeof ingredients) => [...arr].sort(() => 0.5 - Math.random());
+
+        const safe = shuffle(ingredients.filter(i => i.status === 'safe')).slice(0, 4);
+        const warning = shuffle(ingredients.filter(i => i.status === 'warning')).slice(0, 4);
+        const danger = shuffle(ingredients.filter(i => i.status === 'danger')).slice(0, 4);
+        
+        const combined = shuffle([...safe, ...warning, ...danger]);
+        setIngredientsToShow(combined);
       }
     }
   }, [user, isClient]);
