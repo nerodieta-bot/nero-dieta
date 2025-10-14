@@ -1,4 +1,4 @@
-import { initializeApp, getApps, App } from 'firebase-admin/app';
+import { initializeApp, getApps, App, cert } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
 import { credential } from 'firebase-admin';
@@ -11,19 +11,15 @@ function initializeAdminApp(): { app: App; auth: ReturnType<typeof getAuth>; fir
     const app = apps[0];
     return { app, auth: getAuth(app), firestore: getFirestore(app) };
   }
-
-  // This environment variable is automatically set by Firebase App Hosting.
-  const serviceAccountId = process.env.FIREBASE_SERVICE_ACCOUNT_ID;
-
-  if (!serviceAccountId) {
-    throw new Error(
-      'FIREBASE_SERVICE_ACCOUNT_ID environment variable is not set. ' +
-      'This is required for Firebase Admin SDK initialization on the server.'
-    );
-  }
+  
+  // In a deployed App Hosting environment, the GOOGLE_APPLICATION_CREDENTIALS is not set,
+  // but default credentials are still available.
+  const useDefaultCredentials = !process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
   const app = initializeApp({
-    credential: credential.applicationDefault(),
+    credential: useDefaultCredentials 
+      ? credential.applicationDefault() 
+      : cert(process.env.GOOGLE_APPLICATION_CREDENTIALS!),
     databaseURL: `https://${process.env.GCLOUD_PROJECT}.firebaseio.com`,
     projectId: process.env.GCLOUD_PROJECT,
     storageBucket: `${process.env.GCLOUD_PROJECT}.appspot.com`,
