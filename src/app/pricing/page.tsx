@@ -22,10 +22,10 @@ const plans = [
     },
     {
         name: "Premium",
-        price: "19 zł",
-        annualPrice: "199 zł",
+        price: "9,99 zł",
+        annualPrice: "99 zł",
         priceDescription: "miesięcznie",
-        annualPriceDescription: "rocznie (oszczędzasz 2 miesiące!)",
+        annualPriceDescription: "rocznie (oszczędzasz ~2 miesiące!)",
         description: "Pełna moc Nero bez żadnych ograniczeń. Dla prawdziwych entuzjastów.",
         features: [
             "Wszystko z planu Starter",
@@ -40,7 +40,7 @@ const plans = [
     },
     {
         name: "Hodowca / Biznes",
-        price: "od 99 zł",
+        price: "od 49 zł",
         priceDescription: "miesięcznie",
         description: "Dedykowane rozwiązania dla profesjonalistów i biznesu.",
         features: [
@@ -105,7 +105,7 @@ export default function PricingPage() {
                             </CardContent>
                             <CardFooter>
                                 <Button asChild className={cn("w-full", !plan.isFeatured && "variant-outline")} size="lg">
-                                    <Link href={plan.name === "Starter" ? "/" : "/contact"}>{plan.buttonText}</Link>
+                                    <Link href={plan.name === "Hodowca / Biznes" ? "/contact" : plan.name === "Premium" ? "/login" : "/"}>{plan.buttonText}</Link>
                                 </Button>
                             </CardFooter>
                         </Card>
