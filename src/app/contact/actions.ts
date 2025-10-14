@@ -19,7 +19,6 @@ export type ContactFormState = {
   success?: boolean;
 };
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const adminEmail = 'admin@nero-dieta.ch';
 
 
@@ -44,6 +43,11 @@ export async function sendContactMessageAction(
   const { name, email, message } = validatedFields.data;
 
   try {
+    if (!process.env.RESEND_API_KEY) {
+        throw new Error("Klucz API dla Resend nie jest skonfigurowany.");
+    }
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
     // Send email notification to admin
     await resend.emails.send({
         from: 'Dieta Nero <noreply@nero-dieta.ch>',
