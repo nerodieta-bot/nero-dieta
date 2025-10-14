@@ -10,7 +10,7 @@ import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useFirestore } from '@/firebase';
 import { doc } from 'firebase/firestore';
-import { updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { setDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { z } from 'zod';
 
 interface ProfileFormProps {
@@ -66,7 +66,17 @@ export function ProfileForm({ user, userProfile }: ProfileFormProps) {
     
     try {
       const userRef = doc(firestore, 'users', user.uid);
-      updateDocumentNonBlocking(userRef, validatedFields.data);
+      const dataToUpdate: any = {
+        ...validatedFields.data,
+      };
+
+      if (userProfile?.mealPlanGenerations === undefined) {
+        dataToUpdate.mealPlanGenerations = 0;
+      }
+
+      // Use set with merge to create or update
+      setDocumentNonBlocking(userRef, dataToUpdate, { merge: true });
+
 
       toast({
         title: 'Sukces!',

@@ -2,13 +2,23 @@
 
 import { MealPlanForm } from '@/components/meal-plan-form';
 import { Lightbulb, Loader2 } from 'lucide-react';
-import { useUser } from '@/firebase';
+import { useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { doc } from 'firebase/firestore';
+import { useDoc } from '@/firebase/firestore/use-doc';
 
 export default function MealPlanPage() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
+  const firestore = useFirestore();
+
+  const userDocRef = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [firestore, user]);
+
+  const { data: userProfile, isLoading: isProfileLoading } = useDoc(userDocRef);
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -16,7 +26,9 @@ export default function MealPlanPage() {
     }
   }, [user, isUserLoading, router]);
 
-  if (isUserLoading || !user) {
+  const isLoading = isUserLoading || isProfileLoading;
+
+  if (isLoading || !user) {
     return (
       <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
         <div className="flex flex-col items-center justify-center p-8 text-center">
@@ -27,6 +39,8 @@ export default function MealPlanPage() {
     );
   }
 
+  const generationsCount = userProfile?.mealPlanGenerations ?? 0;
+  const generationsLeft = Math.max(0, 2 - generationsCount);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -36,7 +50,7 @@ export default function MealPlanPage() {
             <h1 className="text-3xl md:text-4xl font-bold font-headline text-primary mb-2">Kreator Posiłków</h1>
             <p className="text-muted-foreground text-lg">Wygeneruj zbilansowany plan żywieniowy dla swojego psa z pomocą Nero.</p>
         </div>
-        <MealPlanForm />
+        <MealPlanForm generationsLeft={generationsLeft} />
       </div>
     </div>
   );

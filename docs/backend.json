@@ -136,8 +136,12 @@
           "description": "Display name of the user."
         },
         "dogName": {
-            "type": "string",
-            "description": "Name of the user's dog."
+          "type": "string",
+          "description": "Name of the user's dog."
+        },
+        "mealPlanGenerations": {
+          "type": "number",
+          "description": "The number of times the user has generated a meal plan."
         }
       },
       "required": [
