@@ -168,7 +168,12 @@ export default function PricingPage() {
 
         try {
             if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
-                throw new Error('Klucz publiczny Stripe nie jest skonfigurowany.');
+                 toast({
+                    variant: 'destructive',
+                    title: 'Błąd konfiguracji',
+                    description: 'Płatności są chwilowo niedostępne. Spróbuj ponownie później.',
+                });
+                return;
             }
             
             const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
