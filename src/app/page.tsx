@@ -3,16 +3,26 @@
 import { HeroSection } from '@/components/hero-section';
 import { IngredientGrid } from '@/components/ingredient-grid';
 import { ingredients } from '@/app/data/ingredients';
-import { useUser } from '@/firebase';
+import { useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Loader2, Unlock } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { doc } from 'firebase/firestore';
+import { useDoc } from '@/firebase/firestore/use-doc';
 
 export default function Home() {
   const { user, isUserLoading } = useUser();
+  const firestore = useFirestore();
   const [ingredientsToShow, setIngredientsToShow] = useState<typeof ingredients>([]);
   const [isClient, setIsClient] = useState(false);
+
+  const userDocRef = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [firestore, user]);
+
+  const { data: userProfile, isLoading: isProfileLoading } = useDoc(userDocRef);
 
   useEffect(() => {
     setIsClient(true);
@@ -21,11 +31,11 @@ export default function Home() {
   useEffect(() => {
     if (isClient) {
       if (user) {
-        // Zalogowany użytkownik widzi wszystko, posortowane
+        // Logged-in user sees everything, sorted
         const sortedIngredients = [...ingredients].sort((a, b) => a.name.localeCompare(b.name));
         setIngredientsToShow(sortedIngredients);
       } else {
-        // Niezalogowany użytkownik widzi 4 bezpieczne, 4 umiarkowane i 4 zakazane
+        // Not-logged-in user sees 4 safe, 4 moderate, and 4 forbidden
         const shuffle = (arr: typeof ingredients) => [...arr].sort(() => 0.5 - Math.random());
 
         const safe = shuffle(ingredients.filter(i => i.status === 'safe')).slice(0, 4);
@@ -38,7 +48,9 @@ export default function Home() {
     }
   }, [user, isClient]);
 
-  if (isUserLoading || !isClient) {
+  const isLoading = isUserLoading || (user && isProfileLoading);
+
+  if (isLoading || !isClient) {
      return (
       <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
         <div className="flex flex-col items-center justify-center p-8 text-center">
@@ -48,11 +60,15 @@ export default function Home() {
       </div>
     );
   }
-
+  
   return (
     <div className="container mx-auto px-4 py-8">
       <HeroSection />
-      <IngredientGrid ingredients={ingredientsToShow} isUserLoggedIn={!!user} />
+      <IngredientGrid 
+        ingredients={ingredientsToShow} 
+        isUserLoggedIn={!!user}
+        userProfile={userProfile}
+      />
 
       {!user && (
         <div className="mt-12 text-center bg-card border rounded-lg p-8 max-w-3xl mx-auto">

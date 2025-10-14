@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { AlertCircle, Link as LinkIcon, Home } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { incrementIngredientViewCount } from '@/app/actions/user-actions';
 
 export async function generateStaticParams() {
   return ingredients.map((ingredient) => ({
@@ -31,7 +32,10 @@ const statusConfig = {
   },
 };
 
-export default function IngredientPage({ params }: { params: { slug: string } }) {
+export default async function IngredientPage({ params }: { params: { slug: string } }) {
+  // This is a server component, so we can call server actions here
+  await incrementIngredientViewCount();
+  
   const ingredient = ingredients.find((p) => p.slug === params.slug);
 
   if (!ingredient) {
