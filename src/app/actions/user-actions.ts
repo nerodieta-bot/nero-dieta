@@ -4,8 +4,6 @@ import { cookies } from 'next/headers';
 import { initializeAdminApp } from '@/firebase/admin';
 import { FieldValue } from 'firebase-admin/firestore';
 
-const { auth, firestore } = initializeAdminApp();
-
 /**
  * Increments the ingredientViewCount for the currently logged-in user.
  * This is a server action and should be called from server components or routes.
@@ -17,6 +15,9 @@ export async function incrementIngredientViewCount() {
     if (!sessionCookie) {
       return;
     }
+    
+    // Initialize admin app inside the function to avoid issues in different environments
+    const { auth, firestore } = initializeAdminApp();
     
     const decodedToken = await auth.verifySessionCookie(sessionCookie, true);
     const userId = decodedToken.uid;
