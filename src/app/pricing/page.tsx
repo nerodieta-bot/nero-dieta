@@ -65,27 +65,67 @@ const plans = [
 const faqItems = [
     {
         question: "Co się stanie, gdy wykorzystam darmowe limity w planie Starter?",
-        answer: "Po wykorzystaniu darmowych limitów (5 odsłon składników, 3 generacje planów lub 5 skanów), dane funkcje zostaną tymczasowo zablokowane do czasu odnowienia limitu lub przejścia na plan Premium. Nadal będziesz mógł/mogła zgłaszać nowe składniki."
+        answer: "Po wykorzystaniu limitów (np. 5 odsłon składników lub 3 generacje planów), funkcje te zostaną tymczasowo zablokowane. Zawsze będziesz mieć dostęp do podstawowych informacji i możliwości zgłaszania nowych składników. Aby odzyskać pełny dostęp, wystarczy przejść na plan Premium."
     },
     {
-        question: "Czy płatności są bezpieczne?",
-        answer: "Oczywiście. Wkrótce zintegrujemy system płatności Stripe, światowego lidera w dziedzinie bezpiecznych transakcji online. Dane Twojej karty nigdy nie trafiają na nasze serwery, a cały proces jest szyfrowany i chroniony zgodnie z najwyższymi standardami."
+        question: "Jak mogę dodać składnik, którego nie ma w bazie?",
+        answer: "To proste! Przejdź do zakładki 'Zgłoś składnik' w menu. Wypełnij krótki formularz, a nasz zespół (i osobiście Nero) zweryfikuje Twoje zgłoszenie. Dzięki Tobie nasza baza staje się coraz lepsza! To praca zespołowa naszego stada."
+    },
+    {
+        question: "Czy muszę podawać dane mojego psa w profilu?",
+        answer: "Nie jest to obowiązkowe, ale bardzo to polecamy! W przyszłości planujemy wprowadzić funkcje, które będą wykorzystywać te dane (np. wagę czy wiek) do jeszcze lepszej personalizacji rekomendacji i planów żywieniowych. Twoje dane są u nas bezpieczne."
+    },
+    {
+        question: "Do czego służą 'Polecane przez Nero' w stopce strony?",
+        answer: "To specjalne miejsce, gdzie Nero dzieli się swoimi odkryciami – od sprawdzonych hodowli, przez ulubione produkty, po partnerów, których cenimy. To nasz sposób na promowanie jakości i budowanie społeczności wokół zaufanych marek."
+    },
+    {
+        question: "Czy aplikacja działa na telefonie i komputerze?",
+        answer: "Oczywiście! Dieta Nero została zaprojektowana tak, aby działać płynnie na każdym urządzeniu – od smartfonów, przez tablety, po komputery stacjonarne. Możesz sprawdzać składniki na zakupach i planować posiłki w domu."
+    },
+    {
+        question: "Czym różni się plan miesięczny Premium od rocznego?",
+        answer: "Oba plany dają Ci pełen, nielimitowany dostęp do wszystkich funkcji. Różnica leży w cenie i wygodzie. Wybierając plan roczny, płacisz raz i oszczędzasz równowartość około dwóch miesięcy subskrypcji. To najlepsza opcja dla zaangażowanych psich opiekunów!"
+    },
+    {
+        question: "Jakie macie plany na rozwój aplikacji?",
+        answer: "Mamy wielkie plany! Pracujemy nad modułem śledzenia zdrowia, bardziej zaawansowaną personalizacją, alertami o szkodliwych produktach i integracją z kalendarzem. Subskrypcja Premium to bezpośrednie wsparcie naszego rozwoju i gwarancja, że będziesz pierwszy/pierwsza, aby przetestować nowości."
     },
     {
         question: "Czy mogę zrezygnować z subskrypcji w dowolnym momencie?",
         answer: "Tak. Subskrypcją można zarządzać z poziomu panelu użytkownika. Po anulowaniu będziesz mieć dostęp do funkcji Premium do końca opłaconego okresu rozliczeniowego."
     },
     {
-        question: "Czym różni się Kreator Posiłków od Skanera Etykiet?",
-        answer: "Kreator Posiłków generuje kompletne, zbilansowane przepisy na podstawie podanych przez Ciebie składników. Skaner Etykiet służy do szybkiej analizy gotowych produktów – robisz zdjęcie składu karmy, a Nero ocenia go pod kątem bezpieczeństwa dla Twojego psa."
+        question: "Czy to jednorazowa opłata, czy subskrypcja?",
+        answer: "Plan Premium to subskrypcja odnawiana miesięcznie lub rocznie, w zależności od wybranej opcji. Daje Ci to stały dostęp do wszystkich funkcji i aktualizacji. Plan roczny jest bardziej opłacalny i pozwala zaoszczędzić."
+    },
+    {
+        question: "Czy Skaner Etykiet jest w 100% dokładny?",
+        answer: "Skaner wykorzystuje zaawansowaną technologię do odczytywania tekstu ze zdjęć. Działa najlepiej na wyraźnych, dobrze oświetlonych etykietach. Pamiętaj, że to narzędzie pomocnicze – jeśli masz wątpliwości co do odczytu, zawsze porównaj wynik z listą składników na opakowaniu."
     },
     {
         question: "Dlaczego mam ufać informacjom w aplikacji?",
         answer: "Każdy składnik w naszej bazie jest starannie weryfikowany na podstawie wielu wiarygodnych, międzynarodowych źródeł, takich jak publikacje American Kennel Club (AKC), ASPCA, czy amerykańskiej Agencji Żywności i Leków (FDA). Co więcej, na stronie szczegółów każdego składnika znajdziesz bezpośredni, klikalny link do głównego źródła, z którego pochodzą informacje. Dzięki temu masz pełną przejrzystość i możesz samodzielnie zweryfikować dane. Pamiętaj jednak, że aplikacja ma charakter informacyjny i nie zastępuje porady lekarza weterynarii."
     },
+    {
+        question: "Pytanie od Nero: Czy jak kupię Premium, dostanę więcej smaczków?",
+        answer: "Nero macha ogonem i szczeka radośnie! 'Mój człowiek mówi, że każda subskrypcja wspiera moją misję i rozwój tej aplikacji. A jak on jest szczęśliwy, to... tak, prawdopodobieństwo smaczków rośnie! Kupując Premium, dołączasz do mojego elitarnego stada i pomagasz dbać o brzuszki wszystkich psów!'"
+    },
+    {
+        question: "Czym różni się Kreator Posiłków od Skanera Etykiet?",
+        answer: "Kreator Posiłków generuje kompletne, zbilansowane przepisy na podstawie podanych przez Ciebie składników. Skaner Etykiet służy do szybkiej analizy gotowych produktów – robisz zdjęcie składu karmy, a Nero ocenia go pod kątem bezpieczeństwa dla Twojego psa."
+    },
+    {
+        question: "Czy moje dane są bezpieczne?",
+        answer: "Absolutnie. Bezpieczeństwo Twoich danych to dla nas priorytet. Korzystamy z bezpiecznego uwierzytelniania Firebase by Google i szyfrowanego połączenia SSL. Nigdy nie udostępniamy Twoich danych stronom trzecim. Więcej informacji znajdziesz w naszej Polityce Prywatności."
+    },
+    {
+        question: "Czy oferujecie zwroty za subskrypcję?",
+        answer: "Ze względu na cyfrowy charakter naszych usług, co do zasady nie oferujemy zwrotów. Jeśli jednak napotkasz problemy techniczne lub nie jesteś zadowolony/zadowolona z usługi, skontaktuj się z nami. Każdy przypadek rozpatrujemy indywidualnie."
+    },
      {
-        question: "Czy to jednorazowa opłata, czy subskrypcja?",
-        answer: "Plan Premium to subskrypcja odnawiana miesięcznie lub rocznie, w zależności od wybranej opcji. Daje Ci to stały dostęp do wszystkich funkcji i aktualizacji. Plan roczny jest bardziej opłacalny i pozwala zaoszczędzić."
+        question: "Czy płatności są bezpieczne?",
+        answer: "Oczywiście. Wkrótce zintegrujemy system płatności Stripe, światowego lidera w dziedzinie bezpiecznych transakcji online. Dane Twojej karty nigdy nie trafiają na nasze serwery, a cały proces jest szyfrowany i chroniony zgodnie z najwyższymi standardami."
     },
 ]
 
