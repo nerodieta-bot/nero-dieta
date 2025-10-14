@@ -94,28 +94,16 @@ export function LoginForm() {
 
    useEffect(() => {
     if (!auth || !recaptchaWrapperRef.current) return;
-    
-    // Tworzymy weryfikator tylko raz
+
     if (!recaptchaVerifierRef.current) {
         const verifier = new RecaptchaVerifier(auth, recaptchaWrapperRef.current, {
             'size': 'invisible',
             'callback': (response: any) => {
-                // reCAPTCHA solved, allow signInWithPhoneNumber.
+                // reCAPTCHA solved.
             },
-            'expired-callback': () => {
-                // Response expired. Ask user to solve reCAPTCHA again.
-            }
         });
         recaptchaVerifierRef.current = verifier;
     }
-
-    // Funkcja czyszcząca, która zostanie wywołana przy odmontowywaniu komponentu
-    return () => {
-        if (recaptchaVerifierRef.current) {
-            recaptchaVerifierRef.current.clear();
-            recaptchaVerifierRef.current = null;
-        }
-    };
   }, [auth]);
 
   async function handleSuccessfulLogin(userCredential: UserCredential) {
@@ -396,3 +384,5 @@ export function LoginForm() {
     </Card>
   );
 }
+
+    
