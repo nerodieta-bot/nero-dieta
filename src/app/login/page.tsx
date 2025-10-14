@@ -3,7 +3,7 @@
 import { useUser } from '@/firebase';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
-import { Loader2, PawPrint } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { LoginForm } from '@/components/login-form';
 
 export default function LoginPage() {
@@ -37,5 +37,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-    

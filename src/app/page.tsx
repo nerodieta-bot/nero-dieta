@@ -38,7 +38,8 @@ export default function Home() {
       } else {
         // Not-logged-in user sees a shuffled selection
         const shuffle = (arr: typeof ingredients) => [...arr].sort(() => 0.5 - Math.random());
-        setIngredientsToShow(shuffle(ingredients));
+        const guestViewableIngredients = ingredients.filter(i => i.status === 'safe' || i.status === 'warning');
+        setIngredientsToShow(shuffle(guestViewableIngredients).slice(0, 12));
       }
     }
   }, [user, isClient]);
@@ -65,7 +66,7 @@ export default function Home() {
         userProfile={userProfile}
       />
 
-      {!user && (
+      {!user && !isUserLoading && (
         <div className="mt-12 text-center bg-card border rounded-lg p-8 max-w-3xl mx-auto">
             <Unlock className="mx-auto w-12 h-12 text-accent mb-4" />
             <h2 className="text-2xl font-bold font-headline text-primary mb-2">To tylko przedsmak!</h2>
