@@ -186,7 +186,7 @@ export default function PricingPage() {
                     ))}
                 </div>
                 
-                <section className="mt-20">
+                <section id="faq" className="mt-20">
                     <header className="text-center mb-12">
                         <HelpCircle className="mx-auto w-12 h-12 text-accent mb-4" />
                         <h2 className="text-3xl md:text-4xl font-bold font-headline text-primary mb-4">
