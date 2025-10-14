@@ -1,9 +1,16 @@
 
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Check, Gem, Star } from "lucide-react";
+import { Check, Gem, Star, HelpCircle } from "lucide-react";
 import Link from "next/link";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
 
 const plans = [
     {
@@ -55,10 +62,37 @@ const plans = [
     }
 ]
 
+const faqItems = [
+    {
+        question: "Co się stanie, gdy wykorzystam darmowe limity w planie Starter?",
+        answer: "Po wykorzystaniu darmowych limitów (5 odsłon składników, 3 generacje planów lub 5 skanów), dane funkcje zostaną tymczasowo zablokowane do czasu odnowienia limitu lub przejścia na plan Premium. Nadal będziesz mógł/mogła zgłaszać nowe składniki."
+    },
+    {
+        question: "Czy płatności są bezpieczne?",
+        answer: "Oczywiście. Wkrótce zintegrujemy system płatności Stripe, światowego lidera w dziedzinie bezpiecznych transakcji online. Dane Twojej karty nigdy nie trafiają na nasze serwery, a cały proces jest szyfrowany i chroniony zgodnie z najwyższymi standardami."
+    },
+    {
+        question: "Czy mogę zrezygnować z subskrypcji w dowolnym momencie?",
+        answer: "Tak. Subskrypcją można zarządzać z poziomu panelu użytkownika. Po anulowaniu będziesz mieć dostęp do funkcji Premium do końca opłaconego okresu rozliczeniowego."
+    },
+    {
+        question: "Czym różni się Kreator Posiłków od Skanera Etykiet?",
+        answer: "Kreator Posiłków generuje kompletne, zbilansowane przepisy na podstawie podanych przez Ciebie składników. Skaner Etykiet służy do szybkiej analizy gotowych produktów – robisz zdjęcie składu karmy, a Nero ocenia go pod kątem bezpieczeństwa dla Twojego psa."
+    },
+    {
+        question: "Dlaczego mam ufać informacjom w aplikacji?",
+        answer: "Każdy składnik w naszej bazie jest weryfikowany na podstawie wielu wiarygodnych źródeł, takich jak publikacje AKC, ASPCA, FDA czy magazyny weterynaryjne. Treści generowane przez AI są oparte na tych danych, ale pamiętaj, że aplikacja ma charakter informacyjny i nie zastępuje porady lekarza weterynarii."
+    },
+     {
+        question: "Czy to jednorazowa opłata, czy subskrypcja?",
+        answer: "Plan Premium to subskrypcja odnawiana miesięcznie lub rocznie, w zależności od wybranej opcji. Daje Ci to stały dostęp do wszystkich funkcji i aktualizacji. Plan roczny jest bardziej opłacalny i pozwala zaoszczędzić."
+    },
+]
+
 export default function PricingPage() {
     return (
         <div className="container mx-auto px-4 py-12">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-5xl mx-auto">
                 <header className="text-center mb-12">
                     <Gem className="mx-auto w-12 h-12 text-accent mb-4" />
                     <h1 className="text-4xl md:text-5xl font-bold font-headline text-primary mb-4">
@@ -111,9 +145,32 @@ export default function PricingPage() {
                         </Card>
                     ))}
                 </div>
+                
+                <section className="mt-20">
+                    <header className="text-center mb-12">
+                        <HelpCircle className="mx-auto w-12 h-12 text-accent mb-4" />
+                        <h2 className="text-3xl md:text-4xl font-bold font-headline text-primary mb-4">
+                            Często Zadawane Pytania
+                        </h2>
+                        <p className="text-lg text-muted-foreground">Masz wątpliwości? Tutaj znajdziesz odpowiedzi.</p>
+                    </header>
+                    <Accordion type="single" collapsible className="w-full max-w-3xl mx-auto">
+                        {faqItems.map((item, index) => (
+                            <AccordionItem value={`item-${index + 1}`} key={index}>
+                                <AccordionTrigger className="text-lg text-left font-semibold hover:no-underline">
+                                    {item.question}
+                                </AccordionTrigger>
+                                <AccordionContent className='text-base text-muted-foreground'>
+                                    {item.answer}
+                                </AccordionContent>
+                            </AccordionItem>
+                        ))}
+                    </Accordion>
+                </section>
 
-                 <div className="text-center mt-12 text-sm text-muted-foreground">
-                    <p>Masz pytania? <Link href="/contact" className="underline hover:text-primary">Skontaktuj się z nami</Link>, chętnie pomożemy.</p>
+
+                 <div className="text-center mt-16 text-sm text-muted-foreground">
+                    <p>Nadal masz pytania? <Link href="/contact" className="underline hover:text-primary">Skontaktuj się z nami</Link>, chętnie pomożemy.</p>
                 </div>
             </div>
         </div>
