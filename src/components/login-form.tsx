@@ -93,11 +93,15 @@ export function LoginForm() {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!auth || recaptchaVerifierRef.current) {
+    if (!auth || !recaptchaWrapperRef.current) {
         return;
     }
 
-    const verifier = new RecaptchaVerifier(auth, recaptchaWrapperRef.current!, {
+    if (recaptchaVerifierRef.current) {
+        recaptchaVerifierRef.current.clear();
+    }
+
+    const verifier = new RecaptchaVerifier(auth, recaptchaWrapperRef.current, {
         'size': 'invisible',
         'callback': () => {},
         'expired-callback': () => {
@@ -106,9 +110,6 @@ export function LoginForm() {
     });
 
     recaptchaVerifierRef.current = verifier;
-
-    // It's important to render the verifier
-    verifier.render();
 
     return () => {
         verifier.clear();
