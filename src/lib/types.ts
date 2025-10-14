@@ -1,3 +1,4 @@
+
 export type IngredientStatus = 'safe' | 'warning' | 'danger';
 
 export interface Ingredient {

@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -46,7 +46,7 @@ const statusConfig = {
   },
   danger: {
     className: 'bg-status-danger dark:bg-status-danger/50 border-red-200 dark:border-red-800',
-    textColor: 'text-status-danger-foreground',
+textColor: 'text-status-danger-foreground',
   },
 };
 
@@ -59,12 +59,15 @@ export function IngredientCard({ ingredient }: IngredientCardProps) {
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    if (isUserLoading) return; // Do nothing while loading user state
+    if (isUserLoading) return;
 
     if (user) {
       router.push(`/skladnik/${ingredient.slug}`);
     } else {
-      const guestClicks = parseInt(sessionStorage.getItem('guestClicks') || '0', 10);
+      // Logic for guest users is now client-side only
+      const guestClicksStr = sessionStorage.getItem('guestClicks') || '0';
+      const guestClicks = parseInt(guestClicksStr, 10);
+      
       if (guestClicks < GUEST_CLICK_LIMIT) {
         sessionStorage.setItem('guestClicks', (guestClicks + 1).toString());
         router.push(`/skladnik/${ingredient.slug}`);
@@ -101,15 +104,15 @@ export function IngredientCard({ ingredient }: IngredientCardProps) {
           </CardContent>
           <CardFooter className="flex flex-col gap-4 pt-4 border-t border-black/10 dark:border-white/10 mt-auto">
              <div className="flex justify-center items-center text-accent w-full font-semibold">
-                {!user ? (
-                    <>
-                        <Lock className="h-4 w-4 mr-2"/>
-                        <span className="text-xs">Zaloguj się, by zobaczyć</span>
-                    </>
-                ) : (
+                {user ? (
                     <>
                         <span className="text-xs mr-2">Zobacz szczegóły</span>
                         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </>
+                ) : (
+                    <>
+                        <Lock className="h-4 w-4 mr-2"/>
+                        <span className="text-xs">Zobacz szczegóły</span>
                     </>
                 )}
             </div>
