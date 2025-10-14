@@ -9,9 +9,8 @@ const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days in milliseconds
  * Creates a session cookie for the authenticated user.
  */
 export async function POST(request: NextRequest) {
-  // Initialize Firebase Admin SDK inside the function
-  const {auth} = initializeAdminApp();
   try {
+    const {auth} = initializeAdminApp();
     const {idToken} = (await request.json()) as {idToken: string};
     if (!idToken) {
       return NextResponse.json({error: 'idToken is required'}, {status: 400});
