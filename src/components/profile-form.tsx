@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useActionState } from 'react';
 import type { User } from 'firebase/auth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,90 +8,35 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useFirestore } from '@/firebase';
-import { doc } from 'firebase/firestore';
-import { setDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { z } from 'zod';
+import { updateProfileDataAction, type ProfileFormState } from '@/app/profil/actions';
+import { useEffect } from 'react';
+
+
+const initialState: ProfileFormState = {
+  message: '',
+  success: false,
+};
 
 interface ProfileFormProps {
   user: User;
   userProfile: any; // The profile data from Firestore
 }
 
-const ProfileSchema = z.object({
-  ownerName: z.string().min(2, 'Imię musi mieć co najmniej 2 znaki.'),
-  dogName: z.string().min(2, 'Imię psa musi mieć co najmniej 2 znaki.'),
-});
 
 export function ProfileForm({ user, userProfile }: ProfileFormProps) {
   const { toast } = useToast();
-  const firestore = useFirestore();
-  const [isPending, setIsPending] = useState(false);
-  const [errors, setErrors] = useState<{ ownerName?: string; dogName?: string; }>({});
-
-
-  const handleUpdateProfile = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsPending(true);
-    setErrors({});
-    
-    const formData = new FormData(event.currentTarget);
-    const data = {
-        ownerName: formData.get('ownerName'),
-        dogName: formData.get('dogName'),
-    };
-
-    const validatedFields = ProfileSchema.safeParse(data);
-
-    if (!validatedFields.success) {
-        const flatErrors = validatedFields.error.flatten().fieldErrors;
-        setErrors({
-            ownerName: flatErrors.ownerName?.[0],
-            dogName: flatErrors.dogName?.[0],
+  const [state, formAction, isPending] = useActionState(updateProfileDataAction, initialState);
+  
+  useEffect(() => {
+    if(state.message) {
+        toast({
+            title: state.success ? 'Sukces!' : 'Błąd',
+            description: state.message,
+            variant: state.success ? 'default' : 'destructive',
         });
-        setIsPending(false);
-        return;
     }
+  }, [state, toast])
 
-
-    if (!firestore || !user) {
-      toast({
-        variant: 'destructive',
-        title: 'Błąd',
-        description: 'Brak autoryzacji lub połączenia z bazą danych.',
-      });
-      setIsPending(false);
-      return;
-    }
-    
-    try {
-      const userRef = doc(firestore, 'users', user.uid);
-      const dataToUpdate: any = {
-        ...validatedFields.data,
-      };
-
-      if (userProfile?.mealPlanGenerations === undefined) {
-        dataToUpdate.mealPlanGenerations = 0;
-      }
-
-      // Use set with merge to create or update
-      setDocumentNonBlocking(userRef, dataToUpdate, { merge: true });
-
-
-      toast({
-        title: 'Sukces!',
-        description: 'Twój profil został pomyślnie zaktualizowany!',
-      });
-    } catch (error) {
-       toast({
-        variant: 'destructive',
-        title: 'Błąd',
-        description: 'Wystąpił błąd podczas aktualizacji profilu.',
-      });
-    } finally {
-        setIsPending(false);
-    }
-  };
 
   return (
     <Card className="w-full">
@@ -99,7 +44,7 @@ export function ProfileForm({ user, userProfile }: ProfileFormProps) {
         <CardTitle>Twoje dane</CardTitle>
         <CardDescription>Uzupełnij informacje, aby w pełni korzystać z personalizacji w Dieta Nero.</CardDescription>
       </CardHeader>
-      <form onSubmit={handleUpdateProfile}>
+      <form action={formAction}>
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="email">Adres e-mail</Label>
@@ -109,12 +54,12 @@ export function ProfileForm({ user, userProfile }: ProfileFormProps) {
           <div className="space-y-2">
             <Label htmlFor="ownerName">Twoje imię</Label>
             <Input id="ownerName" name="ownerName" placeholder="np. Jan" defaultValue={userProfile?.ownerName || user.displayName || ''} />
-            {errors.ownerName && <p className="text-sm text-destructive">{errors.ownerName}</p>}
+            {state.errors?.ownerName && <p className="text-sm text-destructive">{state.errors.ownerName}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="dogName">Imię Twojego psa</Label>
             <Input id="dogName" name="dogName" placeholder="np. Nero" defaultValue={userProfile?.dogName || ''} />
-            {errors.dogName && <p className="text-sm text-destructive">{errors.dogName}</p>}
+            {state.errors?.dogName && <p className="text-sm text-destructive">{state.errors.dogName}</p>}
           </div>
         </CardContent>
         <CardFooter className="flex-col items-start gap-4">
