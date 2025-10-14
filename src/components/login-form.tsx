@@ -17,8 +17,6 @@ import { Label } from '@/components/ui/label';
 import { Loader2, AlertTriangle, Mail } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
 import { useToast } from '@/hooks/use-toast';
 import { 
   sendSignInLinkToEmail,
@@ -111,7 +109,7 @@ export function LoginForm() {
       setAuthState({ status: 'idle', message: '' });
       try {
         const actionCodeSettings = {
-          url: window.location.href, // Use current URL to preserve redirect param
+          url: window.location.href, // Use current URL to handle dynamic dev domains
           handleCodeInApp: true,
         };
         await sendSignInLinkToEmail(auth, validation.data.email, actionCodeSettings);
