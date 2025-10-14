@@ -109,7 +109,7 @@ export function LoginForm() {
       setAuthState({ status: 'idle', message: '' });
       try {
         const actionCodeSettings = {
-          url: window.location.href, // Use current URL to handle dynamic dev domains
+          url: window.location.href, // Use current location, not a hardcoded one
           handleCodeInApp: true,
         };
         await sendSignInLinkToEmail(auth, validation.data.email, actionCodeSettings);
