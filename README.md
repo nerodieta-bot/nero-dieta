@@ -1,6 +1,6 @@
-# Dieta Nero
+# Dieta Jedi
 
-This is a Next.js application for Dieta Nero, a dog nutrition guide.
+This is a Next.js application for Dieta Jedi, a dog nutrition guide.
 
 It allows users to:
 - Browse a database of dog-safe and unsafe ingredients.
