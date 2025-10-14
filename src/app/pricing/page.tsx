@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -11,8 +12,8 @@ const plans = [
         priceDescription: "na zawsze",
         description: "Idealny na początek, aby poznać podstawowe możliwości Dieta Nero.",
         features: [
-            "Dostęp do pełnej bazy składników",
-            "2 generacje planu posiłków AI",
+            "Limit 5 odsłon składników w bazie",
+            "3 generacje planu posiłków AI",
             "5 skanów etykiet miesięcznie",
             "Możliwość zgłaszania składników"
         ],

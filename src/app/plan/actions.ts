@@ -1,3 +1,4 @@
+
 'use server';
 import { generateDogMealPlan } from '@/ai/flows/generate-dog-meal-plan';
 import { z } from 'zod';
@@ -28,7 +29,7 @@ export type FormState = {
   };
 }
 
-const FREE_GENERATIONS_LIMIT = 2;
+const FREE_GENERATIONS_LIMIT = 3;
 
 export async function createMealPlanAction(
   prevState: FormState,
