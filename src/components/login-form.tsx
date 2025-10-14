@@ -30,7 +30,7 @@ import {
 } from 'firebase/auth';
 import { Separator } from './ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { setDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 
 const SignUpSchema = z
@@ -82,7 +82,6 @@ export function LoginForm() {
   
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   
-  // useRef is crucial here to persist the verifier instance across re-renders without causing them.
   const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
   const recaptchaWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -93,33 +92,46 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
 
-  // useEffect with an empty dependency array to ensure it runs ONLY ONCE.
   useEffect(() => {
     if (!auth || !recaptchaWrapperRef.current) return;
 
-    // Create the verifier instance only if it doesn't exist.
     if (!recaptchaVerifierRef.current) {
         recaptchaVerifierRef.current = new RecaptchaVerifier(auth, recaptchaWrapperRef.current, {
             'size': 'invisible',
-            'callback': () => { /* reCAPTCHA solved */ },
-            'expired-callback': () => { /* Response expired */ }
+            'callback': () => {},
+            'expired-callback': () => {}
         });
         recaptchaVerifierRef.current.render();
     }
     
-  }, [auth]); // Depends only on auth, which is stable.
+  }, [auth]);
 
   async function handleSuccessfulLogin(userCredential: UserCredential) {
     setIsPending(true);
     const user = userCredential.user;
     if (firestore) {
       const userRef = doc(firestore, 'users', user.uid);
-      const userData = {
-        email: user.email,
-        ownerName: user.displayName,
-        createdAt: serverTimestamp(),
-      };
-      setDocumentNonBlocking(userRef, userData, { merge: true });
+      
+      const isNewUser = userCredential.user.metadata.creationTime === userCredential.user.metadata.lastSignInTime;
+
+      if (isNewUser) {
+        const userData = {
+            email: user.email,
+            ownerName: user.displayName || '',
+            dogName: '',
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+        };
+        // Use setDoc for a new user
+        setDocumentNonBlocking(userRef, userData);
+      } else {
+         const userData = {
+            ownerName: user.displayName || '',
+            updatedAt: serverTimestamp(),
+        };
+        // Use updateDoc for an existing user to avoid overwriting fields
+        updateDocumentNonBlocking(userRef, userData);
+      }
     }
 
     const idToken = await user.getIdToken();
@@ -132,7 +144,6 @@ export function LoginForm() {
 
     const redirectUrl = searchParams.get('redirect') || '/';
     router.push(redirectUrl);
-    // No need to set isPending to false, as we are navigating away.
   }
   
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -180,7 +191,6 @@ export function LoginForm() {
                     return;
                 }
                 
-                // Use the persistent verifier from the ref.
                 const verifier = recaptchaVerifierRef.current;
                 if (!verifier) {
                     setError('reCAPTCHA nie jest gotowa. Odśwież stronę.');
@@ -241,7 +251,7 @@ export function LoginForm() {
       if (error.code !== 'auth/popup-closed-by-user') {
         setError('Nie udało się zalogować przez Google. Spróbuj ponownie.');
       }
-      setIsPending(false); // Only set pending to false on error
+      setIsPending(false); 
     }
   };
 

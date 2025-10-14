@@ -9,10 +9,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { setDocumentNonBlocking } from '@/firebase';
-import { doc, serverTimestamp } from 'firebase/firestore';
-import { useFirestore } from '@/firebase';
-
 
 const initialState: ProfileFormState = {
   message: '',
@@ -27,7 +23,6 @@ interface ProfileFormProps {
 export function ProfileForm({ user, userProfile }: ProfileFormProps) {
   const [state, formAction, isPending] = useActionState(updateProfileDataAction, initialState);
   const { toast } = useToast();
-  const firestore = useFirestore();
 
   useEffect(() => {
     if (state.success) {
@@ -43,20 +38,6 @@ export function ProfileForm({ user, userProfile }: ProfileFormProps) {
       });
     }
   }, [state, toast]);
-  
-  // This side-effect ensures that a user document is created if it doesn't exist
-  // without blocking the rendering of the form.
-  useEffect(() => {
-    if (user && firestore && !userProfile) {
-        const userRef = doc(firestore, 'users', user.uid);
-        const initialData = {
-            email: user.email,
-            createdAt: serverTimestamp(),
-        };
-        // Use a non-blocking write operation
-        setDocumentNonBlocking(userRef, initialData, { merge: true });
-    }
-  }, [user, firestore, userProfile]);
 
   return (
     <Card className="w-full">
