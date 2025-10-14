@@ -6,8 +6,6 @@ import { initializeAdminApp } from '@/firebase/admin';
 import { cookies } from 'next/headers';
 import { FieldValue } from 'firebase-admin/firestore';
 
-const { auth, firestore } = initializeAdminApp();
-
 const MealPlanSchema = z.object({
   dogWeight: z.coerce.number().min(0.5, "Waga musi być większa niż 0.5 kg."),
   dogAge: z.coerce.number().min(0, "Wiek nie może być ujemny."),
@@ -35,6 +33,8 @@ export async function createMealPlanAction(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
+
+  const { auth, firestore } = initializeAdminApp();
   const sessionCookie = cookies().get('__session')?.value;
   if (!sessionCookie) {
     return { ...prevState, message: 'Brak autoryzacji. Proszę się zalogować.' };

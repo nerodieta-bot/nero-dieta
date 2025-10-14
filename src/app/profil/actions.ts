@@ -1,13 +1,10 @@
 'use server';
 
 import { z } from 'zod';
-import { getAuth } from 'firebase-admin/auth';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { FieldValue } from 'firebase-admin/firestore';
 import { initializeAdminApp } from '@/firebase/admin';
 import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
-
-const { auth, firestore } = initializeAdminApp();
 
 const ProfileSchema = z.object({
   ownerName: z.string().min(2, 'Imię musi mieć co najmniej 2 znaki.'),
@@ -41,6 +38,7 @@ export async function updateProfileDataAction(
   }
 
   try {
+    const { auth, firestore } = initializeAdminApp();
     const sessionCookie = cookies().get('__session')?.value;
     if (!sessionCookie) {
       return {
