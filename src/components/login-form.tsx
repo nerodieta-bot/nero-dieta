@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, AlertTriangle, Mail, Phone, ArrowLeft, KeyRound } from 'lucide-react';
+import { Loader2, AlertTriangle, Mail, KeyRound } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { doc, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
@@ -23,9 +23,6 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-  type ConfirmationResult,
   type UserCredential,
 } from 'firebase/auth';
 import { Separator } from './ui/separator';
@@ -49,18 +46,7 @@ const SignInSchema = z.object({
   password: z.string().min(1, 'Hasło jest wymagane.'),
 });
 
-const PhoneSchema = z.object({
-    phone: z.string().regex(/^\+\d{1,3}\d{9,15}$/, 'Proszę podać poprawny numer telefonu z kodem kraju (np. +48123456789).')
-});
-
-const CodeSchema = z.object({
-    code: z.string().length(6, 'Kod musi mieć 6 cyfr.')
-})
-
-
-type AuthMode = 'email' | 'phone';
 type EmailMode = 'signin' | 'signup';
-type PhoneStep = 'enter_phone' | 'enter_code';
 
 async function createSessionCookie(idToken: string) {
   const response = await fetch('/api/auth/session', {
@@ -72,39 +58,15 @@ async function createSessionCookie(idToken: string) {
 }
 
 export function LoginForm() {
-  const [authMode, setAuthMode] = useState<AuthMode>('email');
   const [emailMode, setEmailMode] = useState<EmailMode>('signin');
-  const [phoneStep, setPhoneStep] = useState<PhoneStep>('enter_phone');
-  
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
-  const [infoMessage, setInfoMessage] = useState<string | null>(null);
   
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
-  
-  const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
-  const recaptchaWrapperRef = useRef<HTMLDivElement>(null);
-
-
   const auth = useAuth();
   const firestore = useFirestore();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-
-   useEffect(() => {
-    if (!auth || !recaptchaWrapperRef.current) return;
-
-    if (!recaptchaVerifierRef.current) {
-        const verifier = new RecaptchaVerifier(auth, recaptchaWrapperRef.current, {
-            'size': 'invisible',
-            'callback': (response: any) => {
-                // reCAPTCHA solved, allow signInWithPhoneNumber.
-            },
-        });
-        recaptchaVerifierRef.current = verifier;
-    }
-  }, [auth]);
 
   async function handleSuccessfulLogin(userCredential: UserCredential) {
     setIsPending(true);
@@ -147,7 +109,6 @@ export function LoginForm() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
-    setInfoMessage(null);
     setIsPending(true);
 
     if (!auth) {
@@ -160,63 +121,24 @@ export function LoginForm() {
     const data = Object.fromEntries(formData);
 
     try {
-        if (authMode === 'email') {
-            const schema = emailMode === 'signup' ? SignUpSchema : SignInSchema;
-            const validation = schema.safeParse(data);
-            
-            if (!validation.success) {
-                const errors = validation.error.flatten().fieldErrors;
-                const firstError = Object.values(errors)[0]?.[0];
-                setError(firstError || 'Popraw błędy w formularzu.');
-                setIsPending(false);
-                return;
-            }
-
-            let userCredential: UserCredential;
-            if (emailMode === 'signup') {
-                userCredential = await createUserWithEmailAndPassword(auth, validation.data.email, validation.data.password);
-            } else {
-                userCredential = await signInWithEmailAndPassword(auth, validation.data.email, (validation.data as z.infer<typeof SignInSchema>).password);
-            }
-            await handleSuccessfulLogin(userCredential);
-
-        } else if (authMode === 'phone') {
-            if (phoneStep === 'enter_phone') {
-                const validation = PhoneSchema.safeParse(data);
-                if (!validation.success) {
-                    setError(validation.error.flatten().fieldErrors.phone?.[0] || 'Popraw numer telefonu.');
-                    setIsPending(false);
-                    return;
-                }
-                
-                const verifier = recaptchaVerifierRef.current;
-                if (!verifier) {
-                    setError('reCAPTCHA nie jest gotowa. Odśwież stronę.');
-                    setIsPending(false);
-                    return;
-                }
-
-                const result = await signInWithPhoneNumber(auth, validation.data.phone, verifier);
-                setConfirmationResult(result);
-                setPhoneStep('enter_code');
-                setInfoMessage(`Kod weryfikacyjny wysłany na ${validation.data.phone}.`);
-            } else { // enter_code
-                 const validation = CodeSchema.safeParse(data);
-                 if (!validation.success) {
-                    setError(validation.error.flatten().fieldErrors.code?.[0] || 'Popraw kod.');
-                    setIsPending(false);
-                    return;
-                 }
-
-                if (!confirmationResult) {
-                    setError('Brak wyniku weryfikacji. Spróbuj wysłać kod ponownie.');
-                    setIsPending(false);
-                    return;
-                }
-                const userCredential = await confirmationResult.confirm(validation.data.code);
-                await handleSuccessfulLogin(userCredential);
-            }
+        const schema = emailMode === 'signup' ? SignUpSchema : SignInSchema;
+        const validation = schema.safeParse(data);
+        
+        if (!validation.success) {
+            const errors = validation.error.flatten().fieldErrors;
+            const firstError = Object.values(errors)[0]?.[0];
+            setError(firstError || 'Popraw błędy w formularzu.');
+            setIsPending(false);
+            return;
         }
+
+        let userCredential: UserCredential;
+        if (emailMode === 'signup') {
+            userCredential = await createUserWithEmailAndPassword(auth, validation.data.email, validation.data.password);
+        } else {
+            userCredential = await signInWithEmailAndPassword(auth, validation.data.email, (validation.data as z.infer<typeof SignInSchema>).password);
+        }
+        await handleSuccessfulLogin(userCredential);
     } catch (error: any) {
         console.error('Authentication Error:', error);
         if (error.code === 'auth/email-already-in-use') {
@@ -253,118 +175,71 @@ export function LoginForm() {
     }
   };
 
-  const renderEmailForm = () => (
-    <Tabs defaultValue="signin" value={emailMode} onValueChange={(value) => setEmailMode(value as EmailMode)}>
-      <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="signin">Logowanie</TabsTrigger>
-        <TabsTrigger value="signup">Rejestracja</TabsTrigger>
-      </TabsList>
-      <form onSubmit={handleSubmit}>
-        <TabsContent value="signin">
-            <CardContent className="space-y-4 pt-6">
-                <div className="space-y-2">
-                    <Label htmlFor="email-signin">Adres e-mail</Label>
-                    <Input id="email-signin" name="email" type="email" placeholder="np. jan.kowalski@email.com" required />
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="password-signin">Hasło</Label>
-                    <Input id="password-signin" name="password" type="password" required />
-                </div>
-            </CardContent>
-            <CardFooter className="flex-col items-stretch">
-                <Button type="submit" disabled={isPending} className="w-full">
-                    {isPending && emailMode === 'signin' ? <Loader2 className="mr-2 animate-spin" /> : <Mail className="mr-2" />}
-                    {isPending && emailMode === 'signin' ? 'Logowanie...' : 'Zaloguj się'}
-                </Button>
-            </CardFooter>
-        </TabsContent>
-        <TabsContent value="signup">
-           <CardContent className="space-y-4 pt-6">
-                 <div className="space-y-2">
-                    <Label htmlFor="email-signup">Adres e-mail</Label>
-                    <Input id="email-signup" name="email" type="email" placeholder="np. jan.kowalski@email.com" required />
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="password-signup">Hasło</Label>
-                    <Input id="password-signup" name="password" type="password" required />
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">Potwierdź hasło</Label>
-                    <Input id="confirmPassword" name="confirmPassword" type="password" required />
-                </div>
-            </CardContent>
-            <CardFooter className="flex-col items-stretch">
-                <Button type="submit" disabled={isPending} className="w-full">
-                    {isPending && emailMode === 'signup' ? <Loader2 className="mr-2 animate-spin" /> : <KeyRound className="mr-2" />}
-                    {isPending && emailMode === 'signup' ? 'Tworzenie konta...' : 'Zarejestruj się'}
-                </Button>
-            </CardFooter>
-        </TabsContent>
-      </form>
-    </Tabs>
-  );
-
-  const renderPhoneForm = () => (
-    <form onSubmit={handleSubmit}>
-        <CardHeader>
-            <Button variant="ghost" size="sm" className="absolute top-4 left-4" onClick={() => { setAuthMode('email'); setPhoneStep('enter_phone'); setError(null); setInfoMessage(null); }}>
-                <ArrowLeft className="mr-2" /> Wróć
-            </Button>
-            <CardTitle className="pt-10 text-center">Logowanie telefonem</CardTitle>
-            <CardDescription className="text-center">
-                {phoneStep === 'enter_phone' ? 'Podaj numer telefonu, aby otrzymać kod weryfikacyjny.' : infoMessage}
-            </CardDescription>
-        </CardHeader>
-        <CardContent>
-            {phoneStep === 'enter_phone' ? (
-                <div className="space-y-2">
-                    <Label htmlFor="phone">Numer telefonu</Label>
-                    <Input id="phone" name="phone" type="tel" placeholder="+48123456789" required />
-                </div>
-            ) : (
-                <div className="space-y-2">
-                    <Label htmlFor="code">Kod weryfikacyjny</Label>
-                    <Input id="code" name="code" type="text" inputMode="numeric" pattern="\\d{6}" maxLength={6} required />
-                </div>
-            )}
-        </CardContent>
-        <CardFooter className="flex-col items-stretch">
-             <Button type="submit" disabled={isPending} className="w-full">
-                {isPending ? <Loader2 className="mr-2 animate-spin" /> : null}
-                {phoneStep === 'enter_phone' ? (isPending ? 'Wysyłanie...' : 'Wyślij kod') : (isPending ? 'Weryfikowanie...' : 'Zaloguj się')}
-             </Button>
-        </CardFooter>
-    </form>
-  );
-
   return (
     <Card>
-      <div ref={recaptchaWrapperRef}></div>
-      {authMode === 'email' ? (
-        <>
-            <CardHeader>
-                <CardTitle>Dołącz do stada</CardTitle>
-                <CardDescription>Wybierz preferowaną metodę logowania lub rejestracji.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {renderEmailForm()}
-            </CardContent>
-            <Separator className="my-4" />
-            <div className="p-6 pt-0 space-y-4">
-              <Button variant="outline" onClick={handleGoogleSignIn} disabled={isPending} className="w-full">
-                <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
-                  <path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 110.3 512 0 401.8 0 265.8c0-57.5 22.9-108.9 59.9-146.9L120.3 176c-18.1 34.2-28.7 75.3-28.7 119.8 0 85.4 69.3 154.8 154.8 154.8 85.4 0 154.8-69.3 154.8-154.8 0-11.7-1.3-23.2-3.8-34.5H244v-92.4h139.7c5.6 24.1 8.3 49.3 8.3 75.5zM128 123.4l-75.1-59.1C87.8 28.5 160.4 0 244 0c87.3 0 162.2 45.4 203.2 114.2L380.3 173c-28.9-34.2-70.5-54.8-116.3-54.8-59.5 0-109.8 34.3-135.7 85z"></path>
-                </svg>
-                Kontynuuj z Google
-              </Button>
-              <Button variant="outline" onClick={() => { setAuthMode('phone'); setError(null); }} disabled={isPending} className="w-full">
-                <Phone className="mr-2" /> Kontynuuj z numerem telefonu
-              </Button>
-            </div>
-        </>
-      ) : (
-        renderPhoneForm()
-      )}
+      <CardHeader>
+          <CardTitle>Dołącz do stada</CardTitle>
+          <CardDescription>Wybierz preferowaną metodę logowania lub rejestracji.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Tabs defaultValue="signin" value={emailMode} onValueChange={(value) => setEmailMode(value as EmailMode)}>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="signin">Logowanie</TabsTrigger>
+            <TabsTrigger value="signup">Rejestracja</TabsTrigger>
+          </TabsList>
+          <form onSubmit={handleSubmit}>
+            <TabsContent value="signin">
+                <CardContent className="space-y-4 pt-6">
+                    <div className="space-y-2">
+                        <Label htmlFor="email-signin">Adres e-mail</Label>
+                        <Input id="email-signin" name="email" type="email" placeholder="np. jan.kowalski@email.com" required />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="password-signin">Hasło</Label>
+                        <Input id="password-signin" name="password" type="password" required />
+                    </div>
+                </CardContent>
+                <CardFooter className="flex-col items-stretch">
+                    <Button type="submit" disabled={isPending} className="w-full">
+                        {isPending && emailMode === 'signin' ? <Loader2 className="mr-2 animate-spin" /> : <Mail className="mr-2" />}
+                        {isPending && emailMode === 'signin' ? 'Logowanie...' : 'Zaloguj się'}
+                    </Button>
+                </CardFooter>
+            </TabsContent>
+            <TabsContent value="signup">
+               <CardContent className="space-y-4 pt-6">
+                     <div className="space-y-2">
+                        <Label htmlFor="email-signup">Adres e-mail</Label>
+                        <Input id="email-signup" name="email" type="email" placeholder="np. jan.kowalski@email.com" required />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="password-signup">Hasło</Label>
+                        <Input id="password-signup" name="password" type="password" required />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="confirmPassword">Potwierdź hasło</Label>
+                        <Input id="confirmPassword" name="confirmPassword" type="password" required />
+                    </div>
+                </CardContent>
+                <CardFooter className="flex-col items-stretch">
+                    <Button type="submit" disabled={isPending} className="w-full">
+                        {isPending && emailMode === 'signup' ? <Loader2 className="mr-2 animate-spin" /> : <KeyRound className="mr-2" />}
+                        {isPending && emailMode === 'signup' ? 'Tworzenie konta...' : 'Zarejestruj się'}
+                    </Button>
+                </CardFooter>
+            </TabsContent>
+          </form>
+        </Tabs>
+      </CardContent>
+      <Separator className="my-4" />
+      <div className="p-6 pt-0 space-y-4">
+        <Button variant="outline" onClick={handleGoogleSignIn} disabled={isPending} className="w-full">
+          <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+            <path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 110.3 512 0 401.8 0 265.8c0-57.5 22.9-108.9 59.9-146.9L120.3 176c-18.1 34.2-28.7 75.3-28.7 119.8 0 85.4 69.3 154.8 154.8 154.8 85.4 0 154.8-69.3 154.8-154.8 0-11.7-1.3-23.2-3.8-34.5H244v-92.4h139.7c5.6 24.1 8.3 49.3 8.3 75.5zM128 123.4l-75.1-59.1C87.8 28.5 160.4 0 244 0c87.3 0 162.2 45.4 203.2 114.2L380.3 173c-28.9-34.2-70.5-54.8-116.3-54.8-59.5 0-109.8 34.3-135.7 85z"></path>
+          </svg>
+          Kontynuuj z Google
+        </Button>
+      </div>
       
       {error && (
         <div className="px-6 pb-4">
@@ -374,15 +249,6 @@ export function LoginForm() {
             </div>
         </div>
       )}
-      {infoMessage && authMode === 'phone' && (
-        <div className="px-6 pb-4">
-            <div className="text-sm text-green-700 dark:text-green-500 bg-green-500/10 p-3 rounded-md text-center">
-                <span>{infoMessage}</span>
-            </div>
-        </div>
-      )}
     </Card>
   );
 }
-
-    
