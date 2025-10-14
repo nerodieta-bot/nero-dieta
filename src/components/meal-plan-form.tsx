@@ -107,7 +107,7 @@ export function MealPlanForm({ generationsLeft }: MealPlanFormProps) {
              <CardHeader>
                 <CardTitle className="text-destructive">Osiągnięto limit generacji</CardTitle>
                 <CardDescription>
-                    Wykorzystałeś już swoje dwie darmowe generacje planu posiłków.
+                    Wykorzystałeś już swoje darmowe generacje planu posiłków.
                 </CardDescription>
              </CardHeader>
         ) : (
@@ -125,9 +125,9 @@ export function MealPlanForm({ generationsLeft }: MealPlanFormProps) {
                 <Lock className="h-4 w-4" />
                 <AlertTitle>Dostęp zablokowany</AlertTitle>
                 <AlertDescription>
-                    Dziękujemy za zainteresowanie! Aby uzyskać nielimitowany dostęp do Kreatora Posiłków oraz indywidualne konsultacje, skontaktuj się z nami w celu omówienia planu premium.
+                    Dziękujemy za zainteresowanie! Aby uzyskać nielimitowany dostęp do Kreatora Posiłków, przejdź do cennika i wybierz plan Premium.
                     <Button asChild className="mt-4 w-full">
-                        <Link href="/contact">Skontaktuj się z nami</Link>
+                        <Link href="/pricing">Zobacz plany</Link>
                     </Button>
                 </AlertDescription>
             </Alert>

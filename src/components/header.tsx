@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Button } from './ui/button';
-import { PawPrint, Home, Bot, PlusSquare, Dog, X, Menu, ScanLine, Award, LogIn } from 'lucide-react';
+import { PawPrint, Home, Bot, PlusSquare, Dog, X, Menu, ScanLine, Award, LogIn, Gem } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Sheet,
@@ -21,6 +21,7 @@ const navLinks = [
   { href: '/', label: 'Baza Wiedzy', icon: Home },
   { href: '/plan', label: 'Kreator', icon: Bot },
   { href: '/scan', label: 'Skaner', icon: ScanLine },
+  { href: '/pricing', label: 'Cennik', icon: Gem },
   { href: '/submit', label: 'Dodaj', icon: PlusSquare },
   { href: '/nero', label: 'O Nero', icon: Dog },
 ];
@@ -133,5 +134,3 @@ export function Header() {
     </>
   );
 }
-
-    
