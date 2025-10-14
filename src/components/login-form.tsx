@@ -83,6 +83,9 @@ export function LoginForm() {
             dogName: '',
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
+            plan: 'starter',
+            ingredientViewCount: 0,
+            mealPlanGenerations: 0,
         };
         setDocumentNonBlocking(userRef, userData);
       } else {

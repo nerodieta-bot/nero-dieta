@@ -45,7 +45,7 @@ export default function Home() {
 
   const isLoading = isUserLoading || (user && isProfileLoading);
 
-  if (!isClient) {
+  if (isLoading && !isClient) {
      return (
       <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
         <div className="flex flex-col items-center justify-center p-8 text-center">
@@ -62,6 +62,7 @@ export default function Home() {
       <IngredientGrid 
         ingredients={ingredientsToShow} 
         isUserLoggedIn={!!user}
+        userProfile={userProfile}
       />
 
       {!user && (
