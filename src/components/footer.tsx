@@ -154,6 +154,11 @@ export function Footer() {
                 </Link>
               </li>
                <li>
+                <Link href="/pricing#faq" className="text-sm text-foreground/90 hover:text-accent hover:font-bold transition-colors">
+                  FAQ
+                </Link>
+              </li>
+               <li>
                 <Link href="/submit" className="text-sm text-foreground/90 hover:text-accent hover:font-bold transition-colors">
                   Zgłoś składnik
                 </Link>
