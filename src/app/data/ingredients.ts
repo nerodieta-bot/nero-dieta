@@ -4,6 +4,7 @@ import type { Ingredient } from '@/lib/types';
 export const ingredients: Ingredient[] = [
   {
     name: 'Marchewka',
+    slug: 'marchewka',
     cat_icon: '✅',
     icon: '🥕',
     status: 'safe',
@@ -17,6 +18,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kurczak gotowany',
+    slug: 'kurczak-gotowany',
     cat_icon: '✅',
     icon: '🍗',
     status: 'safe',
@@ -30,6 +32,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Borówki',
+    slug: 'borowki',
     icon: '🫐',
     status: 'safe',
     cat_icon: '✅',
@@ -43,6 +46,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Dynia',
+    slug: 'dynia',
     cat_icon: '✅',
     icon: '🎃',
     status: 'safe',
@@ -56,6 +60,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Łosoś gotowany',
+    slug: 'losos-gotowany',
     cat_icon: '✅',
     icon: '🐟',
     status: 'safe',
@@ -69,6 +74,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Jajko gotowane',
+    slug: 'jajko-gotowane',
     icon: '🥚',
     status: 'safe',
     cat_icon: '✅',
@@ -82,6 +88,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Brokuły gotowane',
+    slug: 'brokuly-gotowane',
     icon: '🥦',
     status: 'safe',
     cat_icon: '✅',
@@ -95,6 +102,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Ogórek',
+    slug: 'ogorek',
     icon: '🥒',
     status: 'safe',
     cat_icon: '✅',
@@ -108,6 +116,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Arbuz',
+    slug: 'arbuz',
     icon: '🍉',
     status: 'safe',
     cat_icon: '✅',
@@ -121,6 +130,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Ryż biały',
+    slug: 'ryz-bialy',
     icon: '🍚',
     status: 'safe',
     cat_icon: '✅',
@@ -134,6 +144,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Jabłko',
+    slug: 'jablko',
     icon: '🍎',
     status: 'safe',
     cat_icon: '✅',
@@ -147,6 +158,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Banan',
+    slug: 'banan',
     icon: '🍌',
     status: 'warning',
     cat_icon: '⚠️',
@@ -160,6 +172,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Masło orzechowe',
+    slug: 'maslo-orzechowe',
     icon: '🥜',
     status: 'warning',
     cat_icon: '⚠️',
@@ -173,6 +186,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Ser',
+    slug: 'ser',
     icon: '🧀',
     status: 'warning',
     cat_icon: '⚠️',
@@ -186,6 +200,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Chleb',
+    slug: 'chleb',
     icon: '🍞',
     status: 'warning',
     cat_icon: '⚠️',
@@ -199,6 +214,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Czekolada',
+    slug: 'czekolada',
     icon: '🍫',
     status: 'danger',
     cat_icon: '☠️',
@@ -210,6 +226,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Winogrona i rodzynki',
+    slug: 'winogrona-i-rodzynki',
     icon: '🍇',
     status: 'danger',
     cat_icon: '☠️',
@@ -221,6 +238,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Cebula i czosnek',
+    slug: 'cebula-i-czosnek',
     icon: '🧅',
     status: 'danger',
     cat_icon: '☠️',
@@ -232,6 +250,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Alkohol',
+    slug: 'alkohol',
     icon: '🍺',
     status: 'danger',
     cat_icon: '☠️',
@@ -243,6 +262,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Ksylitol',
+    slug: 'ksylitol',
     icon: '🍬',
     status: 'danger',
     cat_icon: '☠️',
@@ -254,6 +274,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Truskawki',
+    slug: 'truskawki',
     icon: '🍓',
     status: 'safe',
     cat_icon: '✅',
@@ -267,6 +288,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Bataty',
+    slug: 'bataty',
     icon: '🍠',
     status: 'safe',
     cat_icon: '✅',
@@ -280,6 +302,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Olej kokosowy',
+    slug: 'olej-kokosowy',
     icon: '🥥',
     status: 'warning',
     cat_icon: '⚠️',
@@ -293,6 +316,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Indyk gotowany',
+    slug: 'indyk-gotowany',
     icon: '🦃',
     status: 'safe',
     cat_icon: '✅',
@@ -306,6 +330,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Awokado',
+    slug: 'awokado',
     icon: '🥑',
     status: 'danger',
     cat_icon: '☠️',
@@ -317,6 +342,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Jogurt naturalny',
+    slug: 'jogurt-naturalny',
     icon: '🥛',
     status: 'warning',
     cat_icon: '⚠️',
@@ -330,6 +356,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Wołowina gotowana',
+    slug: 'wolowina-gotowana',
     icon: '🥩',
     status: 'safe',
     cat_icon: '✅',
@@ -343,6 +370,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Orzechy makadamia',
+    slug: 'orzechy-makadamia',
     icon: '🌰',
     status: 'danger',
     cat_icon: '☠️',
@@ -354,6 +382,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Maliny',
+    slug: 'maliny',
     icon: '🍓',
     status: 'safe',
     cat_icon: '✅',
@@ -367,6 +396,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Szpinak',
+    slug: 'szpinak',
     icon: '🥬',
     status: 'warning',
     cat_icon: '⚠️',
@@ -380,6 +410,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Ananas',
+    slug: 'ananas',
     icon: '🍍',
     status: 'safe',
     cat_icon: '✅',
@@ -393,6 +424,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kawa i kofeina',
+    slug: 'kawa-i-kofeina',
     icon: '☕',
     status: 'danger',
     cat_icon: '☠️',
@@ -404,6 +436,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Tuńczyk',
+    slug: 'tunczyk',
     icon: '🥫',
     status: 'warning',
     cat_icon: '⚠️',
@@ -417,6 +450,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Grzyby',
+    slug: 'grzyby',
     icon: '🍄',
     status: 'danger',
     cat_icon: '☠️',
@@ -428,6 +462,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kalafior',
+    slug: 'kalafior',
     icon: '🥦',
     status: 'safe',
     cat_icon: '✅',
@@ -441,6 +476,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Wieprzowina',
+    slug: 'wieprzowina',
     icon: '🥓',
     status: 'warning',
     cat_icon: '⚠️',
@@ -454,6 +490,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Papryka',
+    slug: 'papryka',
     icon: '🫑',
     status: 'safe',
     cat_icon: '✅',
@@ -467,6 +504,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Lody',
+    slug: 'lody',
     icon: '🍦',
     status: 'danger',
     cat_icon: '☠️',
@@ -478,6 +516,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Seler',
+    slug: 'seler',
     icon: '🥬',
     status: 'safe',
     cat_icon: '✅',
@@ -491,6 +530,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Płatki owsiane',
+    slug: 'platki-owsiane',
     icon: '🥣',
     status: 'safe',
     cat_icon: '✅',
@@ -504,6 +544,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Krewetki',
+    slug: 'krewetki',
     icon: '🦐',
     status: 'warning',
     cat_icon: '⚠️',
@@ -517,6 +558,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Migdały',
+    slug: 'migdaly',
     icon: '🌰',
     status: 'danger',
     cat_icon: '☠️',
@@ -528,6 +570,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Zielona fasolka',
+    slug: 'zielona-fasolka',
     icon: '🫛',
     status: 'safe',
     cat_icon: '✅',
@@ -541,6 +584,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Ziemniaki',
+    slug: 'ziemniaki',
     icon: '🥔',
     status: 'warning',
     cat_icon: '⚠️',
@@ -554,6 +598,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Pestki owoców',
+    slug: 'pestki-owocow',
     icon: '🍑',
     status: 'danger',
     cat_icon: '☠️',
@@ -565,6 +610,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Miód',
+    slug: 'miod',
     icon: '🍯',
     status: 'warning',
     cat_icon: '⚠️',
@@ -578,6 +624,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kukurydza',
+    slug: 'kukurydza',
     icon: '🌽',
     status: 'safe',
     cat_icon: '✅',
@@ -591,6 +638,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kości gotowane',
+    slug: 'kosci-gotowane',
     icon: '🦴',
     status: 'danger',
     cat_icon: '☠️',
@@ -602,6 +650,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Mango',
+    slug: 'mango',
     icon: '🥭',
     status: 'safe',
     cat_icon: '✅',
@@ -615,12 +664,13 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Twaróg',
+    slug: 'twarog',
     icon: '🧀',
     status: 'safe',
     cat_icon: '✅',
     category: '🧀 Białe Szaleństwo',
     desc: 'Niskotłuszczowy, bogaty w białko kazeinowe i wapń. Łatwostrawny dla większości psów i może być dobrym dodatkiem do diety. Dostarcza również witamin z grupy B.',
-    WARNING: 'WYBIERAJ WERSJE BEZ SOLI I DODATKÓW. Obserwuj reakcję na laktozę.',
+    WARNING: 'Wybieraj wersje BEZ SOLI I DODATKÓW. Obserwuj reakcję na laktozę.',
     portion: '1 łyżka',
     prep: 'Chudy lub półtłusty, naturalny',
     nero: 'Miękkie, białe chmurki w misce. Czuję się po nich silny i zdrowy. Gotowy do obrony domu przed... muchą.',
@@ -628,6 +678,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Surowe mięso',
+    slug: 'surowe-mieso',
     icon: '🥩',
     status: 'warning',
     cat_icon: '⚠️',
@@ -639,6 +690,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Surowe ciasto drożdżowe',
+    slug: 'surowe-ciasto-drozdzowe',
     icon: '🍞',
     status: 'danger',
     cat_icon: '☠️',
@@ -650,6 +702,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kiwi',
+    slug: 'kiwi',
     icon: '🥝',
     status: 'safe',
     cat_icon: '✅',
@@ -663,6 +716,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Sól',
+    slug: 'sol',
     icon: '🧂',
     status: 'danger',
     cat_icon: '☠️',
@@ -674,6 +728,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Olej z łososia',
+    slug: 'olej-z-lososia',
     icon: '🐟',
     status: 'safe',
     cat_icon: '✅',
@@ -685,6 +740,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Cytryna',
+    slug: 'cytryna',
     icon: '🍋',
     status: 'danger',
     cat_icon: '☠️',
@@ -696,6 +752,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Pomarańcze',
+    slug: 'pomarancze',
     icon: '🍊',
     status: 'safe',
     cat_icon: '✅',
@@ -709,6 +766,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Mleko',
+    slug: 'mleko',
     icon: '🥛',
     status: 'warning',
     cat_icon: '⚠️',
@@ -722,6 +780,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Brzoskwinie',
+    slug: 'brzoskwinie',
     icon: '🍑',
     status: 'safe',
     cat_icon: '✅',
@@ -735,6 +794,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Orzechy włoskie',
+    slug: 'orzechy-wloskie',
     icon: '🌰',
     status: 'danger',
     cat_icon: '☠️',
@@ -746,6 +806,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Pomidory',
+    slug: 'pomidory',
     icon: '🍅',
     status: 'warning',
     cat_icon: '⚠️',
@@ -759,6 +820,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Fistaszki',
+    slug: 'fistaszki',
     icon: '🥜',
     status: 'warning',
     cat_icon: '⚠️',
@@ -772,6 +834,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Cynamon',
+    slug: 'cynamon',
     icon: '🍂',
     status: 'danger',
     cat_icon: '☠️',
@@ -783,6 +846,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kiełbasa',
+    slug: 'kielbasa',
     icon: '🌭',
     status: 'danger',
     cat_icon: '☠️',
@@ -794,6 +858,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Gruszki',
+    slug: 'gruszki',
     icon: '🍐',
     status: 'safe',
     cat_icon: '✅',
@@ -807,6 +872,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Tofu',
+    slug: 'tofu',
     icon: '⬜',
     status: 'warning',
     cat_icon: '⚠️',
@@ -818,6 +884,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Koper włoski (fenkuł)',
+    slug: 'koper-wloski',
     icon: '🥬',
     status: 'safe',
     cat_icon: '✅',
@@ -831,6 +898,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Bakłażan',
+    slug: 'baklazan',
     icon: '🍆',
     status: 'warning',
     cat_icon: '⚠️',
@@ -844,6 +912,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Jeżyny',
+    slug: 'jezyny',
     icon: '🍇',
     status: 'safe',
     cat_icon: '✅',
@@ -857,6 +926,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Chipsy',
+    slug: 'chipsy',
     icon: '🥔',
     status: 'danger',
     cat_icon: '☠️',
@@ -868,6 +938,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Rukola',
+    slug: 'rukola',
     icon: '🥬',
     status: 'safe',
     cat_icon: '✅',
@@ -881,6 +952,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Daktyle',
+    slug: 'daktyle',
     icon: '🌴',
     status: 'warning',
     cat_icon: '⚠️',
@@ -894,6 +966,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Edamame',
+    slug: 'edamame',
     icon: '🫛',
     status: 'safe',
     cat_icon: '✅',
@@ -907,6 +980,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Chrzan',
+    slug: 'chrzan',
     icon: '🌿',
     status: 'danger',
     cat_icon: '☠️',
@@ -918,6 +992,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Komosa ryżowa (quinoa)',
+    slug: 'komosa-ryzowa',
     icon: '🍚',
     status: 'safe',
     cat_icon: '✅',
@@ -931,6 +1006,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Rodzynki',
+    slug: 'rodzynki',
     icon: '🍇',
     status: 'danger',
     cat_icon: '☠️',
@@ -942,6 +1018,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Cukinia',
+    slug: 'cukinia',
     icon: '🥒',
     status: 'safe',
     cat_icon: '✅',
@@ -955,6 +1032,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Precle',
+    slug: 'precle',
     icon: '🥨',
     status: 'danger',
     cat_icon: '☠️',
@@ -966,6 +1044,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kaczka',
+    slug: 'kaczka',
     icon: '🦆',
     status: 'safe',
     cat_icon: '✅',
@@ -979,6 +1058,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Mleko kokosowe',
+    slug: 'mleko-kokosowe',
     icon: '🥥',
     status: 'warning',
     cat_icon: '⚠️',
@@ -992,6 +1072,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Wiśnie',
+    slug: 'wisnie',
     icon: '🍒',
     status: 'danger',
     cat_icon: '☠️',
@@ -1003,6 +1084,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kozie mleko',
+    slug: 'kozie-mleko',
     icon: '🐐',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1016,6 +1098,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Jagnięcina',
+    slug: 'jagniecina',
     icon: '🐑',
     status: 'safe',
     cat_icon: '✅',
@@ -1029,6 +1112,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Bazylia',
+    slug: 'bazylia',
     icon: '🌿',
     status: 'safe',
     cat_icon: '✅',
@@ -1042,6 +1126,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Papaja',
+    slug: 'papaja',
     icon: '🥭',
     status: 'safe',
     cat_icon: '✅',
@@ -1055,6 +1140,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Chleb kukurydziany',
+    slug: 'chleb-kukurydziany',
     icon: '🍞',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1068,6 +1154,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Żurawina',
+    slug: 'zurawina',
     icon: '🫐',
     status: 'safe',
     cat_icon: '✅',
@@ -1081,6 +1168,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Pistacje',
+    slug: 'pistacje',
     icon: '🌰',
     status: 'danger',
     cat_icon: '☠️',
@@ -1092,6 +1180,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Nasiona chia',
+    slug: 'nasiona-chia',
     icon: '🌱',
     status: 'safe',
     cat_icon: '✅',
@@ -1105,6 +1194,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Gałka muszkatołowa',
+    slug: 'galka-muszkatolowa',
     icon: '🍂',
     status: 'danger',
     cat_icon: '☠️',
@@ -1116,6 +1206,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Krew',
+    slug: 'krew',
     icon: '🩸',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1129,6 +1220,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Morele',
+    slug: 'morele',
     icon: '🍑',
     status: 'safe',
     cat_icon: '✅',
@@ -1142,6 +1234,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Popcorn',
+    slug: 'popcorn',
     icon: '🍿',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1153,6 +1246,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Pizza',
+    slug: 'pizza',
     icon: '🍕',
     status: 'danger',
     cat_icon: '☠️',
@@ -1164,6 +1258,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Nasiona słonecznika',
+    slug: 'nasiona-slonecznika',
     icon: '🌻',
     status: 'safe',
     cat_icon: '✅',
@@ -1177,6 +1272,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Frytki',
+    slug: 'frytki',
     icon: '🍟',
     status: 'danger',
     cat_icon: '☠️',
@@ -1188,6 +1284,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Mięta',
+    slug: 'mieta',
     icon: '🌿',
     status: 'safe',
     cat_icon: '✅',
@@ -1201,6 +1298,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Śliwki',
+    slug: 'sliwki',
     icon: '🍑',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1214,6 +1312,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Ryż brązowy',
+    slug: 'ryz-brazowy',
     icon: '🍚',
     status: 'safe',
     cat_icon: '✅',
@@ -1227,6 +1326,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Guma do żucia',
+    slug: 'guma-do-zucia',
     icon: '🍬',
     status: 'danger',
     cat_icon: '☠️',
@@ -1238,6 +1338,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Drożdże piwne',
+    slug: 'drozdzepiwnes',
     icon: '🍺',
     status: 'safe',
     cat_icon: '✅',
@@ -1249,6 +1350,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Ketchup',
+    slug: 'ketchup',
     icon: '🥫',
     status: 'danger',
     cat_icon: '☠️',
@@ -1260,6 +1362,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kraby',
+    slug: 'kraby',
     icon: '🦀',
     status: 'safe',
     cat_icon: '✅',
@@ -1273,6 +1376,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Imbir',
+    slug: 'imbir',
     icon: '🌿',
     status: 'safe',
     cat_icon: '✅',
@@ -1286,6 +1390,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Nektarynki',
+    slug: 'nektarynki',
     icon: '🍑',
     status: 'safe',
     cat_icon: '✅',
@@ -1299,6 +1404,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Majonez',
+    slug: 'majonez',
     icon: '🥚',
     status: 'danger',
     cat_icon: '☠️',
@@ -1310,6 +1416,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Fasola',
+    slug: 'fasola',
     icon: '🫘',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1323,6 +1430,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Lukrecja',
+    slug: 'lukrecja',
     icon: '🍬',
     status: 'danger',
     cat_icon: '☠️',
@@ -1334,6 +1442,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Soczewica',
+    slug: 'soczewica',
     icon: '🍛',
     status: 'safe',
     cat_icon: '✅',
@@ -1347,6 +1456,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Ślimaki i pestycydy',
+    slug: 'slimaki-i-pestycydy',
     icon: '🐌',
     status: 'danger',
     cat_icon: '☠️',
@@ -1358,6 +1468,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Brukselka',
+    slug: 'brukselka',
     icon: '🥬',
     status: 'safe',
     cat_icon: '✅',
@@ -1371,6 +1482,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Szynka',
+    slug: 'szynka',
     icon: '🍖',
     status: 'danger',
     cat_icon: '☠️',
@@ -1382,6 +1494,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kasza gryczana',
+    slug: 'kasza-gryczana',
     icon: '🍚',
     status: 'safe',
     cat_icon: '✅',
@@ -1395,6 +1508,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Grejpfrut',
+    slug: 'grejpfrut',
     icon: '🍊',
     status: 'danger',
     cat_icon: '☠️',
@@ -1406,6 +1520,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kalarepa',
+    slug: 'kalarepa',
     icon: '🥬',
     status: 'safe',
     cat_icon: '✅',
@@ -1419,6 +1534,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Musztarda',
+    slug: 'musztarda',
     icon: '🌭',
     status: 'danger',
     cat_icon: '☠️',
@@ -1430,6 +1546,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Sezam',
+    slug: 'sezam',
     icon: '🌱',
     status: 'safe',
     cat_icon: '✅',
@@ -1443,6 +1560,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Oliwki',
+    slug: 'oliwki',
     icon: '🫒',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1456,6 +1574,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Guawa',
+    slug: 'guawa',
     icon: '🍈',
     status: 'safe',
     cat_icon: '✅',
@@ -1469,6 +1588,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Liście rabarbaru',
+    slug: 'liscie-rabarbaru',
     icon: '🌿',
     status: 'danger',
     cat_icon: '☠️',
@@ -1480,6 +1600,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kasza jaglana',
+    slug: 'kasza-jaglana',
     icon: '🍚',
     status: 'safe',
     cat_icon: '✅',
@@ -1493,6 +1614,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Granat',
+    slug: 'granat',
     icon: '🍎',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1500,10 +1622,11 @@ export const ingredients: Ingredient[] = [
     desc: 'Sam owoc nie jest toksyczny, ale duża ilość małych, twardych pestek może powodować rozstrój żołądka, wymioty i niedrożność jelit, ponieważ psy ich nie trawią.',
     WARNING: 'LEPIEJ UNIKAĆ. Zbyt wiele małych pestek.',
     nero: 'Czerwone, lśniące klejnoty. Ale jest ich tak dużo i są takie małe! To zbyt skomplikowane. Wolę prostsze jedzenie. Jak kawałek kurczaka.',
-    source: 'https://www.akc.org/expert-advice/nutrition/can-dogs-eat-pomegranate/',
+    source: 'https://wwwAIzaSyDL3yKZOoWjTxCO1u49i6hM8Zd7Kj690c',
   },
   {
     name: 'Olej lniany',
+    slug: 'olej-lniany',
     icon: '🌱',
     status: 'safe',
     cat_icon: '✅',
@@ -1517,6 +1640,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Papryczka chili',
+    slug: 'papryczka-chili',
     icon: '🌶️',
     status: 'danger',
     cat_icon: '☠️',
@@ -1528,6 +1652,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Ser feta',
+    slug: 'ser-feta',
     icon: '🧀',
     status: 'danger',
     cat_icon: '☠️',
@@ -1539,6 +1664,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Chleb bananowy',
+    slug: 'chleb-bananowy',
     icon: '🍞',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1552,6 +1678,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Oregano',
+    slug: 'oregano',
     icon: '🌿',
     status: 'safe',
     cat_icon: '✅',
@@ -1565,6 +1692,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Żeberka',
+    slug: 'zeberka',
     icon: '🦴',
     status: 'danger',
     cat_icon: '☠️',
@@ -1576,6 +1704,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Sardynki',
+    slug: 'sardynki',
     icon: '🐟',
     status: 'safe',
     cat_icon: '✅',
@@ -1589,6 +1718,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Jarmuż',
+    slug: 'jarmuz',
     icon: '🥬',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1602,6 +1732,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kiełki (np. brokuła)',
+    slug: 'kielki-brokula',
     icon: '🌱',
     status: 'safe',
     cat_icon: '✅',
@@ -1615,6 +1746,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Maca',
+    slug: 'maca',
     icon: '🍠',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1624,10 +1756,11 @@ export const ingredients: Ingredient[] = [
     portion: 'Bardzo mała szczypta proszku',
     prep: 'Sproszkowana',
     nero: 'Pachnie ziemią i tajemnicą. Podobno daje super moce. Na razie moją super mocą jest spanie. Nie potrzebuję wspomagaczy.',
-    source: 'https://www.whole-dog-journal.com/care/non_traditional_healing/herbal-remedies-for-your-dog/',
+    source: 'https://wwwAIzaSyDDL-vKZOoWjTxCO1u49i6hM8Zd7Kj690c',
   },
   {
     name: 'Figi',
+    slug: 'figi',
     icon: '🍈',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1641,6 +1774,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Skorupki jajek',
+    slug: 'skorupki-jajek',
     icon: '🥚',
     status: 'safe',
     cat_icon: '✅',
@@ -1654,6 +1788,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Larwy owadów (białko)',
+    slug: 'larwy-owadow',
     icon: '🐛',
     status: 'safe',
     cat_icon: '✅',
@@ -1667,6 +1802,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Karob',
+    slug: 'karob',
     icon: '🍫',
     status: 'safe',
     cat_icon: '✅',
@@ -1680,6 +1816,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Spirulina',
+    slug: 'spirulina',
     icon: '🌿',
     status: 'safe',
     cat_icon: '✅',
@@ -1693,6 +1830,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Mąka (biała)',
+    slug: 'maka-biala',
     icon: '🍞',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1706,6 +1844,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Smalec',
+    slug: 'smalec',
     icon: '🥓',
     status: 'danger',
     cat_icon: '☠️',
@@ -1717,6 +1856,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kaki (persymona)',
+    slug: 'kaki-persymona',
     icon: '🍊',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1730,6 +1870,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Anyż',
+    slug: 'anyz',
     icon: '⭐',
     status: 'safe',
     cat_icon: '✅',
@@ -1743,6 +1884,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Śledź',
+    slug: 'sledz',
     icon: '🐟',
     status: 'safe',
     cat_icon: '✅',
@@ -1756,6 +1898,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kminek',
+    slug: 'kminek',
     icon: '🌿',
     status: 'safe',
     cat_icon: '✅',
@@ -1769,6 +1912,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Karczochy',
+    slug: 'karczochy',
     icon: ' artichoke ',
     status: 'safe',
     cat_icon: '✅',
@@ -1782,6 +1926,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Pasta do zębów (ludzka)',
+    slug: 'pasta-do-zebow-ludzka',
     icon: '🦷',
     status: 'danger',
     cat_icon: '☠️',
@@ -1793,6 +1938,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kurkuma',
+    slug: 'kurkuma',
     icon: '🌿',
     status: 'safe',
     cat_icon: '✅',
@@ -1806,6 +1952,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Seler naciowy',
+    slug: 'seler-naciowy',
     icon: '🥬',
     status: 'safe',
     cat_icon: '✅',
@@ -1819,6 +1966,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Chrupki śniadaniowe',
+    slug: 'chrupki-sniadaniowe',
     icon: '🥣',
     status: 'danger',
     cat_icon: '☠️',
@@ -1830,6 +1978,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Olej z wiesiołka',
+    slug: 'olej-z-wiesiolka',
     icon: '🌸',
     status: 'safe',
     cat_icon: '✅',
@@ -1843,6 +1992,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Dynia piżmowa',
+    slug: 'dynia-pizmowa',
     icon: '🎃',
     status: 'safe',
     cat_icon: '✅',
@@ -1856,6 +2006,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Melasa',
+    slug: 'melasa',
     icon: '🍯',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1869,6 +2020,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Krabowe paluszki (surimi)',
+    slug: 'krabowe-paluszki-surimi',
     icon: '🦀',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1882,6 +2034,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Mąka kukurydziana',
+    slug: 'maka-kukurydziana',
     icon: '🌽',
     status: 'safe',
     cat_icon: '✅',
@@ -1895,6 +2048,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Bób',
+    slug: 'bob',
     icon: '🫛',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1908,6 +2062,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Olej szafranowy',
+    slug: 'olej-szafranowy',
     icon: '🌼',
     status: 'safe',
     cat_icon: '✅',
@@ -1921,6 +2076,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Topinambur',
+    slug: 'topinambur',
     icon: '🍠',
     status: 'safe',
     cat_icon: '✅',
@@ -1928,12 +2084,13 @@ export const ingredients: Ingredient[] = [
     desc: 'Zawiera inulinę, rodzaj błonnika prebiotycznego, który wspiera zdrową florę jelitową. Jest również bogaty w potas i żelazo. W nadmiarze może powodować gazy.',
     WARNING: 'W NADMIARZE POWODUJE WZDĘCIA. Wprowadzaj powoli.',
     portion: 'Mały kawałek, ugotowany',
-    prep: 'Gotowany lub pieczony',
+prep: 'Gotowany lub pieczony',
     nero: 'Dziwny kuzyn ziemniaka. Smakuje trochę orzechowo. Mój brzuszek go lubi, ale tylko w małych dawkach. Inaczej zaczyna się symfonia gazów.',
     source: 'https://www.petfoodindustry.com/blogs/10-perspectives-in-pet-food/post/8863-pet-food-ingredients-the-jerusalem-artichoke-debate',
   },
   {
     name: 'Mleko sojowe',
+    slug: 'mleko-sojowe',
     icon: '🥛',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1947,6 +2104,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Owoce morza (mieszanka)',
+    slug: 'owoce-morza-mieszanka',
     icon: '🦑',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1960,6 +2118,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Koper',
+    slug: 'koper',
     icon: '🌿',
     status: 'safe',
     cat_icon: '✅',
@@ -1973,6 +2132,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Chleb tostowy',
+    slug: 'chleb-tostowy',
     icon: '🍞',
     status: 'warning',
     cat_icon: '⚠️',
@@ -1986,6 +2146,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Pasztet',
+    slug: 'pasztet',
     icon: '🍞',
     status: 'danger',
     cat_icon: '☠️',
@@ -1997,6 +2158,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Rozmaryn',
+    slug: 'rozmaryn',
     icon: '🌿',
     status: 'safe',
     cat_icon: '✅',
@@ -2010,6 +2172,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Otręby',
+    slug: 'otreby',
     icon: '🌾',
     status: 'safe',
     cat_icon: '✅',
@@ -2023,6 +2186,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Sos sojowy',
+    slug: 'sos-sojowy',
     icon: '🍶',
     status: 'danger',
     cat_icon: '☠️',
@@ -2034,6 +2198,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Melon',
+    slug: 'melon',
     icon: '🍈',
     status: 'safe',
     cat_icon: '✅',
@@ -2047,6 +2212,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Dynia makaronowa',
+    slug: 'dynia-makaronowa',
     icon: '🎃',
     status: 'safe',
     cat_icon: '✅',
@@ -2060,6 +2226,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Tortilla',
+    slug: 'tortilla',
     icon: '🌮',
     status: 'warning',
     cat_icon: '⚠️',
@@ -2073,6 +2240,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Sushi',
+    slug: 'sushi',
     icon: '🍣',
     status: 'danger',
     cat_icon: '☠️',
@@ -2084,6 +2252,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Seler korzeniowy',
+    slug: 'seler-korzeniowy',
     icon: '🥬',
     status: 'safe',
     cat_icon: '✅',
@@ -2097,6 +2266,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Nasiona lnu',
+    slug: 'nasiona-lnu',
     icon: '🌱',
     status: 'safe',
     cat_icon: '✅',
@@ -2110,6 +2280,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kefir',
+    slug: 'kefir',
     icon: '🥛',
     status: 'safe',
     cat_icon: '✅',
@@ -2123,6 +2294,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Hummus',
+    slug: 'hummus',
     icon: '🧆',
     status: 'danger',
     cat_icon: '☠️',
@@ -2134,6 +2306,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Rzodkiewka',
+    slug: 'rzodkiewka',
     icon: '⚪',
     status: 'warning',
     cat_icon: '⚠️',
@@ -2147,6 +2320,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Wodorosty (np. kelp)',
+    slug: 'wodorosty',
     icon: '🌊',
     status: 'safe',
     cat_icon: '✅',
@@ -2160,6 +2334,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Tymianek',
+    slug: 'tymianek',
     icon: '🌿',
     status: 'safe',
     cat_icon: '✅',
@@ -2173,6 +2348,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Mleko migdałowe',
+    slug: 'mleko-migdalowe',
     icon: '🌰',
     status: 'warning',
     cat_icon: '⚠️',
@@ -2186,6 +2362,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Ser pleśniowy',
+    slug: 'ser-plesniowy',
     icon: '🧀',
     status: 'danger',
     cat_icon: '☠️',
@@ -2197,6 +2374,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Bagietka',
+    slug: 'bagietka',
     icon: '🥖',
     status: 'warning',
     cat_icon: '⚠️',
@@ -2210,6 +2388,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Pasternak',
+    slug: 'pasternak',
     icon: '🥕',
     status: 'safe',
     cat_icon: '✅',
@@ -2223,6 +2402,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Salami',
+    slug: 'salami',
     icon: '🥓',
     status: 'danger',
     cat_icon: '☠️',
@@ -2234,6 +2414,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Olej rzepakowy',
+    slug: 'olej-rzepakowy',
     icon: '🌱',
     status: 'warning',
     cat_icon: '⚠️',
@@ -2247,6 +2428,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Śmietana',
+    slug: 'smietana',
     icon: '🥛',
     status: 'danger',
     cat_icon: '☠️',
@@ -2258,6 +2440,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Liczi',
+    slug: 'liczi',
     icon: '🍈',
     status: 'warning',
     cat_icon: '⚠️',
@@ -2271,6 +2454,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Proso',
+    slug: 'proso',
     icon: '🌾',
     status: 'safe',
     cat_icon: '✅',
@@ -2284,6 +2468,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kolendra',
+    slug: 'kolendra',
     icon: '🌿',
     status: 'safe',
     cat_icon: '✅',
@@ -2297,6 +2482,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Burak',
+    slug: 'burak',
     icon: ' beets ',
     status: 'safe',
     cat_icon: '✅',
@@ -2310,6 +2496,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Orzechy nerkowca',
+    slug: 'orzechy-nerkowca',
     icon: '🌰',
     status: 'warning',
     cat_icon: '⚠️',
@@ -2323,6 +2510,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Mleko ryżowe',
+    slug: 'mleko-ryzowe',
     icon: '🍚',
     status: 'warning',
     cat_icon: '⚠️',
@@ -2336,6 +2524,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Tłuszcz z bekonu',
+    slug: 'tluszcz-z-bekonu',
     icon: '🥓',
     status: 'danger',
     cat_icon: '☠️',
@@ -2347,6 +2536,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Szałwia',
+    slug: 'szalwia',
     icon: '🌿',
     status: 'safe',
     cat_icon: '✅',
@@ -2360,6 +2550,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Chili con carne',
+    slug: 'chili-con-carne',
     icon: '🌶️',
     status: 'danger',
     cat_icon: '☠️',
@@ -2371,6 +2562,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Olej palmowy',
+    slug: 'olej-palmowy',
     icon: '🌴',
     status: 'danger',
     cat_icon: '☠️',
@@ -2382,6 +2574,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Agrest',
+    slug: 'agrest',
     icon: '🫐',
     status: 'safe',
     cat_icon: '✅',
@@ -2395,6 +2588,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Ser kozi',
+    slug: 'ser-kozi',
     icon: '🐐',
     status: 'warning',
     cat_icon: '⚠️',
@@ -2408,6 +2602,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Kuskus',
+    slug: 'kuskus',
     icon: '🍚',
     status: 'warning',
     cat_icon: '⚠️',
@@ -2421,6 +2616,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Płatki drożdżowe',
+    slug: 'platki-drozdzowe',
     icon: '🧀',
     status: 'safe',
     cat_icon: '✅',
@@ -2434,6 +2630,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Mleko owsiane',
+    slug: 'mleko-owsiane',
     icon: '🥣',
     status: 'warning',
     cat_icon: '⚠️',
@@ -2447,6 +2644,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Orzechy pekan',
+    slug: 'orzechy-pekan',
     icon: '🌰',
     status: 'danger',
     cat_icon: '☠️',
@@ -2458,6 +2656,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Wino',
+    slug: 'wino',
     icon: '🍷',
     status: 'danger',
     cat_icon: '☠️',
@@ -2469,6 +2668,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Dorsz',
+    slug: 'dorsz',
     icon: '🐟',
     status: 'safe',
     cat_icon: '✅',
@@ -2482,6 +2682,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Ocet',
+    slug: 'ocet',
     icon: '🍶',
     status: 'warning',
     cat_icon: '⚠️',
@@ -2495,6 +2696,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Ser ricotta',
+    slug: 'ser-ricotta',
     icon: '🧀',
     status: 'warning',
     cat_icon: '⚠️',
@@ -2508,6 +2710,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Pestki dyni',
+    slug: 'pestki-dyni',
     icon: '🎃',
     status: 'safe',
     cat_icon: '✅',
@@ -2521,6 +2724,7 @@ export const ingredients: Ingredient[] = [
   },
   {
     name: 'Bita śmietana',
+    slug: 'bita-smietana',
     icon: '🍦',
     status: 'danger',
     cat_icon: '☠️',

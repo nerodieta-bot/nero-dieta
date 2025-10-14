@@ -36,7 +36,6 @@ const filterOptions: {
 export function IngredientGrid({ ingredients, isUserLoggedIn }: IngredientGridProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<IngredientStatus | 'all'>('all');
-  const [openCardId, setOpenCardId] = useState<string | null>(null);
 
   const filteredIngredients = useMemo(() => {
     return ingredients
@@ -51,12 +50,6 @@ export function IngredientGrid({ ingredients, isUserLoggedIn }: IngredientGridPr
   const handleFilterChange = (value: IngredientStatus | 'all') => {
     setFilter(value);
   }
-
-  const handleToggleCard = (id: string) => {
-    if (isUserLoggedIn) {
-      setOpenCardId(prevId => prevId === id ? null : id);
-    }
-  };
 
   return (
     <div>
@@ -123,10 +116,8 @@ export function IngredientGrid({ ingredients, isUserLoggedIn }: IngredientGridPr
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredIngredients.map((ingredient) => (
           <IngredientCard 
-            key={ingredient.name} 
+            key={ingredient.slug} 
             ingredient={ingredient}
-            isOpen={openCardId === ingredient.name}
-            onToggle={() => handleToggleCard(ingredient.name)}
             isUserLoggedIn={isUserLoggedIn}
           />
         ))}
