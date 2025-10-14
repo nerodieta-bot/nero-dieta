@@ -1,21 +1,22 @@
 'use client';
 
 import { useUser } from '@/firebase/provider';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { Loader2, PawPrint } from 'lucide-react';
 import { LoginForm } from '@/components/login-form';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, isUserLoading } = useUser();
 
   useEffect(() => {
-    // Przekieruj użytkownika, jeśli jest już zalogowany i zakończono ładowanie.
     if (user && !isUserLoading) {
-      router.replace('/');
+      const redirectUrl = searchParams.get('redirect') || '/';
+      router.replace(redirectUrl);
     }
-  }, [user, isUserLoading, router]);
+  }, [user, isUserLoading, router, searchParams]);
   
   if (isUserLoading || user) {
      return (

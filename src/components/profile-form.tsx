@@ -1,14 +1,18 @@
 'use client';
 
-import { useActionState, useEffect, useRef } from 'react';
+import { useActionState, useEffect } from 'react';
 import type { User } from 'firebase/auth';
 import { updateProfileDataAction, type ProfileFormState } from '@/app/profil/actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Loader2, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { doc, serverTimestamp } from 'firebase/firestore';
+import { useFirestore } from '@/firebase/provider';
+
 
 const initialState: ProfileFormState = {
   message: '',
@@ -22,8 +26,8 @@ interface ProfileFormProps {
 
 export function ProfileForm({ user, userProfile }: ProfileFormProps) {
   const [state, formAction, isPending] = useActionState(updateProfileDataAction, initialState);
-  const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
+  const firestore = useFirestore();
 
   useEffect(() => {
     if (state.success) {
@@ -31,14 +35,28 @@ export function ProfileForm({ user, userProfile }: ProfileFormProps) {
         title: 'Sukces!',
         description: state.message,
       });
-    } else if (state.message && state.errors) {
+    } else if (state.message && (state.errors || !state.success)) {
        toast({
         variant: 'destructive',
-        title: 'Błąd walidacji',
+        title: 'Błąd',
         description: state.message,
       });
     }
   }, [state, toast]);
+  
+  // This side-effect ensures that a user document is created if it doesn't exist
+  // without blocking the rendering of the form.
+  useEffect(() => {
+    if (user && firestore && !userProfile) {
+        const userRef = doc(firestore, 'users', user.uid);
+        const initialData = {
+            email: user.email,
+            createdAt: serverTimestamp(),
+        };
+        // Use a non-blocking write operation
+        setDocumentNonBlocking(userRef, initialData, { merge: true });
+    }
+  }, [user, firestore, userProfile]);
 
   return (
     <Card className="w-full">
@@ -46,7 +64,7 @@ export function ProfileForm({ user, userProfile }: ProfileFormProps) {
         <CardTitle>Twoje dane</CardTitle>
         <CardDescription>Uzupełnij informacje, aby w pełni korzystać z personalizacji w Dieta Nero.</CardDescription>
       </CardHeader>
-      <form ref={formRef} action={formAction}>
+      <form action={formAction}>
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="email">Adres e-mail</Label>
@@ -60,7 +78,7 @@ export function ProfileForm({ user, userProfile }: ProfileFormProps) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="ownerName">Twoje imię</Label>
-            <Input id="ownerName" name="ownerName" placeholder="np. Jan" defaultValue={userProfile?.ownerName || ''} />
+            <Input id="ownerName" name="ownerName" placeholder="np. Jan" defaultValue={userProfile?.ownerName || user.displayName || ''} />
             {state.errors?.ownerName && <p className="text-sm text-destructive">{state.errors.ownerName[0]}</p>}
           </div>
           <div className="space-y-2">
