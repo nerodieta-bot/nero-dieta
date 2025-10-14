@@ -126,10 +126,6 @@
       "type": "object",
       "description": "Represents a user profile in the application.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the user profile."
-        },
         "email": {
           "type": "string",
           "description": "Email address of the user.",
@@ -141,7 +137,6 @@
         }
       },
       "required": [
-        "id",
         "email",
         "name"
       ]
@@ -157,7 +152,7 @@
   "firestore": {
     "structure": [
       {
-        "path": "/users/{userId}/profile",
+        "path": "/users/{userId}",
         "definition": {
           "entityName": "UserProfile",
           "schema": {
@@ -237,6 +232,6 @@
         }
       }
     ],
-    "reasoning": "This Firestore structure prioritizes security, scalability, and ease of debugging by adhering to the core design principles and strategy mandates outlined. It focuses on authorization independence and structural segregation.&#x20; \n\n**Authorization Independence:** Authorization Independence is achieved by avoiding hierarchical authorization dependencies (`get()`). Roles and access control lists are stored directly within documents or in dedicated collections, eliminating the need to traverse the data hierarchy for authorization checks.  For instance, the `members` map in collaborative documents stores the roles of users, enabling direct access validation.\n\n**Structural Segregation:** Ensures that each collection contains documents with a uniform security posture.  This simplifies security rules by eliminating the need for complex logic to handle varied access requirements within the same collection.\n\n**QAPs (Rules Are Not Filters):** The structure enables secure list operations by preventing the need to filter based on data content within rules. Path-based ownership and membership maps facilitate direct authorization based on the document path or explicitly defined roles, ensuring that list operations only return authorized documents.\n\n**Explanation of the Structure:**\n\n*   `/users/{userId}/profile`: Stores user profile information, accessible only to the user and admins.\n*   `/ingredients/{ingredientId}`: Stores ingredient data, publicly readable but editable only by admins. Segregating the `/ingredients` collection ensures consistent security posture.\n*   `/meal_plans/{mealPlanId}`: Stores meal plans, publicly readable but editable only by admins.\n*   `/user_contributions/{contributionId}`: Stores user submissions for new ingredients or updates.  Each submission includes the `userId` and is readable by the submitting user and admins.\n*   `/roles_admin/{userId}`:  DBAC (Database Acess Control) via explicit admin role assignment. If a document exists, then the user is an admin."
+    "reasoning": "This Firestore structure prioritizes security, scalability, and ease of debugging by adhering to the core design principles and strategy mandates outlined. It focuses on authorization independence and structural segregation.  \n\n**Authorization Independence:** Authorization Independence is achieved by avoiding hierarchical authorization dependencies (`get()`). Roles and access control lists are stored directly within documents or in dedicated collections, eliminating the need to traverse the data hierarchy for authorization checks.  For instance, the `members` map in collaborative documents stores the roles of users, enabling direct access validation.\n\n**Structural Segregation:** Ensures that each collection contains documents with a uniform security posture.  This simplifies security rules by eliminating the need for complex logic to handle varied access requirements within the same collection.\n\n**QAPs (Rules Are Not Filters):** The structure enables secure list operations by preventing the need to filter based on data content within rules. Path-based ownership and membership maps facilitate direct authorization based on the document path or explicitly defined roles, ensuring that list operations only return authorized documents.\n\n**Explanation of the Structure:**\n\n*   `/users/{userId}`: Stores user profile information, accessible only to the user and admins.\n*   `/ingredients/{ingredientId}`: Stores ingredient data, publicly readable but editable only by admins. Segregating the `/ingredients` collection ensures consistent security posture.\n*   `/meal_plans/{mealPlanId}`: Stores meal plans, publicly readable but editable only by admins.\n*   `/user_contributions/{contributionId}`: Stores user submissions for new ingredients or updates.  Each submission includes the `userId` and is readable by the submitting user and admins.\n*   `/roles_admin/{userId}`:  DBAC (Database Acess Control) via explicit admin role assignment. If a document exists, then the user is an admin."
   }
 }
