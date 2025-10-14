@@ -19,7 +19,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { ScrollArea } from './ui/scroll-area';
 import { TermsContent } from './terms-content';
 import { PrivacyContent } from './privacy-content';
 
@@ -78,9 +77,9 @@ export function CookieConsentBanner() {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Regulamin Serwisu Dieta Nero</AlertDialogTitle>
                   </AlertDialogHeader>
-                  <ScrollArea className="h-[60vh] pr-6">
+                  <div className="max-h-[60vh] overflow-y-auto pr-6">
                     <TermsContent />
-                  </ScrollArea>
+                  </div>
                   <AlertDialogFooter>
                     <AlertDialogAction>Zamknij</AlertDialogAction>
                   </AlertDialogFooter>
@@ -98,9 +97,9 @@ export function CookieConsentBanner() {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Polityka Prywatności Dieta Nero</AlertDialogTitle>
                   </AlertDialogHeader>
-                  <ScrollArea className="h-[60vh] pr-6">
+                  <div className="max-h-[60vh] overflow-y-auto pr-6">
                     <PrivacyContent />
-                  </ScrollArea>
+                  </div>
                   <AlertDialogFooter>
                     <AlertDialogAction>Zamknij</AlertDialogAction>
                   </AlertDialogFooter>
