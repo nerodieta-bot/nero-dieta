@@ -2,6 +2,7 @@ export type IngredientStatus = 'safe' | 'warning' | 'danger';
 
 export interface Ingredient {
   name: string;
+  slug: string;
   cat_icon: string;
   icon: string;
   status: IngredientStatus;
