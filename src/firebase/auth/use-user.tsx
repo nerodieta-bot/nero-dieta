@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
+import { useAuth } from '..'; // Import useAuth from the barrel file
 
 // Define the shape of the hook's return value
 interface UserAuthHookResult {
@@ -12,16 +13,23 @@ interface UserAuthHookResult {
 
 /**
  * Custom hook to get the current authenticated user from Firebase.
+ * It automatically uses the Auth instance from FirebaseProvider.
  *
- * @param {Auth} auth - The Firebase Auth instance.
  * @returns {UserAuthHookResult} An object containing the user, loading state, and error.
  */
-export const useUser = (auth: Auth): UserAuthHookResult => {
-  const [user, setUser] = useState<User | null>(auth.currentUser);
+export const useUser = (): UserAuthHookResult => {
+  const auth = useAuth(); // Get auth instance from context
+  const [user, setUser] = useState<User | null>(auth?.currentUser || null);
   const [isUserLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
+    if (!auth) {
+        setIsLoading(false);
+        // Optionally set an error if auth service is not available
+        // setError(new Error("Firebase Auth service is not available."));
+        return;
+    }
     // Set up the listener for authentication state changes
     const unsubscribe = onAuthStateChanged(
       auth,
@@ -42,3 +50,5 @@ export const useUser = (auth: Auth): UserAuthHookResult => {
 
   return { user, isUserLoading, error };
 };
+
+    

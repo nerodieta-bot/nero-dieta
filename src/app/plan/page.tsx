@@ -1,4 +1,3 @@
-
 'use client';
 
 import { MealPlanForm } from '@/components/meal-plan-form';
@@ -42,3 +41,5 @@ export default function MealPlanPage() {
     </div>
   );
 }
+
+    
