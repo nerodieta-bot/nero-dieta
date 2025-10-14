@@ -93,14 +93,26 @@ export function LoginForm() {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (auth && recaptchaWrapperRef.current && !recaptchaVerifierRef.current) {
-        recaptchaVerifierRef.current = new RecaptchaVerifier(auth, recaptchaWrapperRef.current, {
-            'size': 'invisible',
-            'callback': () => {},
-            'expired-callback': () => {}
-        });
-        recaptchaVerifierRef.current.render();
+    if (!auth || recaptchaVerifierRef.current) {
+        return;
     }
+
+    const verifier = new RecaptchaVerifier(auth, recaptchaWrapperRef.current!, {
+        'size': 'invisible',
+        'callback': () => {},
+        'expired-callback': () => {
+            recaptchaVerifierRef.current = null;
+        }
+    });
+
+    recaptchaVerifierRef.current = verifier;
+
+    // It's important to render the verifier
+    verifier.render();
+
+    return () => {
+        verifier.clear();
+    };
   }, [auth]);
 
   async function handleSuccessfulLogin(userCredential: UserCredential) {
@@ -383,3 +395,5 @@ export function LoginForm() {
     </Card>
   );
 }
+
+    
