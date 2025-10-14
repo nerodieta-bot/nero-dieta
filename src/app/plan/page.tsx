@@ -1,3 +1,4 @@
+
 'use client';
 
 import { MealPlanForm } from '@/components/meal-plan-form';
@@ -7,6 +8,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { doc } from 'firebase/firestore';
 import { useDoc } from '@/firebase/firestore/use-doc';
+
+const FREE_GENERATIONS_LIMIT = 3;
 
 export default function MealPlanPage() {
   const { user, isUserLoading } = useUser();
@@ -40,7 +43,7 @@ export default function MealPlanPage() {
   }
 
   const generationsCount = userProfile?.mealPlanGenerations ?? 0;
-  const generationsLeft = Math.max(0, 2 - generationsCount);
+  const generationsLeft = Math.max(0, FREE_GENERATIONS_LIMIT - generationsCount);
 
   return (
     <div className="container mx-auto px-4 py-8">
