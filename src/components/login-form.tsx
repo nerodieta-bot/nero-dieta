@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useAuth, useFirestore, setDocumentNonBlocking } from '@/firebase';
+import { useAuth, useFirestore } from '@/firebase';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import {
@@ -30,6 +30,7 @@ import {
 } from 'firebase/auth';
 import { Separator } from './ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 
 const SignUpSchema = z
@@ -91,11 +92,17 @@ export function LoginForm() {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!auth || recaptchaVerifierRef.current) return;
+    if (!auth || !recaptchaWrapperRef.current) return;
 
-    if (recaptchaWrapperRef.current) {
+    if (!recaptchaVerifierRef.current) {
         recaptchaVerifierRef.current = new RecaptchaVerifier(auth, recaptchaWrapperRef.current, {
             'size': 'invisible',
+            'callback': () => {
+                // reCAPTCHA solved
+            },
+            'expired-callback': () => {
+                // Response expired. Ask user to solve reCAPTCHA again.
+            }
         });
         recaptchaVerifierRef.current.render();
     }
@@ -119,7 +126,7 @@ export function LoginForm() {
     await createSessionCookie(idToken);
 
     toast({
-      title: `Witaj w stadzie, ${user.displayName || 'użytkowniku'}!`,
+      title: `Witaj w stadzie, ${user.displayName || user.email || 'użytkowniku'}!`,
       description: 'Logowanie zakończone pomyślnie.',
     });
 
@@ -131,6 +138,7 @@ export function LoginForm() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
+    setInfoMessage(null);
     setIsPending(true);
 
     if (!auth) {
@@ -256,8 +264,8 @@ export function LoginForm() {
             </CardContent>
             <CardFooter className="flex-col items-stretch">
                 <Button type="submit" disabled={isPending} className="w-full">
-                    {isPending ? <Loader2 className="mr-2 animate-spin" /> : <Mail className="mr-2" />}
-                    {isPending ? 'Logowanie...' : 'Zaloguj się'}
+                    {isPending && emailMode === 'signin' ? <Loader2 className="mr-2 animate-spin" /> : <Mail className="mr-2" />}
+                    {isPending && emailMode === 'signin' ? 'Logowanie...' : 'Zaloguj się'}
                 </Button>
             </CardFooter>
         </TabsContent>
@@ -278,8 +286,8 @@ export function LoginForm() {
             </CardContent>
             <CardFooter className="flex-col items-stretch">
                 <Button type="submit" disabled={isPending} className="w-full">
-                    {isPending ? <Loader2 className="mr-2 animate-spin" /> : <KeyRound className="mr-2" />}
-                    {isPending ? 'Tworzenie konta...' : 'Zarejestruj się'}
+                    {isPending && emailMode === 'signup' ? <Loader2 className="mr-2 animate-spin" /> : <KeyRound className="mr-2" />}
+                    {isPending && emailMode === 'signup' ? 'Tworzenie konta...' : 'Zarejestruj się'}
                 </Button>
             </CardFooter>
         </TabsContent>
@@ -307,7 +315,7 @@ export function LoginForm() {
             ) : (
                 <div className="space-y-2">
                     <Label htmlFor="code">Kod weryfikacyjny</Label>
-                    <Input id="code" name="code" type="text" pattern="\d{6}" maxLength={6} required />
+                    <Input id="code" name="code" type="text" inputMode="numeric" pattern="\d{6}" maxLength={6} required />
                 </div>
             )}
         </CardContent>
@@ -354,6 +362,13 @@ export function LoginForm() {
             <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 p-3 rounded-md">
                 <AlertTriangle className="h-4 w-4 flex-shrink-0" />
                 <span>{error}</span>
+            </div>
+        </div>
+      )}
+      {infoMessage && authMode === 'phone' && (
+        <div className="px-6 pb-4">
+            <div className="flex items-center gap-2 text-sm text-green-700 bg-green-500/10 p-3 rounded-md">
+                <span>{infoMessage}</span>
             </div>
         </div>
       )}
