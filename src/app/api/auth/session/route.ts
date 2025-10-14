@@ -2,9 +2,6 @@ import {NextRequest, NextResponse} from 'next/server';
 import {cookies} from 'next/headers';
 import {initializeAdminApp} from '@/firebase/admin';
 
-// Initialize Firebase Admin SDK
-const {auth} = initializeAdminApp();
-
 // Define session lifetime (e.g., 5 days)
 const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days in milliseconds
 
@@ -12,6 +9,8 @@ const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days in milliseconds
  * Creates a session cookie for the authenticated user.
  */
 export async function POST(request: NextRequest) {
+  // Initialize Firebase Admin SDK inside the function
+  const {auth} = initializeAdminApp();
   try {
     const {idToken} = (await request.json()) as {idToken: string};
     if (!idToken) {
