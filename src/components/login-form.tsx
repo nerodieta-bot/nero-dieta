@@ -92,28 +92,15 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (!auth || !recaptchaWrapperRef.current) {
-        return;
+   useEffect(() => {
+    if (!auth || !recaptchaWrapperRef.current) return;
+
+    if (!recaptchaVerifierRef.current) {
+        const verifier = new RecaptchaVerifier(auth, recaptchaWrapperRef.current, {
+            'size': 'invisible',
+        });
+        recaptchaVerifierRef.current = verifier;
     }
-
-    if (recaptchaVerifierRef.current) {
-        recaptchaVerifierRef.current.clear();
-    }
-
-    const verifier = new RecaptchaVerifier(auth, recaptchaWrapperRef.current, {
-        'size': 'invisible',
-        'callback': () => {},
-        'expired-callback': () => {
-            recaptchaVerifierRef.current = null;
-        }
-    });
-
-    recaptchaVerifierRef.current = verifier;
-
-    return () => {
-        verifier.clear();
-    };
   }, [auth]);
 
   async function handleSuccessfulLogin(userCredential: UserCredential) {
@@ -132,14 +119,12 @@ export function LoginForm() {
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
         };
-        // Use setDoc for a new user
         setDocumentNonBlocking(userRef, userData);
       } else {
          const userData = {
             ownerName: user.displayName || '',
             updatedAt: serverTimestamp(),
         };
-        // Use updateDoc for an existing user to avoid overwriting fields
         updateDocumentNonBlocking(userRef, userData);
       }
     }
