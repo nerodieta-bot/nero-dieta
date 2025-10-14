@@ -16,6 +16,7 @@ import { cn } from '@/lib/utils';
 
 type IngredientGridProps = {
   ingredients: Ingredient[];
+  isUserLoggedIn: boolean;
 };
 
 const filterOptions: {
@@ -32,7 +33,7 @@ const filterOptions: {
   { label: 'Zakazane', value: 'danger', icon: XCircle, baseClass: 'bg-red-600 text-white', hoverClass: 'hover:bg-red-700', activeClass: 'ring-red-700' },
 ];
 
-export function IngredientGrid({ ingredients }: IngredientGridProps) {
+export function IngredientGrid({ ingredients, isUserLoggedIn }: IngredientGridProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<IngredientStatus | 'all'>('all');
   const [openCardId, setOpenCardId] = useState<string | null>(null);
@@ -43,13 +44,19 @@ export function IngredientGrid({ ingredients }: IngredientGridProps) {
       .filter((p) =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.desc.toLowerCase().includes(searchQuery.toLowerCase())
+        (isUserLoggedIn && p.desc.toLowerCase().includes(searchQuery.toLowerCase()))
       );
-  }, [ingredients, filter, searchQuery]);
+  }, [ingredients, filter, searchQuery, isUserLoggedIn]);
   
   const handleFilterChange = (value: IngredientStatus | 'all') => {
     setFilter(value);
   }
+
+  const handleToggleCard = (id: string) => {
+    if (isUserLoggedIn) {
+      setOpenCardId(prevId => prevId === id ? null : id);
+    }
+  };
 
   return (
     <div>
@@ -119,7 +126,8 @@ export function IngredientGrid({ ingredients }: IngredientGridProps) {
             key={ingredient.name} 
             ingredient={ingredient}
             isOpen={openCardId === ingredient.name}
-            onToggle={() => setOpenCardId(prevId => prevId === ingredient.name ? null : ingredient.name)}
+            onToggle={() => handleToggleCard(ingredient.name)}
+            isUserLoggedIn={isUserLoggedIn}
           />
         ))}
       </div>
