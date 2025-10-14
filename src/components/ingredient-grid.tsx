@@ -17,7 +17,6 @@ import { cn } from '@/lib/utils';
 type IngredientGridProps = {
   ingredients: Ingredient[];
   isUserLoggedIn: boolean;
-  userProfile: any;
 };
 
 const filterOptions: {
@@ -34,7 +33,7 @@ const filterOptions: {
   { label: 'Zakazane', value: 'danger', icon: XCircle, baseClass: 'bg-red-600 text-white', hoverClass: 'hover:bg-red-700', activeClass: 'ring-red-700' },
 ];
 
-export function IngredientGrid({ ingredients, isUserLoggedIn, userProfile }: IngredientGridProps) {
+export function IngredientGrid({ ingredients, isUserLoggedIn }: IngredientGridProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<IngredientStatus | 'all'>('all');
 
@@ -119,8 +118,6 @@ export function IngredientGrid({ ingredients, isUserLoggedIn, userProfile }: Ing
           <IngredientCard 
             key={ingredient.slug} 
             ingredient={ingredient}
-            isUserLoggedIn={isUserLoggedIn}
-            userProfile={userProfile}
           />
         ))}
       </div>

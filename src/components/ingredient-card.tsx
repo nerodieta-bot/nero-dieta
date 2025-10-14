@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -22,20 +22,18 @@ import {
 } from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
 import type { Ingredient } from '@/lib/types';
-import { Lock, ArrowRight, PawPrint, Gem } from 'lucide-react';
+import { Lock, ArrowRight, PawPrint } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@/firebase/provider';
 import { loginPrompts } from '@/app/data/login-prompts';
 
 type IngredientCardProps = {
   ingredient: Ingredient;
-  isUserLoggedIn: boolean;
-  userProfile: any;
 };
 
 const GUEST_CLICK_LIMIT = 3;
-const LOGGED_IN_CLICK_LIMIT = 5;
 
 const statusConfig = {
   safe: {
@@ -52,21 +50,19 @@ const statusConfig = {
   },
 };
 
-export function IngredientCard({ ingredient, isUserLoggedIn, userProfile }: IngredientCardProps) {
+export function IngredientCard({ ingredient }: IngredientCardProps) {
+  const { user, isUserLoading } = useUser();
   const config = statusConfig[ingredient.status];
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [randomPrompt, setRandomPrompt] = useState(loginPrompts[0]);
   const router = useRouter();
 
-  const handleCardClick = () => {
-    if (isUserLoggedIn) {
-      const currentViews = userProfile?.ingredientViewCount || 0;
-      if (currentViews < LOGGED_IN_CLICK_LIMIT) {
-        router.push(`/skladnik/${ingredient.slug}`);
-      } else {
-        setShowPremiumModal(true);
-      }
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (isUserLoading) return; // Do nothing while loading user state
+
+    if (user) {
+      router.push(`/skladnik/${ingredient.slug}`);
     } else {
       const guestClicks = parseInt(sessionStorage.getItem('guestClicks') || '0', 10);
       if (guestClicks < GUEST_CLICK_LIMIT) {
@@ -105,7 +101,7 @@ export function IngredientCard({ ingredient, isUserLoggedIn, userProfile }: Ingr
           </CardContent>
           <CardFooter className="flex flex-col gap-4 pt-4 border-t border-black/10 dark:border-white/10 mt-auto">
              <div className="flex justify-center items-center text-accent w-full font-semibold">
-                {!isUserLoggedIn ? (
+                {!user ? (
                     <>
                         <Lock className="h-4 w-4 mr-2"/>
                         <span className="text-xs">Zaloguj się, by zobaczyć</span>
@@ -121,58 +117,24 @@ export function IngredientCard({ ingredient, isUserLoggedIn, userProfile }: Ingr
         </div>
       </Card>
       
-      {/* Login Modal for Guests */}
       <AlertDialog open={showLoginModal} onOpenChange={setShowLoginModal}>
-        <AlertDialogContent className="shadow-2xl border-accent/20 bg-background/95 backdrop-blur-lg rounded-2xl ring-1 ring-black/5">
+        <AlertDialogContent>
           <AlertDialogHeader>
-            <div className="flex justify-center mb-4">
-              <div className="relative w-20 h-20">
-                <div className="absolute inset-0 bg-accent/30 rounded-full blur-xl animate-pulse"></div>
-                <PawPrint className="relative w-20 h-20 text-accent animate-pulse" />
-              </div>
+            <div className="text-center">
+              <PawPrint className="mx-auto w-16 h-16 text-accent mb-4" />
             </div>
-            <AlertDialogTitle className="text-center text-3xl font-bold font-headline text-primary">
+            <AlertDialogTitle className="text-center text-2xl font-bold font-headline text-primary">
               {randomPrompt.title}
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-center text-foreground/80 text-lg pt-2 leading-relaxed">
-              <span className="italic">{randomPrompt.message}</span>
+            <AlertDialogDescription className="text-center text-muted-foreground text-base">
+              {randomPrompt.message}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col sm:flex-col sm:space-x-0 gap-3 pt-4">
-            <AlertDialogAction asChild className='w-full text-lg py-6'>
+          <AlertDialogFooter className="flex-col sm:flex-col sm:space-x-0 gap-2">
+            <AlertDialogAction asChild>
               <Link href="/login">Dołącz do Stada!</Link>
             </AlertDialogAction>
-            <AlertDialogCancel asChild className='w-full text-lg py-6'>
-              <Button variant="ghost">Może później</Button>
-            </AlertDialogCancel>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Premium Modal for Logged-in Users */}
-       <AlertDialog open={showPremiumModal} onOpenChange={setShowPremiumModal}>
-        <AlertDialogContent className="shadow-2xl border-primary/20 bg-background/95 backdrop-blur-lg rounded-2xl ring-1 ring-black/5">
-          <AlertDialogHeader>
-            <div className="flex justify-center mb-4">
-              <div className="relative w-20 h-20">
-                <div className="absolute inset-0 bg-primary/30 rounded-full blur-xl animate-pulse"></div>
-                <Gem className="relative w-20 h-20 text-primary animate-pulse" />
-              </div>
-            </div>
-            <AlertDialogTitle className="text-center text-3xl font-bold font-headline text-primary">
-              Apetyt na więcej?
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-center text-foreground/80 text-lg pt-2 leading-relaxed">
-              <span className="italic">"Widzę, że pochłaniasz wiedzę jak najlepsze smakołyki! Wykorzystałeś darmowy limit odsłon. Czas odblokować pełny dostęp do mojej spiżarni mądrości!"</span>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col sm:flex-col sm:space-x-0 gap-3 pt-4">
-            <AlertDialogAction asChild className='w-full text-lg py-6'>
-              <Link href="/pricing">Zobacz Plany Premium</Link>
-            </AlertDialogAction>
-            <AlertDialogCancel asChild className='w-full text-lg py-6'>
-              <Button variant="ghost">Pozostaję przy darmowym</Button>
-            </AlertDialogCancel>
+            <AlertDialogCancel>Może później</AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
