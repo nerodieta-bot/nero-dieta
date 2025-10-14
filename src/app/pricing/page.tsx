@@ -13,7 +13,7 @@ const plans = [
         description: "Idealny na początek, aby poznać podstawowe możliwości Dieta Nero.",
         features: [
             "Limit 5 odsłon składników w bazie",
-            "3 generacje planu posiłków AI",
+            "3 generacje planu posiłków",
             "5 skanów etykiet miesięcznie",
             "Możliwość zgłaszania składników"
         ],
@@ -23,12 +23,14 @@ const plans = [
     {
         name: "Premium",
         price: "19 zł",
+        annualPrice: "199 zł",
         priceDescription: "miesięcznie",
+        annualPriceDescription: "rocznie (oszczędzasz 2 miesiące!)",
         description: "Pełna moc Nero bez żadnych ograniczeń. Dla prawdziwych entuzjastów.",
         features: [
             "Wszystko z planu Starter",
             "Nielimitowany dostęp do bazy składników",
-            "Nielimitowane generacje planu posiłków AI",
+            "Nielimitowane generacje planu posiłków",
             "Nielimitowane skany etykiet",
             "Priorytetowe wsparcie mailowe",
             "Wczesny dostęp do nowych funkcji"
@@ -79,6 +81,16 @@ export default function PricingPage() {
                                     {plan.price}
                                 </div>
                                 <CardDescription>{plan.priceDescription}</CardDescription>
+                                {plan.annualPrice && (
+                                    <div className="mt-2">
+                                        <div className="font-semibold text-sm">
+                                            lub {plan.annualPrice}
+                                        </div>
+                                        <div className="text-xs text-muted-foreground">
+                                            {plan.annualPriceDescription}
+                                        </div>
+                                    </div>
+                                )}
                             </CardHeader>
                             <CardContent className="flex-grow">
                                 <p className="text-sm text-center text-muted-foreground mb-6 h-12">{plan.description}</p>
@@ -93,7 +105,7 @@ export default function PricingPage() {
                             </CardContent>
                             <CardFooter>
                                 <Button asChild className={cn("w-full", !plan.isFeatured && "variant-outline")} size="lg">
-                                    <Link href={plan.price === "0 zł" ? "/" : "/contact"}>{plan.buttonText}</Link>
+                                    <Link href={plan.name === "Starter" ? "/" : "/contact"}>{plan.buttonText}</Link>
                                 </Button>
                             </CardFooter>
                         </Card>
