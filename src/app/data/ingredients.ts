@@ -1622,7 +1622,7 @@ export const ingredients: Ingredient[] = [
     desc: 'Sam owoc nie jest toksyczny, ale duża ilość małych, twardych pestek może powodować rozstrój żołądka, wymioty i niedrożność jelit, ponieważ psy ich nie trawią.',
     WARNING: 'LEPIEJ UNIKAĆ. Zbyt wiele małych pestek.',
     nero: 'Czerwone, lśniące klejnoty. Ale jest ich tak dużo i są takie małe! To zbyt skomplikowane. Wolę prostsze jedzenie. Jak kawałek kurczaka.',
-    source: 'https://wwwAIzaSyDL3yKZOoWjTxCO1u49i6hM8Zd7Kj690c',
+    source: 'https://www.akc.org/expert-advice/nutrition/can-dogs-eat-pomegranates/',
   },
   {
     name: 'Olej lniany',
@@ -1756,7 +1756,7 @@ export const ingredients: Ingredient[] = [
     portion: 'Bardzo mała szczypta proszku',
     prep: 'Sproszkowana',
     nero: 'Pachnie ziemią i tajemnicą. Podobno daje super moce. Na razie moją super mocą jest spanie. Nie potrzebuję wspomagaczy.',
-    source: 'https://wwwAIzaSyDDL-vKZOoWjTxCO1u49i6hM8Zd7Kj690c',
+    source: 'https://www.petmd.com/dog/wellness/can-dogs-eat-maca-root',
   },
   {
     name: 'Figi',

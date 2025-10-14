@@ -1,3 +1,4 @@
+
 'use client';
 
 import { HeroSection } from '@/components/hero-section';
@@ -35,22 +36,16 @@ export default function Home() {
         const sortedIngredients = [...ingredients].sort((a, b) => a.name.localeCompare(b.name));
         setIngredientsToShow(sortedIngredients);
       } else {
-        // Not-logged-in user sees 4 safe, 4 moderate, and 4 forbidden
+        // Not-logged-in user sees a shuffled selection
         const shuffle = (arr: typeof ingredients) => [...arr].sort(() => 0.5 - Math.random());
-
-        const safe = shuffle(ingredients.filter(i => i.status === 'safe')).slice(0, 4);
-        const warning = shuffle(ingredients.filter(i => i.status === 'warning')).slice(0, 4);
-        const danger = shuffle(ingredients.filter(i => i.status === 'danger')).slice(0, 4);
-        
-        const combined = shuffle([...safe, ...warning, ...danger]);
-        setIngredientsToShow(combined);
+        setIngredientsToShow(shuffle(ingredients));
       }
     }
   }, [user, isClient]);
 
   const isLoading = isUserLoading || (user && isProfileLoading);
 
-  if (isLoading || !isClient) {
+  if (!isClient) {
      return (
       <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
         <div className="flex flex-col items-center justify-center p-8 text-center">
@@ -67,7 +62,6 @@ export default function Home() {
       <IngredientGrid 
         ingredients={ingredientsToShow} 
         isUserLoggedIn={!!user}
-        userProfile={userProfile}
       />
 
       {!user && (
