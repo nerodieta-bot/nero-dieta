@@ -25,9 +25,9 @@ export default function Home() {
         const sortedIngredients = [...ingredients].sort((a, b) => a.name.localeCompare(b.name));
         setIngredientsToShow(sortedIngredients);
       } else {
-        // Niezalogowany użytkownik widzi 3 losowe składniki
+        // Niezalogowany użytkownik widzi 10 losowych składników
         const shuffled = [...ingredients].sort(() => 0.5 - Math.random());
-        setIngredientsToShow(shuffled.slice(0, 3));
+        setIngredientsToShow(shuffled.slice(0, 10));
       }
     }
   }, [user, isClient]);
@@ -46,7 +46,7 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 py-8">
       <HeroSection />
-      <IngredientGrid ingredients={ingredientsToShow} />
+      <IngredientGrid ingredients={ingredientsToShow} isUserLoggedIn={!!user} />
 
       {!user && (
         <div className="mt-12 text-center bg-card border rounded-lg p-8 max-w-3xl mx-auto">

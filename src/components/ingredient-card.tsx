@@ -11,14 +11,21 @@ import {
 } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import type { Ingredient } from '@/lib/types';
-import { ChevronDown, AlertCircle, Link as LinkIcon } from 'lucide-react';
+import { ChevronDown, AlertCircle, Link as LinkIcon, Lock } from 'lucide-react';
 import { Badge } from './ui/badge';
 import Link from 'next/link';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 type IngredientCardProps = {
   ingredient: Ingredient;
   isOpen: boolean;
   onToggle: () => void;
+  isUserLoggedIn: boolean;
 };
 
 const statusConfig = {
@@ -36,26 +43,63 @@ const statusConfig = {
   },
 };
 
-export function IngredientCard({ ingredient, isOpen, onToggle }: IngredientCardProps) {
+export function IngredientCard({ ingredient, isOpen, onToggle, isUserLoggedIn }: IngredientCardProps) {
   const config = statusConfig[ingredient.status];
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Prevent toggle when clicking on a link
-    if ((e.target as HTMLElement).closest('a')) {
+    // Prevent toggle when clicking on a link or if user is not logged in
+    if ((e.target as HTMLElement).closest('a') || !isUserLoggedIn) {
       return;
     }
     onToggle();
   };
 
+  const DetailsButton = () => {
+    if (!isUserLoggedIn) {
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+                <div className="flex justify-center items-center text-muted-foreground w-full cursor-not-allowed">
+                    <Lock className="h-4 w-4 mr-2"/>
+                    <span className="text-xs mr-2">Pokaż szczegóły</span>
+                    <ChevronDown className="h-5 w-5" />
+                </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Zaloguj się, aby zobaczyć szczegóły i komentarz Nero!</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+    return (
+        <div className="flex justify-center items-center text-accent w-full">
+            <span className="text-xs mr-2">Pokaż szczegóły</span>
+            <ChevronDown
+              className={cn(
+                'h-5 w-5 transition-transform duration-300',
+                isOpen && 'rotate-180'
+              )}
+            />
+          </div>
+    )
+  }
+
   return (
     <Card
       className={cn(
-        'flex flex-col transition-all duration-300 ease-in-out hover:shadow-lg hover:-translate-y-1',
+        'flex flex-col transition-all duration-300 ease-in-out',
+        !isUserLoggedIn ? 'hover:shadow-md' : 'hover:shadow-lg hover:-translate-y-1',
         config.className,
         isOpen && 'shadow-xl'
       )}
     >
-      <div className="flex-grow flex flex-col" onClick={handleCardClick} style={{cursor: 'pointer'}}>
+      <div 
+        className="flex-grow flex flex-col" 
+        onClick={handleCardClick}
+        style={{cursor: isUserLoggedIn ? 'pointer' : 'default'}}
+    >
         <CardHeader className="text-center items-center">
           <div className="text-4xl mb-2">{ingredient.icon}</div>
           <CardTitle className={cn('text-xl font-bold font-headline', config.textColor)}>
@@ -69,7 +113,7 @@ export function IngredientCard({ ingredient, isOpen, onToggle }: IngredientCardP
           <div
             className={cn(
               'grid transition-all duration-500 ease-in-out',
-              isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+              isOpen && isUserLoggedIn ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
             )}
           >
             <div className="overflow-hidden">
@@ -101,20 +145,14 @@ export function IngredientCard({ ingredient, isOpen, onToggle }: IngredientCardP
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-4 pt-4 border-t border-black/10 dark:border-white/10 mt-auto">
-          <div className="text-center w-full">
-            <p className={cn('italic text-sm', config.textColor)}>
-              <strong className={cn(config.textColor)}>Nero:</strong> "{ingredient.nero}"
-            </p>
-          </div>
-          <div className="flex justify-center items-center text-accent w-full">
-            <span className="text-xs mr-2">Pokaż szczegóły</span>
-            <ChevronDown
-              className={cn(
-                'h-5 w-5 transition-transform duration-300',
-                isOpen && 'rotate-180'
-              )}
-            />
-          </div>
+          {isOpen && isUserLoggedIn && (
+            <div className="text-center w-full">
+                <p className={cn('italic text-sm', config.textColor)}>
+                <strong className={cn(config.textColor)}>Nero:</strong> "{ingredient.nero}"
+                </p>
+            </div>
+          )}
+          <DetailsButton />
         </CardFooter>
       </div>
     </Card>
