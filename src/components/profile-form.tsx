@@ -9,9 +9,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { setDocumentNonBlocking } from '@/firebase';
 import { doc, serverTimestamp } from 'firebase/firestore';
-import { useFirestore } from '@/firebase/provider';
+import { useFirestore } from '@/firebase';
 
 
 const initialState: ProfileFormState = {
@@ -70,11 +70,6 @@ export function ProfileForm({ user, userProfile }: ProfileFormProps) {
             <Label htmlFor="email">Adres e-mail</Label>
             <Input id="email" name="email" type="email" value={user.email || ''} disabled />
             <p className="text-xs text-muted-foreground">Adres e-mail jest powiązany z Twoim kontem i nie można go zmienić.</p>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="phoneNumber">Numer telefonu</Label>
-            <Input id="phoneNumber" name="phoneNumber" type="tel" value={user.phoneNumber || userProfile?.phoneNumber || ''} disabled />
-            <p className="text-xs text-muted-foreground">Numer telefonu jest powiązany z Twoim kontem i nie można go zmienić.</p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="ownerName">Twoje imię</Label>

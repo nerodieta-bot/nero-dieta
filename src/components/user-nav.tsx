@@ -1,6 +1,6 @@
 'use client';
 
-import { useUser, useAuth } from '@/firebase/provider';
+import { useUser, useAuth } from '@/firebase';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +15,10 @@ import { LogOut, User as UserIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+async function clearSessionCookie() {
+  await fetch('/api/auth/session', { method: 'DELETE' });
+}
+
 export function UserNav() {
   const { user } = useUser();
   const auth = useAuth();
@@ -23,15 +27,18 @@ export function UserNav() {
   const handleSignOut = async () => {
     if (auth) {
       await auth.signOut();
+      await clearSessionCookie();
       router.push('/');
+      router.refresh(); // Force a refresh to ensure server components re-render
     }
   };
 
   if (!user) return null;
 
-  const getInitials = (email: string | null) => {
-    if (!email) return '?';
-    return email[0].toUpperCase();
+  const getInitials = (displayName: string | null, email: string | null) => {
+    if (displayName) return displayName.charAt(0).toUpperCase();
+    if (email) return email.charAt(0).toUpperCase();
+    return '?';
   };
   
   return (
@@ -39,9 +46,9 @@ export function UserNav() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-10 w-10 rounded-full">
           <Avatar className="h-10 w-10 border-2 border-accent/50">
-            {user.photoURL && <AvatarImage src={user.photoURL} alt={user.email || 'User'} />}
+            {user.photoURL && <AvatarImage src={user.photoURL} alt={user.displayName || user.email || 'User'} />}
             <AvatarFallback className="bg-accent text-accent-foreground font-bold">
-              {getInitials(user.email)}
+              {getInitials(user.displayName, user.email)}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -49,9 +56,9 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Moje konto</p>
+            <p className="text-sm font-medium leading-none">{user.displayName || 'Moje konto'}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              {user.email || user.phoneNumber}
+              {user.email}
             </p>
           </div>
         </DropdownMenuLabel>
