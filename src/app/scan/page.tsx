@@ -1,7 +1,33 @@
+
+'use client';
+
 import { LabelScanner } from "@/components/label-scanner";
-import { ScanLine } from "lucide-react";
+import { ScanLine, Loader2 } from "lucide-react";
+import { useUser } from '@/firebase/provider';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function ScanPage() {
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.replace('/login?redirect=/scan');
+    }
+  }, [user, isUserLoading, router]);
+
+  if (isUserLoading || !user) {
+    return (
+      <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
+        <div className="flex flex-col items-center justify-center p-8 text-center">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <p className="mt-4 text-muted-foreground">Weryfikuję dostęp...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
