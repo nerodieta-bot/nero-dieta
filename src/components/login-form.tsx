@@ -99,7 +99,7 @@ export function LoginForm() {
         const verifier = new RecaptchaVerifier(auth, recaptchaWrapperRef.current, {
             'size': 'invisible',
             'callback': (response: any) => {
-                // reCAPTCHA solved.
+                // reCAPTCHA solved, allow signInWithPhoneNumber.
             },
         });
         recaptchaVerifierRef.current = verifier;
