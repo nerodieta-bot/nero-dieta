@@ -131,14 +131,17 @@
           "description": "Email address of the user.",
           "format": "email"
         },
-        "name": {
+        "ownerName": {
           "type": "string",
           "description": "Display name of the user."
+        },
+        "dogName": {
+            "type": "string",
+            "description": "Name of the user's dog."
         }
       },
       "required": [
-        "email",
-        "name"
+        "email"
       ]
     }
   },
