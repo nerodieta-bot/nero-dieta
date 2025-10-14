@@ -5,65 +5,79 @@ export function PrivacyContent() {
               <h3>§1 Informacje ogólne</h3>
               <ol>
                 <li>Niniejsza Polityka Prywatności określa zasady przetwarzania i ochrony danych osobowych przekazywanych przez Użytkowników w związku z korzystaniem przez nich z usług oferowanych przez serwis Dieta Nero (dalej: "Serwis").</li>
-                <li>Administratorem danych osobowych zawartych w serwisie jest podmiot zarządzający aplikacją (dalej: "Administrator").</li>
-                <li>Szanujemy prawo do prywatności i dbamy o bezpieczeństwo danych. W tym celu używany jest m.in. bezpieczny protokół szyfrowania komunikacji (SSL).</li>
+                <li>Administratorem Twoich danych osobowych w rozumieniu przepisów o ochronie danych osobowych jest podmiot zarządzający aplikacją (dalej: "Administrator").</li>
+                <li>Szanujemy Twoje prawo do prywatności i dbamy o bezpieczeństwo danych. W tym celu używany jest m.in. bezpieczny protokół szyfrowania komunikacji (SSL).</li>
+                <li>Dane osobowe podawane w formularzach są traktowane jako poufne i nie są widoczne dla osób nieuprawnionych.</li>
               </ol>
             </section>
             
             <section>
-              <h3>§2 Jakie dane zbieramy?</h3>
+              <h3>§2 Jakie dane zbieramy i dlaczego?</h3>
               <ol>
                 <li>
-                  <strong>Dane wprowadzane w formularzach:</strong>
+                  <strong>Dane zbierane podczas rejestracji i korzystania z konta:</strong>
                   <ul>
-                    <li>Podczas generowania planu posiłków: waga psa, wiek, poziom aktywności, lista składników.</li>
-                    <li>Podczas analizy etykiety za pomocą Skanera: obraz etykiety produktu.</li>
-                    <li>Podczas zgłaszania nowego składnika: nazwa składnika, status, kategoria, opis, opcjonalny komentarz.</li>
+                    <li>Gdy tworzysz konto, prosimy Cię o podanie adresu e-mail. Jeśli logujesz się przez Google, automatycznie otrzymujemy Twój adres e-mail oraz imię i nazwisko powiązane z kontem Google.</li>
+                    <li>W profilu użytkownika możesz dobrowolnie podać swoje imię oraz imię psa.</li>
+                    <li><strong>Cel:</strong> Dane te są niezbędne do świadczenia usługi, czyli założenia i obsługi Twojego konta, umożliwienia logowania oraz personalizacji (np. zwracania się do Ciebie po imieniu). Przetwarzamy je na podstawie art. 6 ust. 1 lit. b RODO (wykonanie umowy).</li>
+                  </ul>
+                </li>
+                 <li>
+                  <strong>Dane zbierane podczas korzystania z funkcji Serwisu:</strong>
+                  <ul>
+                    <li>Gdy korzystasz z Kreatora Posiłków lub Skanera Etykiet, przetwarzamy dane, które wprowadzasz (np. waga psa, dostępne składniki, zdjęcia etykiet), aby wygenerować dla Ciebie odpowiedź. Dane te nie są trwale zapisywane w powiązaniu z Twoim kontem.</li>
+                    <li>Zliczamy, ile razy korzystasz z funkcji premium (odsłony składników, generowanie planów), aby zarządzać limitami w planie darmowym.</li>
+                    <li><strong>Cel:</strong> Realizacja kluczowych funkcjonalności serwisu.</li>
                   </ul>
                 </li>
                 <li>
-                  <strong>Dane zbierane automatycznie:</strong>
+                  <strong>Dane zbierane automatycznie (logi serwera):</strong>
                   <ul>
-                    <li>Podczas wizyty w Serwisie automatycznie zbierane są dane dotyczące wizyty, np. adres IP, typ przeglądarki, nazwa domeny, typ systemu operacyjnego. Dane te są wykorzystywane w celach statystycznych i administracyjnych.</li>
+                     <li>Podczas Twojej wizyty w Serwisie automatycznie zbierane są dane dotyczące Twojej wizyty, np. adres IP, typ przeglądarki, nazwa domeny.</li>
+                    <li><strong>Cel:</strong> Diagnozowanie problemów technicznych, zapewnienie bezpieczeństwa oraz tworzenie anonimowych statystyk, które pomagają nam ulepszać Serwis. Podstawą prawną jest tu nasz uzasadniony interes (art. 6 ust. 1 lit. f RODO).</li>
                   </ul>
                 </li>
-                <li>Serwis nie wymaga zakładania konta, a dane wprowadzane w formularzach nie są publicznie łączone z tożsamością Użytkownika.</li>
               </ol>
             </section>
 
             <section>
-              <h3>§3 W jakim celu wykorzystujemy dane?</h3>
+              <h3>§3 Udostępnianie danych i okres przechowywania</h3>
               <ol>
-                <li>Dane podane w formularzu generowania planu posiłków oraz obrazy przesyłane w Skanerze Etykiet są przetwarzane wyłącznie w celu wygenerowania odpowiedzi przez model AI i nie są trwale zapisywane w powiązaniu z Użytkownikiem.</li>
-                <li>Dane podane w formularzu zgłaszania składnika są przetwarzane w celu weryfikacji i ewentualnego dodania nowego składnika do publicznej bazy danych Serwisu.</li>
-                <li>Dane zbierane automatycznie mogą być użyte do analizy zachowań użytkowników w Serwisie (np. przy użyciu narzędzi analitycznych) w celu poprawy jego działania.</li>
+                <li>Twoje dane osobowe są przetwarzane przez Administratora. Korzystamy z usług zewnętrznych dostawców, którzy wspierają nas w świadczeniu usług (hosting, system uwierzytelniania, analityka), takich jak Google (Firebase). Podmioty te przetwarzają dane na nasze zlecenie i zgodnie z naszymi instrukcjami.</li>
+                <li>Twoje dane przechowujemy przez okres posiadania przez Ciebie konta w Serwisie. Po usunięciu konta, Twoje dane zostaną trwale usunięte lub zanonimizowane.</li>
               </ol>
             </section>
 
             <section>
-              <h3>§4 Prawa Użytkownika</h3>
+              <h3>§4 Twoje prawa</h3>
               <ol>
-                <li>Użytkownik ma prawo dostępu do swoich danych, ich sprostowania, usunięcia lub ograniczenia przetwarzania.</li>
-                <li>Ponieważ Serwis nie wymaga logowania, realizacja tych praw może wymagać dodatkowej weryfikacji tożsamości w celu potwierdzenia, że jesteś osobą, której dane dotyczą. W celu realizacji swoich praw, prosimy o kontakt mailowy.</li>
+                <li>Przysługuje Ci prawo dostępu do swoich danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, prawo do wniesienia sprzeciwu, a także prawo do przenoszenia danych.</li>
+                <li>Masz prawo wnieść skargę do Prezesa Urzędu Ochrony Danych Osobowych, gdy uznasz, iż przetwarzanie Twoich danych osobowych narusza przepisy RODO.</li>
+                <li>Podanie danych osobowych jest dobrowolne, ale niezbędne do założenia konta i korzystania z pełni funkcjonalności Serwisu.</li>
               </ol>
             </section>
 
              <section>
               <h3>§5 Pliki Cookies</h3>
               <ol>
-                <li>Serwis używa plików cookies (tzw. "ciasteczek") w celu zapisania zgody na warunki Regulaminu i Polityki Prywatności. Jest to niezbędne do prawidłowego funkcjonowania Serwisu.</li>
-                <li>Ciasteczka mogą być również używane w celach statystycznych do analizy ruchu w Serwisie.</li>
-                 <li>Użytkownik może w każdej chwili wyłączyć obsługę plików cookies w ustawieniach swojej przeglądarki internetowej, jednak może to uniemożliwić korzystanie z Serwisu.</li>
+                <li>Serwis używa plików cookies (tzw. "ciasteczek"). Są to niewielkie pliki tekstowe wysyłane przez serwer www i przechowywane przez oprogramowanie komputera przeglądarki.</li>
+                <li>Używamy plików cookies w celu:
+                    <ul>
+                        <li>Zapisania Twojej zgody na warunki Regulaminu i Polityki Prywatności (niezbędne do działania serwisu).</li>
+                        <li>Utrzymania Twojej sesji po zalogowaniu (nie musisz logować się na każdej podstronie).</li>
+                        <li>Tworzenia anonimowych statystyk, które pomagają zrozumieć, w jaki sposób Użytkownicy korzystają ze stron internetowych, co umożliwia ulepszanie ich struktury i zawartości.</li>
+                    </ul>
+                </li>
+                 <li>Możesz w każdej chwili wyłączyć lub ograniczyć obsługę plików cookies w ustawieniach swojej przeglądarki internetowej. Pamiętaj jednak, że może to wpłynąć na niektóre funkcjonalności dostępne w Serwisie.</li>
               </ol>
             </section>
 
             <section>
               <h3>§6 Postanowienia końcowe</h3>
               <ol>
-                <li>Administrator zastrzega sobie prawo do wprowadzania zmian w polityce prywatności.</li>
-                <li>O wszelkich zmianach Administrator będzie informować w sposób widoczny i zrozumiały.</li>
-                <li>W sprawach nieuregulowanych niniejszą Polityką Prywatności mają zastosowanie odpowiednie przepisy prawa polskiego.</li>
-                <li>Data ostatniej aktualizacji: 18.07.2024.</li>
+                <li>Administrator zastrzega sobie prawo do wprowadzania zmian w polityce prywatności. O wszelkich zmianach będziemy informować w sposób widoczny i zrozumiały.</li>
+                <li>W sprawach nieuregulowanych niniejszą Polityką Prywatności mają zastosowanie odpowiednie przepisy prawa polskiego oraz unijnego (RODO).</li>
+                <li>Data ostatniej aktualizacji: 25.07.2024.</li>
               </ol>
             </section>
         </div>
