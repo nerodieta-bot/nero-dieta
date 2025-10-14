@@ -22,7 +22,8 @@ export default function Home() {
     if (isClient) {
       if (user) {
         // Zalogowany użytkownik widzi wszystko, posortowane
-        setIngredientsToShow([...ingredients].sort((a, b) => a.name.localeCompare(b.name)));
+        const sortedIngredients = [...ingredients].sort((a, b) => a.name.localeCompare(b.name));
+        setIngredientsToShow(sortedIngredients);
       } else {
         // Niezalogowany użytkownik widzi 3 losowe składniki
         const shuffled = [...ingredients].sort(() => 0.5 - Math.random());
@@ -62,5 +63,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
