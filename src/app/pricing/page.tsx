@@ -12,10 +12,10 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createCheckoutSession } from "./actions";
 import { useUser } from "@/firebase";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { useToast } from "@/hooks/use-toast";
 
@@ -140,8 +140,23 @@ const faqItems = [
 export default function PricingPage() {
     const { user } = useUser();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { toast } = useToast();
     const [loadingPlan, setLoadingPlan] = useState<'monthly' | 'yearly' | null>(null);
+
+    useEffect(() => {
+        const status = searchParams.get('status');
+        if (status === 'cancelled') {
+            toast({
+                title: 'Płatność anulowana',
+                description: 'Twoja płatność została anulowana. Możesz spróbować ponownie w dowolnym momencie.',
+                variant: 'destructive',
+            });
+            // Clean up the URL
+            router.replace('/pricing', { scroll: false });
+        }
+    }, [searchParams, router, toast]);
+
 
     const handleCheckout = async (plan: 'monthly' | 'yearly') => {
         if (!user) {
