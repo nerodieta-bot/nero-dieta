@@ -14,8 +14,8 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, AlertTriangle, Mail, User, Dog } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Loader2, AlertTriangle, Mail } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
@@ -29,14 +29,23 @@ import {
   UserCredential,
 } from 'firebase/auth';
 import { Separator } from './ui/separator';
+import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+
 
 const LoginSchema = z.object({
   email: z.string().email('Proszę podać poprawny adres e-mail.'),
-  ownerName: z.string().min(2, 'Imię musi mieć co najmniej 2 znaki.'),
-  dogName: z.string().min(2, 'Imię psa musi mieć co najmniej 2 znaki.'),
 });
 
 type AuthState = { status: 'idle' | 'error' | 'success'; message: string };
+
+async function createSessionCookie(idToken: string) {
+    const response = await fetch('/api/auth/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+    });
+    return response.ok;
+}
 
 export function LoginForm() {
   const [authState, setAuthState] = useState<AuthState>({ status: 'idle', message: '' });
@@ -46,6 +55,7 @@ export function LoginForm() {
   const auth = useAuth();
   const firestore = useFirestore();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -53,32 +63,30 @@ export function LoginForm() {
     if (auth && isSignInWithEmailLink(auth, window.location.href)) {
       let email = window.localStorage.getItem('emailForSignIn');
       if (!email) {
-        // User opened the link on a different device.
-        // Let's ask them to provide their email.
         email = window.prompt('Proszę podać swój adres e-mail w celu weryfikacji');
       }
 
       if (email) {
         signInWithEmailLink(auth, email, window.location.href)
-          .then((result) => {
+          .then(async (result) => {
             window.localStorage.removeItem('emailForSignIn');
             
-            const userData = {
-                email: result.user.email,
-                createdAt: serverTimestamp(),
-            };
             if (firestore) {
                 const userRef = doc(firestore, 'users', result.user.uid);
-                setDoc(userRef, userData, { merge: true }).catch(error => {
-                  errorEmitter.emit('permission-error', new FirestorePermissionError({
-                      path: userRef.path,
-                      operation: 'write',
-                      requestResourceData: userData
-                  }));
-                });
+                const userData = {
+                    email: result.user.email,
+                    createdAt: serverTimestamp(),
+                };
+                // Use non-blocking write to create user doc if it doesn't exist
+                setDocumentNonBlocking(userRef, userData, { merge: true });
             }
+
+            const idToken = await result.user.getIdToken();
+            await createSessionCookie(idToken);
+            
             toast({ title: 'Logowanie udane!', description: 'Witaj z powrotem!' });
-            router.push('/');
+            const redirectUrl = searchParams.get('redirect') || '/';
+            router.push(redirectUrl);
           })
           .catch((error) => {
             console.error('Email Link Sign In Error:', error);
@@ -86,7 +94,7 @@ export function LoginForm() {
           });
       }
     }
-  }, [auth, firestore, router, toast]);
+  }, [auth, firestore, router, toast, searchParams]);
 
   const handleEmailSignIn = (formData: FormData) => {
     const data = Object.fromEntries(formData);
@@ -103,14 +111,12 @@ export function LoginForm() {
       setAuthState({ status: 'idle', message: '' });
       try {
         const actionCodeSettings = {
-          url: "https://nero-dieta.ch/profil", // Use custom domain
+          url: window.location.href, // Use current URL to preserve redirect param
           handleCodeInApp: true,
         };
         await sendSignInLinkToEmail(auth, validation.data.email, actionCodeSettings);
         
-        // Store data in local storage to retrieve after email link redirect
         window.localStorage.setItem('emailForSignIn', validation.data.email);
-        window.localStorage.setItem('pendingUserData', JSON.stringify(validation.data));
 
         setAuthState({ status: 'success', message: `Link weryfikacyjny został wysłany na adres ${validation.data.email}. Sprawdź swoją skrzynkę!` });
         formRef.current?.reset();
@@ -139,20 +145,20 @@ export function LoginForm() {
                     createdAt: serverTimestamp(),
                     provider: 'google.com',
                 };
-                setDoc(userRef, userData, { merge: true }).catch(error => {
-                    errorEmitter.emit('permission-error', new FirestorePermissionError({
-                        path: userRef.path,
-                        operation: 'write',
-                        requestResourceData: userData
-                    }));
-                });
+                setDocumentNonBlocking(userRef, userData, { merge: true });
             }
             
+            const idToken = await user.getIdToken();
+            await createSessionCookie(idToken);
+
             toast({
                 title: `Witaj w stadzie, ${user.displayName}!`,
                 description: 'Logowanie zakończone pomyślnie.',
             });
-            router.push('/');
+
+            const redirectUrl = searchParams.get('redirect') || '/';
+            router.push(redirectUrl);
+
         } catch (error: any) {
             console.error('Google Sign In Error:', error);
             if (error.code === 'auth/popup-closed-by-user') {
@@ -170,21 +176,13 @@ export function LoginForm() {
     <Card>
       <form ref={formRef} action={handleEmailSignIn}>
         <CardHeader>
-          <CardTitle>Utwórz konto</CardTitle>
+          <CardTitle>Utwórz konto lub zaloguj się</CardTitle>
           <CardDescription>
-            Wypełnij formularz, a my wyślemy Ci link do logowania.
+            Wpisz swój e-mail, a my wyślemy Ci link do szybkiego logowania. Bez haseł!
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-              <Label htmlFor="ownerName">Twoje imię</Label>
-              <Input id="ownerName" name="ownerName" placeholder="np. Jan" required />
-          </div>
-          <div className="space-y-2">
-              <Label htmlFor="dogName">Imię psa</Label>
-              <Input id="dogName" name="dogName" placeholder="np. Nero" required />
-          </div>
-          <div className="space-y-2">
+           <div className="space-y-2">
             <Label htmlFor="email">Twój adres e-mail</Label>
             <Input id="email" name="email" type="email" placeholder="np. jan.kowalski@email.com" required />
           </div>
@@ -216,7 +214,7 @@ export function LoginForm() {
                 <path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 110.3 512 0 401.8 0 265.8c0-57.5 22.9-108.9 59.9-146.9L120.3 176c-18.1 34.2-28.7 75.3-28.7 119.8 0 85.4 69.3 154.8 154.8 154.8 85.4 0 154.8-69.3 154.8-154.8 0-11.7-1.3-23.2-3.8-34.5H244v-92.4h139.7c5.6 24.1 8.3 49.3 8.3 75.5zM128 123.4l-75.1-59.1C87.8 28.5 160.4 0 244 0c87.3 0 162.2 45.4 203.2 114.2L380.3 173c-28.9-34.2-70.5-54.8-116.3-54.8-59.5 0-109.8 34.3-135.7 85z"></path>
               </svg>
             )}
-            {isGooglePending ? 'Logowanie...' : 'Zaloguj się przez Google'}
+            {isGooglePending ? 'Logowanie...' : 'Kontynuuj z Google'}
           </Button>
        </div>
     </Card>

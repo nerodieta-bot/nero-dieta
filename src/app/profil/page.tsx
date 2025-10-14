@@ -23,13 +23,13 @@ export default function ProfilePage() {
   useEffect(() => {
     // Redirect user if not logged in after loading has completed.
     if (!user && !isUserLoading) {
-      router.replace('/login');
+      router.replace('/login?redirect=/profil');
     }
   }, [user, isUserLoading, router]);
 
   const isLoading = isUserLoading || isProfileLoading;
 
-  if (isLoading) {
+  if (isLoading || !user) {
     return (
       <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
         <div className="flex flex-col items-center justify-center p-8 text-center">
@@ -38,11 +38,6 @@ export default function ProfilePage() {
         </div>
       </div>
     );
-  }
-
-  if (!user) {
-    // This case is handled by useEffect, but it's good practice to have it.
-    return null;
   }
 
   return (
