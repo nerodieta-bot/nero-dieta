@@ -20,12 +20,6 @@ import { loadStripe } from "@stripe/stripe-js";
 import { useToast } from "@/hooks/use-toast";
 
 
-if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
-    throw new Error('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not set');
-}
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-
 const plans = [
     {
         name: "Starter",
@@ -158,6 +152,12 @@ export default function PricingPage() {
         setLoadingPlan(plan);
 
         try {
+            if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
+                throw new Error('Klucz publiczny Stripe nie jest skonfigurowany.');
+            }
+            
+            const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+
             const res = await createCheckoutSession(plan);
             if (res.error || !res.sessionId) {
                 throw new Error(res.error || 'Nie udało się utworzyć sesji płatności.');
@@ -301,3 +301,4 @@ export default function PricingPage() {
         </div>
     );
 }
+
