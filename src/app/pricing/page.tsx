@@ -22,23 +22,24 @@ const plans = [
     },
     {
         name: "Premium",
-        price: "Kontakt",
-        priceDescription: "zapytaj o cenę",
+        price: "19 zł",
+        priceDescription: "miesięcznie",
         description: "Pełna moc Nero bez żadnych ograniczeń. Dla prawdziwych entuzjastów.",
         features: [
             "Wszystko z planu Starter",
+            "Nielimitowany dostęp do bazy składników",
             "Nielimitowane generacje planu posiłków AI",
             "Nielimitowane skany etykiet",
             "Priorytetowe wsparcie mailowe",
             "Wczesny dostęp do nowych funkcji"
         ],
-        buttonText: "Wybieram Premium",
+        buttonText: "Kupuję Premium",
         isFeatured: true,
     },
     {
         name: "Hodowca / Biznes",
-        price: "Wycena",
-        priceDescription: "indywidualna",
+        price: "od 99 zł",
+        priceDescription: "miesięcznie",
         description: "Dedykowane rozwiązania dla profesjonalistów i biznesu.",
         features: [
             "Wszystko z planu Premium",
