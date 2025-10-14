@@ -1,15 +1,19 @@
 'use client';
 
 import { useUser, useFirestore, useMemoFirebase } from '@/firebase';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { Loader2, User as UserIcon } from 'lucide-react';
 import { doc } from 'firebase/firestore';
 import { useDoc } from '@/firebase/firestore/use-doc';
 import { ProfileForm } from '@/components/profile-form';
+import { useToast } from '@/hooks/use-toast';
+
 
 export default function ProfilePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { toast } = useToast();
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
 
@@ -19,6 +23,18 @@ export default function ProfilePage() {
   }, [firestore, user]);
 
   const { data: userProfile, isLoading: isProfileLoading } = useDoc(userDocRef);
+
+  useEffect(() => {
+    const status = searchParams.get('status');
+    if (status === 'success') {
+      toast({
+        title: 'Płatność udana!',
+        description: 'Dziękujemy! Twój plan Premium jest już aktywny.',
+      });
+      // Clean up the URL
+      router.replace('/profil', { scroll: false });
+    }
+  }, [searchParams, router, toast]);
 
   useEffect(() => {
     // Redirect user if not logged in after loading has completed.
