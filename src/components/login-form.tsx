@@ -81,6 +81,8 @@ export function LoginForm() {
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
   
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  
+  // useRef is crucial here to persist the verifier instance across re-renders without causing them.
   const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
   const recaptchaWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -91,23 +93,21 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
 
+  // useEffect with an empty dependency array to ensure it runs ONLY ONCE.
   useEffect(() => {
     if (!auth || !recaptchaWrapperRef.current) return;
 
+    // Create the verifier instance only if it doesn't exist.
     if (!recaptchaVerifierRef.current) {
         recaptchaVerifierRef.current = new RecaptchaVerifier(auth, recaptchaWrapperRef.current, {
             'size': 'invisible',
-            'callback': () => {
-                // reCAPTCHA solved
-            },
-            'expired-callback': () => {
-                // Response expired. Ask user to solve reCAPTCHA again.
-            }
+            'callback': () => { /* reCAPTCHA solved */ },
+            'expired-callback': () => { /* Response expired */ }
         });
         recaptchaVerifierRef.current.render();
     }
     
-  }, [auth]);
+  }, [auth]); // Depends only on auth, which is stable.
 
   async function handleSuccessfulLogin(userCredential: UserCredential) {
     setIsPending(true);
@@ -132,7 +132,7 @@ export function LoginForm() {
 
     const redirectUrl = searchParams.get('redirect') || '/';
     router.push(redirectUrl);
-    setIsPending(false);
+    // No need to set isPending to false, as we are navigating away.
   }
   
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -179,13 +179,15 @@ export function LoginForm() {
                     setIsPending(false);
                     return;
                 }
-
+                
+                // Use the persistent verifier from the ref.
                 const verifier = recaptchaVerifierRef.current;
                 if (!verifier) {
                     setError('reCAPTCHA nie jest gotowa. Odśwież stronę.');
                     setIsPending(false);
                     return;
                 }
+
                 const result = await signInWithPhoneNumber(auth, validation.data.phone, verifier);
                 setConfirmationResult(result);
                 setPhoneStep('enter_code');
@@ -239,8 +241,7 @@ export function LoginForm() {
       if (error.code !== 'auth/popup-closed-by-user') {
         setError('Nie udało się zalogować przez Google. Spróbuj ponownie.');
       }
-    } finally {
-      setIsPending(false);
+      setIsPending(false); // Only set pending to false on error
     }
   };
 
@@ -315,7 +316,7 @@ export function LoginForm() {
             ) : (
                 <div className="space-y-2">
                     <Label htmlFor="code">Kod weryfikacyjny</Label>
-                    <Input id="code" name="code" type="text" inputMode="numeric" pattern="\d{6}" maxLength={6} required />
+                    <Input id="code" name="code" type="text" inputMode="numeric" pattern="\\d{6}" maxLength={6} required />
                 </div>
             )}
         </CardContent>
@@ -367,7 +368,7 @@ export function LoginForm() {
       )}
       {infoMessage && authMode === 'phone' && (
         <div className="px-6 pb-4">
-            <div className="flex items-center gap-2 text-sm text-green-700 bg-green-500/10 p-3 rounded-md">
+            <div className="text-sm text-green-700 dark:text-green-500 bg-green-500/10 p-3 rounded-md text-center">
                 <span>{infoMessage}</span>
             </div>
         </div>
