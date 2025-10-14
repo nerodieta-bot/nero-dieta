@@ -32,6 +32,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useRouter } from 'next/navigation';
+import { loginPrompts } from '@/app/data/login-prompts';
 
 type IngredientCardProps = {
   ingredient: Ingredient;
@@ -58,6 +59,7 @@ const statusConfig = {
 export function IngredientCard({ ingredient, isOpen, onToggle, isUserLoggedIn }: IngredientCardProps) {
   const config = statusConfig[ingredient.status];
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [randomPrompt, setRandomPrompt] = useState(loginPrompts[0]);
   const router = useRouter();
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -68,6 +70,8 @@ export function IngredientCard({ ingredient, isOpen, onToggle, isUserLoggedIn }:
     if (isUserLoggedIn) {
       onToggle();
     } else {
+      const randomIndex = Math.floor(Math.random() * loginPrompts.length);
+      setRandomPrompt(loginPrompts[randomIndex]);
       setShowLoginModal(true);
     }
   };
@@ -155,7 +159,7 @@ export function IngredientCard({ ingredient, isOpen, onToggle, isUserLoggedIn }:
             {isOpen && isUserLoggedIn && (
               <div className="text-center w-full">
                   <p className={cn('italic text-sm', config.textColor)}>
-                  <strong className={cn(config.textColor)}>Nero:</strong> "{ingredient.nero}"
+                  <strong className={cn(configtextColor)}>Nero:</strong> "{ingredient.nero}"
                   </p>
               </div>
             )}
@@ -165,24 +169,27 @@ export function IngredientCard({ ingredient, isOpen, onToggle, isUserLoggedIn }:
       </Card>
       
       <AlertDialog open={showLoginModal} onOpenChange={setShowLoginModal}>
-        <AlertDialogContent>
+        <AlertDialogContent className="shadow-2xl border-accent/20 bg-background/95 backdrop-blur-lg rounded-2xl ring-1 ring-black/5">
           <AlertDialogHeader>
             <div className="flex justify-center mb-4">
-              <PawPrint className="w-12 h-12 text-accent animate-bounce" />
+              <div className="relative w-20 h-20">
+                <div className="absolute inset-0 bg-accent/30 rounded-full blur-xl animate-pulse"></div>
+                <PawPrint className="relative w-20 h-20 text-accent animate-pulse" />
+              </div>
             </div>
-            <AlertDialogTitle className="text-center text-2xl font-headline text-primary">
-              Hola, Amigo! Coś Cię ominęło!
+            <AlertDialogTitle className="text-center text-3xl font-bold font-headline text-primary">
+              {randomPrompt.title}
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-center text-muted-foreground pt-2">
-              Nero mrugnął okiem. <em>&quot;Widzę, że masz apetyt na wiedzę! Ale najsmaczniejsze kąski – czyli pełne opisy i moje błyskotliwe komentarze – trzymam dla moich zaufanych ludzi. Dołącz do stada, a pokażę Ci wszystko!&quot;</em>
+            <AlertDialogDescription className="text-center text-foreground/80 text-lg pt-2 leading-relaxed">
+              <span className="italic">{randomPrompt.message}</span>
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col sm:flex-col sm:space-x-0 gap-2">
-            <AlertDialogAction asChild className='w-full'>
-              <Link href="/login">Dołącz do stada (Zaloguj się)</Link>
+          <AlertDialogFooter className="flex-col sm:flex-col sm:space-x-0 gap-3 pt-4">
+            <AlertDialogAction asChild className='w-full text-lg py-6'>
+              <Link href="/login">Dołącz do Stada!</Link>
             </AlertDialogAction>
-            <AlertDialogCancel asChild className='w-full'>
-              <Button variant="outline">Może później</Button>
+            <AlertDialogCancel asChild className='w-full text-lg py-6'>
+              <Button variant="ghost">Może później</Button>
             </AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>
