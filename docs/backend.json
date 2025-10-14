@@ -142,6 +142,10 @@
         "mealPlanGenerations": {
           "type": "number",
           "description": "The number of times the user has generated a meal plan."
+        },
+        "ingredientViewCount": {
+          "type": "number",
+          "description": "The number of times the user has viewed an ingredient detail page."
         }
       },
       "required": [
