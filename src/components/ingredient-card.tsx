@@ -33,7 +33,7 @@ type IngredientCardProps = {
   userProfile?: any;
 };
 
-const GUEST_CLICK_LIMIT = 3;
+const GUEST_CLICK_LIMIT = 5;
 const LOGGED_IN_CLICK_LIMIT = 5;
 
 const statusConfig = {
