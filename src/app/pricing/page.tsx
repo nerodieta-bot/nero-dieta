@@ -81,7 +81,7 @@ const faqItems = [
     },
     {
         question: "Dlaczego mam ufać informacjom w aplikacji?",
-        answer: "Każdy składnik w naszej bazie jest weryfikowany na podstawie wielu wiarygodnych źródeł, takich jak publikacje AKC, ASPCA, FDA czy magazyny weterynaryjne. Treści generowane przez AI są oparte na tych danych, ale pamiętaj, że aplikacja ma charakter informacyjny i nie zastępuje porady lekarza weterynarii."
+        answer: "Każdy składnik w naszej bazie jest starannie weryfikowany na podstawie wielu wiarygodnych, międzynarodowych źródeł, takich jak publikacje American Kennel Club (AKC), ASPCA, czy amerykańskiej Agencji Żywności i Leków (FDA). Co więcej, na stronie szczegółów każdego składnika znajdziesz bezpośredni, klikalny link do głównego źródła, z którego pochodzą informacje. Dzięki temu masz pełną przejrzystość i możesz samodzielnie zweryfikować dane. Pamiętaj jednak, że aplikacja ma charakter informacyjny i nie zastępuje porady lekarza weterynarii."
     },
      {
         question: "Czy to jednorazowa opłata, czy subskrypcja?",
