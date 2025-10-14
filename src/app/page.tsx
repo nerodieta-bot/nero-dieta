@@ -4,7 +4,7 @@
 import { HeroSection } from '@/components/hero-section';
 import { IngredientGrid } from '@/components/ingredient-grid';
 import { ingredients } from '@/app/data/ingredients';
-import { useUser } from '@/firebase/provider';
+import { useUser } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Loader2, Unlock } from 'lucide-react';

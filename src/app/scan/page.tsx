@@ -3,7 +3,7 @@
 
 import { LabelScanner } from "@/components/label-scanner";
 import { ScanLine, Loader2 } from "lucide-react";
-import { useUser } from '@/firebase/provider';
+import { useUser } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useUser } from '@/firebase/provider';
+import { useUser } from '@/firebase';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { Loader2, PawPrint } from 'lucide-react';

@@ -1,6 +1,6 @@
 'use client';
 
-import { useUser, useFirestore, useMemoFirebase } from '@/firebase/provider';
+import { useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Loader2, User as UserIcon } from 'lucide-react';

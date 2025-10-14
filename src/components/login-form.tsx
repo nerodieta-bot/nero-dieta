@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition, useEffect, useRef } from 'react';
-import { useAuth, useFirestore } from '@/firebase/provider';
+import { useAuth, useFirestore } from '@/firebase';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, AlertTriangle, Mail } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { 
   sendSignInLinkToEmail,
@@ -27,7 +27,7 @@ import {
   UserCredential,
 } from 'firebase/auth';
 import { Separator } from './ui/separator';
-import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { setDocumentNonBlocking } from '@/firebase';
 
 
 const LoginSchema = z.object({
@@ -75,7 +75,6 @@ export function LoginForm() {
                     email: result.user.email,
                     createdAt: serverTimestamp(),
                 };
-                // Use non-blocking write to create user doc if it doesn't exist
                 setDocumentNonBlocking(userRef, userData, { merge: true });
             }
 
@@ -127,44 +126,44 @@ export function LoginForm() {
 
   const handleGoogleSignIn = () => {
     if (!auth) return;
-
+  
     startGoogleTransition(async () => {
-        setAuthState({ status: 'idle', message: '' });
-        try {
-            const provider = new GoogleAuthProvider();
-            const userCredential: UserCredential = await signInWithPopup(auth, provider);
-            const user = userCredential.user;
-
-            if (firestore) {
-                const userRef = doc(firestore, 'users', user.uid);
-                const userData = {
-                    email: user.email,
-                    ownerName: user.displayName,
-                    createdAt: serverTimestamp(),
-                    provider: 'google.com',
-                };
-                setDocumentNonBlocking(userRef, userData, { merge: true });
-            }
-            
-            const idToken = await user.getIdToken();
-            await createSessionCookie(idToken);
-
-            toast({
-                title: `Witaj w stadzie, ${user.displayName}!`,
-                description: 'Logowanie zakończone pomyślnie.',
-            });
-
-            const redirectUrl = searchParams.get('redirect') || '/';
-            router.push(redirectUrl);
-
-        } catch (error: any) {
-            console.error('Google Sign In Error:', error);
-            if (error.code === 'auth/popup-closed-by-user') {
-                setAuthState({ status: 'error', message: 'Logowanie przez Google zostało anulowane.' });
-                return;
-            }
-            setAuthState({ status: 'error', message: 'Logowanie przez Google nie powiodło się. Spróbuj ponownie.' });
+      setAuthState({ status: 'idle', message: '' });
+      try {
+        const provider = new GoogleAuthProvider();
+        const userCredential: UserCredential = await signInWithPopup(auth, provider);
+        const user = userCredential.user;
+  
+        if (firestore) {
+          const userRef = doc(firestore, 'users', user.uid);
+          const userData = {
+            email: user.email,
+            ownerName: user.displayName,
+            createdAt: serverTimestamp(),
+            provider: 'google.com',
+          };
+          setDocumentNonBlocking(userRef, userData, { merge: true });
         }
+  
+        const idToken = await user.getIdToken();
+        await createSessionCookie(idToken);
+  
+        toast({
+          title: `Witaj w stadzie, ${user.displayName}!`,
+          description: 'Logowanie zakończone pomyślnie.',
+        });
+  
+        const redirectUrl = searchParams.get('redirect') || '/';
+        router.push(redirectUrl);
+  
+      } catch (error: any) {
+        console.error('Google Sign In Error:', error);
+        if (error.code === 'auth/popup-closed-by-user') {
+          setAuthState({ status: 'error', message: 'Logowanie przez Google zostało anulowane.' });
+          return;
+        }
+        setAuthState({ status: 'error', message: 'Logowanie przez Google nie powiodło się. Spróbuj ponownie.' });
+      }
     });
   };
 
