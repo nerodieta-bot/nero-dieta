@@ -1,16 +1,30 @@
 
+'use client';
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Check, Gem, Star, HelpCircle } from "lucide-react";
+import { Check, Gem, Star, HelpCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
+import { useState } from "react";
+import { createCheckoutSession } from "./actions";
+import { useUser } from "@/firebase";
+import { useRouter } from "next/navigation";
+import { loadStripe } from "@stripe/stripe-js";
+import { useToast } from "@/hooks/use-toast";
+
+
+if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
+    throw new Error('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not set');
+}
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 const plans = [
     {
@@ -130,6 +144,51 @@ const faqItems = [
 ]
 
 export default function PricingPage() {
+    const { user } = useUser();
+    const router = useRouter();
+    const { toast } = useToast();
+    const [loadingPlan, setLoadingPlan] = useState<'monthly' | 'yearly' | null>(null);
+
+    const handleCheckout = async (plan: 'monthly' | 'yearly') => {
+        if (!user) {
+            router.push('/login?redirect=/pricing');
+            return;
+        }
+
+        setLoadingPlan(plan);
+
+        try {
+            const res = await createCheckoutSession(plan);
+            if (res.error || !res.sessionId) {
+                throw new Error(res.error || 'Nie udało się utworzyć sesji płatności.');
+            }
+
+            const stripe = await stripePromise;
+            if (!stripe) {
+                throw new Error('Stripe.js nie został załadowany.');
+            }
+
+            const { error } = await stripe.redirectToCheckout({
+                sessionId: res.sessionId,
+            });
+
+            if (error) {
+                throw new Error(error.message);
+            }
+
+        } catch (error) {
+            console.error(error);
+            toast({
+                variant: 'destructive',
+                title: 'Błąd płatności',
+                description: error instanceof Error ? error.message : 'Wystąpił nieoczekiwany błąd. Spróbuj ponownie.',
+            });
+        } finally {
+            setLoadingPlan(null);
+        }
+    };
+
+
     return (
         <div className="container mx-auto px-4 py-12">
             <div className="max-w-5xl mx-auto">
@@ -177,10 +236,36 @@ export default function PricingPage() {
                                     ))}
                                 </ul>
                             </CardContent>
-                            <CardFooter>
-                                <Button asChild className={cn("w-full", !plan.isFeatured && "variant-outline")} size="lg">
-                                    <Link href={plan.name === "Hodowca / Biznes" ? "/contact" : plan.name === "Premium" ? "/login" : "/"}>{plan.buttonText}</Link>
-                                </Button>
+                            <CardFooter className="flex-col gap-2">
+                                {plan.name === 'Starter' && (
+                                    <Button asChild className="w-full" variant="outline">
+                                        <Link href="/">{plan.buttonText}</Link>
+                                    </Button>
+                                )}
+                                {plan.name === 'Hodowca / Biznes' && (
+                                     <Button asChild className="w-full" variant="outline">
+                                        <Link href="/contact">{plan.buttonText}</Link>
+                                    </Button>
+                                )}
+                                {plan.isFeatured && (
+                                    <>
+                                        <Button 
+                                            onClick={() => handleCheckout('monthly')} 
+                                            className="w-full"
+                                            disabled={loadingPlan !== null}
+                                        >
+                                            {loadingPlan === 'monthly' ? <Loader2 className="animate-spin" /> : 'Kupuję Premium (miesięcznie)'}
+                                        </Button>
+                                         <Button 
+                                            onClick={() => handleCheckout('yearly')}
+                                            className="w-full"
+                                            variant="secondary"
+                                            disabled={loadingPlan !== null}
+                                        >
+                                            {loadingPlan === 'yearly' ? <Loader2 className="animate-spin" /> : 'Kupuję Premium (rocznie)'}
+                                        </Button>
+                                    </>
+                                )}
                             </CardFooter>
                         </Card>
                     ))}
