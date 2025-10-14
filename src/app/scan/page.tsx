@@ -1,4 +1,3 @@
-
 'use client';
 
 import { LabelScanner } from "@/components/label-scanner";
@@ -41,3 +40,5 @@ export default function ScanPage() {
     </div>
   );
 }
+
+    

@@ -14,7 +14,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { UserNav } from './user-nav';
-import { useUser } from '@/firebase/provider';
+import { useUser } from '@/firebase';
 
 
 const navLinks = [
@@ -59,7 +59,7 @@ export function Header() {
 
   return (
     <>
-      <header className="hidden md:flex fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b">
+      <header className="hidden md:flex sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg text-primary transition-transform hover:scale-105">
             <PawPrint className="w-6 h-6 text-accent" />
@@ -133,3 +133,5 @@ export function Header() {
     </>
   );
 }
+
+    
