@@ -45,6 +45,8 @@ export function LoginForm() {
   const [isPending, setIsPending] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
@@ -62,7 +64,7 @@ export function LoginForm() {
     if (auth && recaptchaContainerRef.current) {
         if (!recaptchaVerifierRef.current) {
             recaptchaVerifierRef.current = new RecaptchaVerifier(auth, recaptchaContainerRef.current, {
-                'size': 'invisible', // Changed to invisible
+                'size': 'invisible',
                 'callback': (response: any) => {
                     setIsRecaptchaReady(true);
                 },
@@ -119,10 +121,17 @@ export function LoginForm() {
     router.push(redirectUrl);
   }
   
-  const handleAuthAction = async (action: 'google' | 'register' | 'login' | 'phoneSend' | 'phoneVerify') => {
+  const handleAuthAction = async (action: 'google' | 'email' | 'phoneSend' | 'phoneVerify') => {
     if (!auth) return;
     setIsPending(true);
     setError(null);
+
+    if (action === 'email' && isRegisterMode && password !== confirmPassword) {
+      setError("Hasła nie są zgodne.");
+      setIsPending(false);
+      return;
+    }
+
     try {
       let userCredential: UserCredential | undefined;
       switch (action) {
@@ -130,11 +139,12 @@ export function LoginForm() {
           const provider = new GoogleAuthProvider();
           userCredential = await signInWithPopup(auth, provider);
           break;
-        case 'register':
-          userCredential = await createUserWithEmailAndPassword(auth, email, password);
-          break;
-        case 'login':
-          userCredential = await signInWithEmailAndPassword(auth, email, password);
+        case 'email':
+          if (isRegisterMode) {
+             userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          } else {
+             userCredential = await signInWithEmailAndPassword(auth, email, password);
+          }
           break;
         case 'phoneSend':
           if (recaptchaVerifierRef.current) {
@@ -142,7 +152,6 @@ export function LoginForm() {
             setConfirmationResult(result);
             toast({ title: 'Kod SMS został wysłany!' });
           } else {
-            // This case should be less frequent now
             throw new Error("reCAPTCHA nie jest gotowa.");
           }
           break;
@@ -197,7 +206,7 @@ export function LoginForm() {
 
   return (
     <Card className="w-full">
-      <Tabs defaultValue="google">
+      <Tabs defaultValue="google" onValueChange={() => setError(null)}>
         <CardHeader>
           <CardTitle>Dołącz do stada</CardTitle>
           <CardDescription>Wybierz metodę logowania, aby uzyskać pełen dostęp.</CardDescription>
@@ -235,13 +244,20 @@ export function LoginForm() {
               <Label htmlFor="password">Hasło</Label>
               <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
+             {isRegisterMode && (
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Potwierdź hasło</Label>
+                <Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+              </div>
+            )}
           </CardContent>
-          <CardFooter className="flex-col sm:flex-row gap-2">
-            <Button onClick={() => handleAuthAction('login')} disabled={isPending} className="w-full">
-              {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null} Zaloguj się
+          <CardFooter className="flex-col gap-2">
+            <Button onClick={() => handleAuthAction('email')} disabled={isPending} className="w-full">
+              {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isRegisterMode ? 'Zarejestruj się' : 'Zaloguj się'}
             </Button>
-            <Button variant="secondary" onClick={() => handleAuthAction('register')} disabled={isPending} className="w-full">
-              {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null} Zarejestruj się
+            <Button variant="link" size="sm" type="button" onClick={() => setIsRegisterMode(!isRegisterMode)} className="text-muted-foreground">
+              {isRegisterMode ? 'Masz już konto? Zaloguj się' : 'Nie masz konta? Zarejestruj się'}
             </Button>
           </CardFooter>
         </TabsContent>
