@@ -67,7 +67,7 @@ function ProfilePageContent() {
   );
 }
 
-export default function ProfilePage() {
+function ProfilePageSuspenseWrapper() {
     return (
         <Suspense fallback={
             <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
@@ -79,5 +79,12 @@ export default function ProfilePage() {
         }>
             <ProfilePageContent />
         </Suspense>
+    )
+}
+
+
+export default function ProfilePage() {
+    return (
+        <ProfilePageSuspenseWrapper />
     )
 }
