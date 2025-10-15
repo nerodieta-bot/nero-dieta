@@ -73,7 +73,7 @@ export function LoginForm() {
         });
         recaptchaVerifierRef.current.render().then(() => setIsRecaptchaReady(true));
     }
-  }, [auth]);
+  }, [auth, isRecaptchaReady]);
 
 
   async function handleSuccessfulLogin(userCredential: UserCredential) {
@@ -85,7 +85,6 @@ export function LoginForm() {
 
       if (isNewUser) {
         const userData = {
-            // Handle users without email (e.g., phone auth)
             email: user.email,
             ownerName: user.displayName || (user.email ? user.email.split('@')[0] : user.phoneNumber) || '',
             dogName: '',
