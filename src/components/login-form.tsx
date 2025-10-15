@@ -62,18 +62,25 @@ export function LoginForm() {
 
    useEffect(() => {
     if (auth && recaptchaContainerRef.current && !recaptchaVerifierRef.current) {
-        recaptchaVerifierRef.current = new RecaptchaVerifier(auth, recaptchaContainerRef.current, {
+        const verifier = new RecaptchaVerifier(auth, recaptchaContainerRef.current, {
             'size': 'invisible',
             'callback': () => {
-                setIsRecaptchaReady(true);
+                // This callback is for when the user successfully completes the reCAPTCHA.
+                // We set readiness after render() resolves.
             },
             'expired-callback': () => {
                 setIsRecaptchaReady(false);
+                setError('Weryfikacja reCAPTCHA wygasła. Spróbuj ponownie.');
             }
         });
-        recaptchaVerifierRef.current.render().then(() => setIsRecaptchaReady(true));
+        
+        verifier.render().then(() => {
+            setIsRecaptchaReady(true);
+        });
+
+        recaptchaVerifierRef.current = verifier;
     }
-  }, [auth, isRecaptchaReady]);
+  }, [auth]);
 
 
   async function handleSuccessfulLogin(userCredential: UserCredential) {
@@ -262,6 +269,7 @@ export function LoginForm() {
 
         <TabsContent value="phone">
           <CardContent className="space-y-4">
+             <div ref={recaptchaContainerRef}></div>
             {!confirmationResult ? (
               <>
                 <div className="space-y-2">
@@ -269,7 +277,6 @@ export function LoginForm() {
                   <Input id="phone" type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} placeholder="+48 123 456 789" />
                   <p className="text-xs text-muted-foreground">Podaj numer w formacie międzynarodowym.</p>
                 </div>
-                 <div ref={recaptchaContainerRef}></div>
               </>
             ) : (
               <div className="space-y-2">
@@ -281,7 +288,8 @@ export function LoginForm() {
           <CardFooter className="flex-col gap-2">
             {!confirmationResult ? (
               <Button onClick={() => handleAuthAction('phoneSend')} disabled={isPending || !isRecaptchaReady} className="w-full">
-                {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <MessageSquare className="mr-2 h-4 w-4" />} Wyślij kod
+                {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <MessageSquare className="mr-2 h-4 w-4" />}
+                 {!isRecaptchaReady ? "Inicjalizacja..." : "Wyślij kod"}
               </Button>
             ) : (
                <div className='w-full flex flex-col gap-2'>
