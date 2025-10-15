@@ -3,7 +3,7 @@
 
 import { MealPlanForm } from '@/components/meal-plan-form';
 import { Lightbulb, Loader2 } from 'lucide-react';
-import { useUser, useFirestore, useMemoFirebase } from '@/firebase';
+import { useUser, useFirestore } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { doc } from 'firebase/firestore';
@@ -16,10 +16,7 @@ export default function MealPlanPage() {
   const router = useRouter();
   const firestore = useFirestore();
 
-  const userDocRef = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
-    return doc(firestore, 'users', user.uid);
-  }, [firestore, user]);
+  const userDocRef = (firestore && user) ? doc(firestore, 'users', user.uid) : null;
 
   const { data: userProfile, isLoading: isProfileLoading } = useDoc(userDocRef);
 
