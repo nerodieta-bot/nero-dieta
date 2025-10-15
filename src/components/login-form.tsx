@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -64,7 +65,8 @@ export function LoginForm() {
         setDocumentNonBlocking(userRef, userData);
       } else {
          const userData = {
-            ownerName: user.displayName || '',
+            // Only update name if it has changed, don't overwrite with empty string
+            ...(user.displayName && { ownerName: user.displayName }),
             updatedAt: serverTimestamp(),
         };
         updateDocumentNonBlocking(userRef, userData);
