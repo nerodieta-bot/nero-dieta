@@ -1,5 +1,15 @@
-# Settings to manage and configure a Firebase App Hosting backend.
-# https://firebase.google.com/docs/app-hosting/configure
+build:
+  steps:
+    - name: 'gcr.io/cloud-builders/npm'
+      args: ['install']
+    - name: 'gcr.io/cloud-builders/npm'
+      args: ['run', 'build']
 
-runtime: nodejs20
-entrypoint: npm run start
+run:
+  command: 'npm'
+  args: ['start']
+
+fetch:
+  github:
+    repository: 'nerodieta-bot/nero-dieta'
+    branch: 'main'
