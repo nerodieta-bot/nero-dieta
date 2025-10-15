@@ -4,18 +4,20 @@ import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { initializeAdminApp } from '@/firebase/admin';
 
-if (!process.env.STRIPE_SECRET_KEY) {
-    throw new Error('STRIPE_SECRET_KEY is not set');
-}
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic'; 
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 export async function POST(req: Request) {
-    if (!webhookSecret) {
-        console.error('Stripe webhook secret is not configured.');
-        return NextResponse.json({ error: 'Webhook secret not configured.' }, { status: 500 });
+    const apiKey = process.env.STRIPE_SECRET_KEY;
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    if (!apiKey || !webhookSecret) {
+        console.error('Brak kluczy konfiguracyjnych Stripe.');
+        return NextResponse.json({ error: 'Serwer jest niepoprawnie skonfigurowany.' }, { status: 500 });
     }
+
+    const stripe = new Stripe(apiKey, { apiVersion: '2024-06-20' });
 
     const body = await req.text();
     const sig = headers().get('stripe-signature');
@@ -24,13 +26,13 @@ export async function POST(req: Request) {
 
     try {
         if (!sig) {
-            throw new Error('No Stripe signature found in headers.');
+            throw new Error('Brak sygnatury Stripe w nagłówkach.');
         }
         event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
     } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-        console.error(`❌ Error message: ${errorMessage}`);
-        return NextResponse.json({ error: `Webhook Error: ${errorMessage}` }, { status: 400 });
+        const errorMessage = err instanceof Error ? err.message : 'Nieznany błąd';
+        console.error(`❌ Błąd weryfikacji webhooka: ${errorMessage}`);
+        return NextResponse.json({ error: `Błąd webhooka: ${errorMessage}` }, { status: 400 });
     }
 
     // Handle the checkout.session.completed event
@@ -38,8 +40,8 @@ export async function POST(req: Request) {
         const session = event.data.object as Stripe.Checkout.Session;
 
         if (!session.metadata?.userId) {
-            console.error('User ID not found in checkout session metadata');
-            return NextResponse.json({ error: 'User ID not found in metadata' }, { status: 400 });
+            console.error('Brak ID użytkownika w metadanych sesji checkout');
+            return NextResponse.json({ error: 'Brak ID użytkownika w metadanych' }, { status: 400 });
         }
 
         const userId = session.metadata.userId;
@@ -54,10 +56,10 @@ export async function POST(req: Request) {
                 stripeCustomerId: session.customer, // Store customer ID
             });
 
-            console.log(`Successfully updated user ${userId} to premium plan.`);
+            console.log(`Pomyślnie zaktualizowano użytkownika ${userId} do planu premium.`);
         } catch (error) {
-            console.error(`Failed to update user ${userId} in Firestore:`, error);
-            return NextResponse.json({ error: 'Failed to update user profile' }, { status: 500 });
+            console.error(`Błąd aktualizacji użytkownika ${userId} w Firestore:`, error);
+            return NextResponse.json({ error: 'Nie udało się zaktualizować profilu użytkownika' }, { status: 500 });
         }
     }
 
