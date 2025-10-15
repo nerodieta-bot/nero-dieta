@@ -3,21 +3,31 @@ import Stripe from 'stripe';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { initializeAdminApp } from '@/firebase/admin';
+import { getStripe } from '@/lib/stripe';
 
 export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic'; 
-
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function POST(req: Request) {
-    const apiKey = process.env.STRIPE_SECRET_KEY;
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-    if (!apiKey || !webhookSecret) {
-        console.error('Brak kluczy konfiguracyjnych Stripe.');
+    if (!webhookSecret) {
+        console.error('Brak klucza STRIPE_WEBHOOK_SECRET.');
         return NextResponse.json({ error: 'Serwer jest niepoprawnie skonfigurowany.' }, { status: 500 });
     }
-
-    const stripe = new Stripe(apiKey, { apiVersion: '2024-06-20' });
+    
+    let stripe: Stripe;
+    try {
+        stripe = getStripe();
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error(`Błąd inicjalizacji Stripe: ${error.message}`);
+        } else {
+            console.error('Nieznany błąd podczas inicjalizacji Stripe.');
+        }
+        return NextResponse.json({ error: 'Serwer jest niepoprawnie skonfigurowany.' }, { status: 500 });
+    }
 
     const body = await req.text();
     const sig = headers().get('stripe-signature');
