@@ -2,15 +2,14 @@
 
 import { useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { Loader2, User as UserIcon } from 'lucide-react';
 import { doc } from 'firebase/firestore';
 import { useDoc } from '@/firebase/firestore/use-doc';
 import { ProfileForm } from '@/components/profile-form';
 import { useToast } from '@/hooks/use-toast';
 
-
-export default function ProfilePage() {
+function ProfilePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -66,4 +65,19 @@ export default function ProfilePage() {
       <ProfileForm user={user} userProfile={userProfile} />
     </div>
   );
+}
+
+export default function ProfilePage() {
+    return (
+        <Suspense fallback={
+            <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
+                <div className="flex flex-col items-center justify-center p-8 text-center">
+                    <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                    <p className="mt-4 text-muted-foreground">Ładowanie profilu...</p>
+                </div>
+            </div>
+        }>
+            <ProfilePageContent />
+        </Suspense>
+    )
 }
