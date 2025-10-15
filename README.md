@@ -1,9 +1,9 @@
 # Dieta Jedi
 
-This is a Next.js application for Dieta Jedi, a dog nutrition guide.
+Aplikacja "Dieta Jedi" to kompletny przewodnik po żywieniu psa.
 
-It allows users to:
-- Browse a database of dog-safe and unsafe ingredients.
-- Filter and search for ingredients.
-- Use an AI-powered tool to generate meal plans for their dogs.
-- Submit new ingredients for review.
+Umożliwia użytkownikom:
+- Przeglądanie bazy bezpiecznych i niebezpiecznych składników.
+- Filtrowanie i wyszukiwanie produktów.
+- Korzystanie z generatora planów posiłków AI.
+- Zgłaszanie nowych składników do weryfikacji.
