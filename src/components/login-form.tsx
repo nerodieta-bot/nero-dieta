@@ -50,7 +50,6 @@ export function LoginForm() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
-  const [isRecaptchaReady, setIsRecaptchaReady] = useState(false);
 
   const auth = useAuth();
   const firestore = useFirestore();
@@ -58,29 +57,6 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const recaptchaContainerRef = useRef<HTMLDivElement>(null);
-  const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
-
-   useEffect(() => {
-    if (auth && recaptchaContainerRef.current && !recaptchaVerifierRef.current) {
-        const verifier = new RecaptchaVerifier(auth, recaptchaContainerRef.current, {
-            'size': 'invisible',
-            'callback': () => {
-                // This callback is for when the user successfully completes the reCAPTCHA.
-                // We set readiness after render() resolves.
-            },
-            'expired-callback': () => {
-                setIsRecaptchaReady(false);
-                setError('Weryfikacja reCAPTCHA wygasła. Spróbuj ponownie.');
-            }
-        });
-        
-        verifier.render().then(() => {
-            setIsRecaptchaReady(true);
-        });
-
-        recaptchaVerifierRef.current = verifier;
-    }
-  }, [auth]);
 
 
   async function handleSuccessfulLogin(userCredential: UserCredential) {
@@ -149,12 +125,15 @@ export function LoginForm() {
           }
           break;
         case 'phoneSend':
-          if (recaptchaVerifierRef.current) {
-            const result = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifierRef.current);
+          if (recaptchaContainerRef.current) {
+            const verifier = new RecaptchaVerifier(auth, recaptchaContainerRef.current, { size: 'invisible' });
+            // Render reCAPTCHA and then sign in with phone number
+            await verifier.render();
+            const result = await signInWithPhoneNumber(auth, phoneNumber, verifier);
             setConfirmationResult(result);
             toast({ title: 'Kod SMS został wysłany!' });
           } else {
-            throw new Error("reCAPTCHA nie jest gotowa.");
+            throw new Error("Kontener reCAPTCHA nie jest gotowy.");
           }
           break;
         case 'phoneVerify':
@@ -287,9 +266,9 @@ export function LoginForm() {
           </CardContent>
           <CardFooter className="flex-col gap-2">
             {!confirmationResult ? (
-              <Button onClick={() => handleAuthAction('phoneSend')} disabled={isPending || !isRecaptchaReady} className="w-full">
+              <Button onClick={() => handleAuthAction('phoneSend')} disabled={isPending} className="w-full">
                 {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <MessageSquare className="mr-2 h-4 w-4" />}
-                 {!isRecaptchaReady ? "Inicjalizacja..." : "Wyślij kod"}
+                 Wyślij kod
               </Button>
             ) : (
                <div className='w-full flex flex-col gap-2'>
