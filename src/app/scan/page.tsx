@@ -1,3 +1,4 @@
+
 'use client';
 
 import { LabelScanner } from "@/components/label-scanner";

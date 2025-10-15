@@ -15,9 +15,7 @@ import { useDoc } from '@/firebase/firestore/use-doc';
 export default function Home() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
-  const [ingredientsToShow, setIngredientsToShow] = useState<typeof ingredients>([]);
-  const [isClient, setIsClient] = useState(false);
-
+  
   const userDocRef = useMemoFirebase(() => {
     if (!firestore || !user) return null;
     return doc(firestore, 'users', user.uid);
@@ -25,28 +23,21 @@ export default function Home() {
 
   const { data: userProfile, isLoading: isProfileLoading } = useDoc(userDocRef);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (isClient) {
-      if (user) {
-        // Logged-in user sees everything, sorted
-        const sortedIngredients = [...ingredients].sort((a, b) => a.name.localeCompare(b.name));
-        setIngredientsToShow(sortedIngredients);
-      } else {
-        // Not-logged-in user sees a shuffled selection
-        const shuffle = (arr: typeof ingredients) => [...arr].sort(() => 0.5 - Math.random());
-        const guestViewableIngredients = ingredients.filter(i => i.status === 'safe' || i.status === 'warning');
-        setIngredientsToShow(shuffle(guestViewableIngredients).slice(0, 12));
-      }
+  const getIngredientsToShow = () => {
+    if (user) {
+      // Zalogowany użytkownik widzi wszystko, posortowane
+      return [...ingredients].sort((a, b) => a.name.localeCompare(b.name));
     }
-  }, [user, isClient]);
+    // Niezalogowany użytkownik widzi 12 losowych bezpiecznych/warunkowych składników
+    const guestViewableIngredients = ingredients.filter(i => i.status === 'safe' || i.status === 'warning');
+    const shuffled = [...guestViewableIngredients].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 12);
+  };
 
+  const ingredientsToShow = getIngredientsToShow();
   const isLoading = isUserLoading || (user && isProfileLoading);
 
-  if (isLoading && !isClient) {
+  if (isLoading) {
      return (
       <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
         <div className="flex flex-col items-center justify-center p-8 text-center">
