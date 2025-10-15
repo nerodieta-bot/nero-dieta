@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Suspense, useState, useEffect } from "react";
@@ -322,19 +321,25 @@ function PricingPageContent() {
     );
 }
 
+function PricingPageSuspenseWrapper() {
+    return (
+        <Suspense fallback={
+            <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
+                <div className="flex flex-col items-center justify-center p-8 text-center">
+                    <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                    <p className="mt-4 text-muted-foreground">Ładowanie cennika...</p>
+                </div>
+            </div>
+        }>
+            <PricingPageContent />
+        </Suspense>
+    )
+}
+
 export default function PricingPage() {
-  return (
-    <Suspense fallback={
-      <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
-        <div className="flex flex-col items-center justify-center p-8 text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          <p className="mt-4 text-muted-foreground">Ładowanie cennika...</p>
-        </div>
-      </div>
-    }>
-      <PricingPageContent />
-    </Suspense>
-  );
+    return (
+        <PricingPageSuspenseWrapper />
+    )
 }
 
     

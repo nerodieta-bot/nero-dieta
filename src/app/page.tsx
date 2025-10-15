@@ -1,4 +1,3 @@
-
 'use client';
 
 import { HeroSection } from '@/components/hero-section';
@@ -8,7 +7,6 @@ import { useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Loader2, Unlock } from 'lucide-react';
-import { useState, useEffect } from 'react';
 import { doc } from 'firebase/firestore';
 import { useDoc } from '@/firebase/firestore/use-doc';
 

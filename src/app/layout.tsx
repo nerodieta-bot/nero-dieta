@@ -5,7 +5,7 @@ import { Header } from '@/components/header';
 import { cn } from '@/lib/utils';
 import { Footer } from '@/components/footer';
 import { CookieConsentBanner } from '@/components/cookie-consent-banner';
-import { FirebaseClientProvider } from '@/firebase';
+import { FirebaseClientProvider } from '@/firebase/client-provider';
 
 export const metadata: Metadata = {
   title: 'Dieta Nero',
