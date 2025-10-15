@@ -48,6 +48,7 @@ export function LoginForm() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [isRecaptchaReady, setIsRecaptchaReady] = useState(false);
 
   const auth = useAuth();
   const firestore = useFirestore();
@@ -59,18 +60,19 @@ export function LoginForm() {
 
    useEffect(() => {
     if (auth && recaptchaContainerRef.current) {
-        // Initialize reCAPTCHA verifier only once
         if (!recaptchaVerifierRef.current) {
             recaptchaVerifierRef.current = new RecaptchaVerifier(auth, recaptchaContainerRef.current, {
-                'size': 'normal',
+                'size': 'invisible', // Changed to invisible
                 'callback': (response: any) => {
-                    // reCAPTCHA solved, allow signInWithPhoneNumber.
+                    setIsRecaptchaReady(true);
                 },
                 'expired-callback': () => {
-                    // Response expired. Ask user to solve reCAPTCHA again.
+                   setIsRecaptchaReady(false);
                 }
             });
-            recaptchaVerifierRef.current.render();
+            recaptchaVerifierRef.current.render().then(() => {
+              setIsRecaptchaReady(true);
+            });
         }
     }
   }, [auth]);
@@ -140,6 +142,7 @@ export function LoginForm() {
             setConfirmationResult(result);
             toast({ title: 'Kod SMS został wysłany!' });
           } else {
+            // This case should be less frequent now
             throw new Error("reCAPTCHA nie jest gotowa.");
           }
           break;
@@ -263,7 +266,7 @@ export function LoginForm() {
           </CardContent>
           <CardFooter className="flex-col gap-2">
             {!confirmationResult ? (
-              <Button onClick={() => handleAuthAction('phoneSend')} disabled={isPending} className="w-full">
+              <Button onClick={() => handleAuthAction('phoneSend')} disabled={isPending || !isRecaptchaReady} className="w-full">
                 {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <MessageSquare />} Wyślij kod
               </Button>
             ) : (
