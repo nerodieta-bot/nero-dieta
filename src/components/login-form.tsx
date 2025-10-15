@@ -61,21 +61,17 @@ export function LoginForm() {
   const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
 
    useEffect(() => {
-    if (auth && recaptchaContainerRef.current) {
-        if (!recaptchaVerifierRef.current) {
-            recaptchaVerifierRef.current = new RecaptchaVerifier(auth, recaptchaContainerRef.current, {
-                'size': 'invisible',
-                'callback': (response: any) => {
-                    setIsRecaptchaReady(true);
-                },
-                'expired-callback': () => {
-                   setIsRecaptchaReady(false);
-                }
-            });
-            recaptchaVerifierRef.current.render().then(() => {
-              setIsRecaptchaReady(true);
-            });
-        }
+    if (auth && recaptchaContainerRef.current && !recaptchaVerifierRef.current) {
+        recaptchaVerifierRef.current = new RecaptchaVerifier(auth, recaptchaContainerRef.current, {
+            'size': 'invisible',
+            'callback': () => {
+                setIsRecaptchaReady(true);
+            },
+            'expired-callback': () => {
+                setIsRecaptchaReady(false);
+            }
+        });
+        recaptchaVerifierRef.current.render().then(() => setIsRecaptchaReady(true));
     }
   }, [auth]);
 
@@ -85,13 +81,13 @@ export function LoginForm() {
     const user = userCredential.user;
     if (firestore) {
       const userRef = doc(firestore, 'users', user.uid);
-      
       const isNewUser = userCredential.user.metadata.creationTime === userCredential.user.metadata.lastSignInTime;
 
       if (isNewUser) {
         const userData = {
+            // Handle users without email (e.g., phone auth)
             email: user.email,
-            ownerName: user.displayName || email.split('@')[0] || '',
+            ownerName: user.displayName || (user.email ? user.email.split('@')[0] : user.phoneNumber) || '',
             dogName: '',
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
@@ -113,7 +109,7 @@ export function LoginForm() {
     await createSessionCookie(idToken);
 
     toast({
-      title: `Witaj w stadzie, ${user.displayName || user.email || 'użytkowniku'}!`,
+      title: `Witaj w stadzie, ${user.displayName || user.email || user.phoneNumber || 'użytkowniku'}!`,
       description: 'Logowanie zakończone pomyślnie.',
     });
 
@@ -192,6 +188,9 @@ export function LoginForm() {
              break;
         case 'auth/invalid-verification-code':
              message = 'Nieprawidłowy kod weryfikacyjny.';
+             break;
+        case 'auth/captcha-check-failed':
+             message = 'Weryfikacja reCAPTCHA nie powiodła się. Odśwież stronę i spróbuj ponownie.';
              break;
         default:
              message = 'Wystąpił błąd logowania. Spróbuj ponownie.';
@@ -283,12 +282,12 @@ export function LoginForm() {
           <CardFooter className="flex-col gap-2">
             {!confirmationResult ? (
               <Button onClick={() => handleAuthAction('phoneSend')} disabled={isPending || !isRecaptchaReady} className="w-full">
-                {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <MessageSquare />} Wyślij kod
+                {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <MessageSquare className="mr-2 h-4 w-4" />} Wyślij kod
               </Button>
             ) : (
                <div className='w-full flex flex-col gap-2'>
                 <Button onClick={() => handleAuthAction('phoneVerify')} disabled={isPending} className="w-full">
-                    {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null} Weryfikuj i zaloguj
+                    {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Weryfikuj i zaloguj
                 </Button>
                 <Button variant="outline" onClick={() => setConfirmationResult(null)} disabled={isPending} className="w-full">
                     Zmień numer
@@ -308,3 +307,5 @@ export function LoginForm() {
     </Card>
   );
 }
+
+    
