@@ -1,6 +1,7 @@
 
 'use client';
 
+import { Suspense, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -12,7 +13,6 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useState, useEffect } from "react";
 import { createCheckoutSession } from "./actions";
 import { useUser } from "@/firebase";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -137,7 +137,7 @@ const faqItems = [
     },
 ]
 
-export default function PricingPage() {
+function PricingPageContent() {
     const { user } = useUser();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -322,3 +322,19 @@ export default function PricingPage() {
     );
 }
 
+export default function PricingPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
+        <div className="flex flex-col items-center justify-center p-8 text-center">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <p className="mt-4 text-muted-foreground">Ładowanie cennika...</p>
+        </div>
+      </div>
+    }>
+      <PricingPageContent />
+    </Suspense>
+  );
+}
+
+    
