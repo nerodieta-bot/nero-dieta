@@ -12,6 +12,24 @@ import { useState, useEffect } from 'react';
 import { doc } from 'firebase/firestore';
 import { useDoc } from '@/firebase/firestore/use-doc';
 
+// Funkcja pomocnicza do tasowania tablicy - stabilne losowanie na podstawie dnia
+function deterministicShuffle(array: any[], seed: number) {
+    let currentIndex = array.length, temporaryValue, randomIndex;
+    const random = () => {
+        var x = Math.sin(seed++) * 10000;
+        return x - Math.floor(x);
+    };
+
+    while (0 !== currentIndex) {
+        randomIndex = Math.floor(random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+    return array;
+}
+
 export default function Home() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
@@ -29,8 +47,11 @@ export default function Home() {
       return [...ingredients].sort((a, b) => a.name.localeCompare(b.name));
     }
     // Niezalogowany użytkownik widzi 12 losowych bezpiecznych/warunkowych składników
+    // Używamy daty jako seed, aby losowanie było takie samo przez cały dzień
     const guestViewableIngredients = ingredients.filter(i => i.status === 'safe' || i.status === 'warning');
-    const shuffled = [...guestViewableIngredients].sort(() => 0.5 - Math.random());
+    const today = new Date();
+    const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+    const shuffled = deterministicShuffle([...guestViewableIngredients], seed);
     return shuffled.slice(0, 12);
   };
 
