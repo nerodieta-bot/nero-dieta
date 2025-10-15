@@ -1,15 +1,3 @@
-build:
-  steps:
-    - name: 'gcr.io/cloud-builders/npm'
-      args: ['install']
-    - name: 'gcr.io/cloud-builders/npm'
-      args: ['run', 'build']
-
-run:
-  command: 'npm'
-  args: ['start']
-
-fetch:
-  github:
-    repository: 'nerodieta-bot/nero-dieta'
-    branch: 'main'
+env:
+  variables:
+    NODE_ENV: "production"
