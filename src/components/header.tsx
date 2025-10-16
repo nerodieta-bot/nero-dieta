@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Button } from './ui/button';
-import { PawPrint, Home, Bot, PlusSquare, Dog, X, Menu, ScanLine, Award, LogIn, Gem } from 'lucide-react';
+import { PawPrint, Home, Bot, PlusSquare, Dog, X, Menu, ScanLine, Award, LogIn, Gem, HelpCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Sheet,
@@ -24,11 +24,13 @@ const navLinks = [
   { href: '/pricing', label: 'Cennik', icon: Gem },
   { href: '/submit', label: 'Dodaj', icon: PlusSquare },
   { href: '/nero', label: 'O Nero', icon: Dog },
+  { href: '/pricing#faq', label: 'FAQ', icon: HelpCircle },
 ];
 
 const mobileNavLinks = [
-  ...navLinks,
+  ...navLinks.filter(link => link.href !== '/pricing#faq'), // remove faq to re-add later
   { href: '#recommendations', label: 'Polecane', icon: Award },
+  { href: '/pricing#faq', label: 'FAQ', icon: HelpCircle },
 ];
 
 export function Header() {
