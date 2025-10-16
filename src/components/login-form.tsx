@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth, useFirestore } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, AlertTriangle, Mail, Phone } from 'lucide-react';
+import { Loader2, AlertTriangle, Mail } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { doc, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
@@ -23,9 +23,6 @@ import {
   type UserCredential,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-  type ConfirmationResult,
 } from 'firebase/auth';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -47,40 +44,11 @@ export function LoginForm() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   
-  const [phone, setPhone] = useState('');
-  const [verificationCode, setVerificationCode] = useState('');
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
-  const [isCodeSent, setIsCodeSent] = useState(false);
-
   const auth = useAuth();
   const firestore = useFirestore();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-
-  useEffect(() => {
-    if (!auth) return;
-
-    // Initialize reCAPTCHA verifier only once when the component mounts.
-    const verifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      'size': 'invisible',
-      'callback': (response: any) => {
-        // reCAPTCHA solved, you can proceed with phone sign-in.
-      },
-      'expired-callback': () => {
-        // Response expired. User needs to solve reCAPTCHA again.
-        setError('Weryfikacja reCAPTCHA wygasła. Odśwież stronę i spróbuj ponownie.');
-      }
-    });
-
-    (window as any).recaptchaVerifier = verifier;
-
-    // Cleanup function to clear the verifier when the component unmounts.
-    return () => {
-      verifier.clear();
-      (window as any).recaptchaVerifier = null;
-    };
-  }, [auth]);
 
   async function handleSuccessfulLogin(userCredential: UserCredential) {
     setIsPending(true);
@@ -100,15 +68,13 @@ export function LoginForm() {
             ingredientViewCount: 0,
             mealPlanGenerations: 0,
         };
-        // Use setDoc with merge:true to handle creation safely
         setDocumentNonBlocking(userRef, userData, { merge: true });
       } else {
          const userData = {
             ...(user.displayName && { ownerName: user.displayName }),
-            email: user.email, // Always ensure email is present
+            email: user.email,
             updatedAt: serverTimestamp(),
         };
-        // Use setDoc with merge:true to handle update safely
         setDocumentNonBlocking(userRef, userData, { merge: true });
       }
     }
@@ -125,7 +91,7 @@ export function LoginForm() {
     router.push(redirectUrl);
   }
   
-  const handleAuthAction = async (action: 'google' | 'email' | 'phone') => {
+  const handleAuthAction = async (action: 'google' | 'email') => {
     if (!auth) return;
     setIsPending(true);
     setError(null);
@@ -137,31 +103,6 @@ export function LoginForm() {
     }
 
     try {
-      if (action === 'phone') {
-        const appVerifier = (window as any).recaptchaVerifier;
-        if (!appVerifier) {
-          throw new Error("RecaptchaVerifier nie jest gotowy.");
-        }
-
-        if (!isCodeSent) {
-          // Stage 1: Send verification code
-          const result = await signInWithPhoneNumber(auth, phone, appVerifier);
-          setConfirmationResult(result);
-          setIsCodeSent(true);
-          toast({ title: 'Kod weryfikacyjny wysłany!', description: 'Sprawdź SMS na swoim telefonie.' });
-        } else {
-          // Stage 2: Confirm code and sign in
-          if (confirmationResult) {
-            const userCredential = await confirmationResult.confirm(verificationCode);
-            await handleSuccessfulLogin(userCredential);
-          } else {
-            throw new Error("Brak obiektu confirmationResult.");
-          }
-        }
-        setIsPending(false);
-        return;
-      }
-      
       let userCredential: UserCredential | undefined;
       switch (action) {
         case 'google':
@@ -197,15 +138,6 @@ export function LoginForm() {
         case 'auth/weak-password':
              message = 'Hasło jest zbyt słabe. Powinno mieć co najmniej 6 znaków.';
              break;
-        case 'auth/invalid-verification-code':
-             message = 'Nieprawidłowy kod weryfikacyjny. Spróbuj ponownie.';
-             break;
-        case 'auth/invalid-phone-number':
-             message = 'Nieprawidłowy numer telefonu. Podaj go w formacie międzynarodowym (np. +48123456789).';
-             break;
-        case 'auth/too-many-requests':
-             message = 'Zbyt wiele prób. Spróbuj ponownie później lub odśwież stronę.';
-             break;
         default:
              message = 'Wystąpił błąd logowania. Spróbuj ponownie.';
              break;
@@ -219,19 +151,17 @@ export function LoginForm() {
 
   return (
     <Card className="w-full">
-       <div id="recaptcha-container"></div>
-      <Tabs defaultValue="google" onValueChange={() => {setError(null); setIsCodeSent(false);}}>
+      <Tabs defaultValue="google" onValueChange={() => {setError(null);}}>
         <CardHeader>
           <CardTitle>Dołącz do stada</CardTitle>
           <CardDescription>Wybierz metodę logowania, aby uzyskać pełen dostęp.</CardDescription>
-          <TabsList className="grid w-full grid-cols-3 mt-4">
+          <TabsList className="grid w-full grid-cols-2 mt-4">
             <TabsTrigger value="google">
                 <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
                     <path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 110.3 512 0 401.8 0 265.8c0-57.5 22.9-108.9 59.9-146.9L120.3 176c-18.1 34.2-28.7 75.3-28.7 119.8 0 85.4 69.3 154.8 154.8 154.8 85.4 0 154.8-69.3 154.8-154.8 0-11.7-1.3-23.2-3.8-34.5H244v-92.4h139.7c5.6 24.1 8.3 49.3 8.3 75.5zM128 123.4l-75.1-59.1C87.8 28.5 160.4 0 244 0c87.3 0 162.2 45.4 203.2 114.2L380.3 173c-28.9-34.2-70.5-54.8-116.3-54.8-59.5 0-109.8 34.3-135.7 85z"></path>
                 </svg> Google
             </TabsTrigger>
             <TabsTrigger value="email"><Mail className="mr-2 h-4 w-4" /> E-mail</TabsTrigger>
-            <TabsTrigger value="phone"><Phone className="mr-2 h-4 w-4" /> Telefon</TabsTrigger>
           </TabsList>
         </CardHeader>
         
@@ -274,34 +204,6 @@ export function LoginForm() {
               {isRegisterMode ? 'Masz już konto? Zaloguj się' : 'Nie masz konta? Zarejestruj się'}
             </Button>
           </CardFooter>
-        </TabsContent>
-
-        <TabsContent value="phone">
-            <CardContent className="space-y-4">
-                {!isCodeSent ? (
-                    <div className="space-y-2">
-                        <Label htmlFor="phone">Numer telefonu</Label>
-                        <Input id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+48 123 456 789" />
-                        <p className="text-xs text-muted-foreground">Podaj numer w formacie międzynarodowym.</p>
-                    </div>
-                ) : (
-                    <div className="space-y-2">
-                        <Label htmlFor="code">Kod weryfikacyjny</Label>
-                        <Input id="code" type="text" value={verificationCode} onChange={(e) => setVerificationCode(e.target.value)} placeholder="Wpisz kod z SMS" />
-                    </div>
-                )}
-            </CardContent>
-            <CardFooter className="flex-col gap-2">
-                 <Button onClick={() => handleAuthAction('phone')} disabled={isPending} className="w-full">
-                    {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    {isCodeSent ? 'Zaloguj się' : 'Wyślij kod'}
-                 </Button>
-                 {isCodeSent && (
-                    <Button variant="link" size="sm" onClick={() => setIsCodeSent(false)} disabled={isPending} className="text-muted-foreground">
-                        Zmień numer telefonu
-                    </Button>
-                 )}
-            </CardFooter>
         </TabsContent>
         
         {error && (

@@ -4,7 +4,7 @@ import { useUser } from '@/firebase';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, Suspense } from 'react';
 import { Loader2 } from 'lucide-react';
-import { LoginForm } from '@/components/login-form';
+import { PhoneLoginForm } from '@/components/phone-login-form';
 import Link from 'next/link';
 
 function LoginContent() {
@@ -33,10 +33,10 @@ function LoginContent() {
   return (
     <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        <LoginForm />
+        <PhoneLoginForm />
         <div className="mt-4 text-center">
-          <Link href="/login-phone" className="text-sm text-muted-foreground hover:text-primary underline">
-            Zaloguj się za pomocą numeru telefonu
+          <Link href="/login" className="text-sm text-muted-foreground hover:text-primary underline">
+            Zaloguj się przez Google lub e-mail
           </Link>
         </div>
       </div>
@@ -44,7 +44,7 @@ function LoginContent() {
   );
 }
 
-export default function LoginPage() {
+export default function LoginPhonePage() {
   return (
     <Suspense fallback={
       <div className="container mx-auto flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
