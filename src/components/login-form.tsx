@@ -57,6 +57,16 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const recaptchaContainerRef = useRef<HTMLDivElement>(null);
+  const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
+
+  useEffect(() => {
+    if (auth && recaptchaContainerRef.current && !recaptchaVerifierRef.current) {
+        const verifier = new RecaptchaVerifier(auth, recaptchaContainerRef.current, {
+            size: 'invisible',
+        });
+        recaptchaVerifierRef.current = verifier;
+    }
+  }, [auth]);
 
 
   async function handleSuccessfulLogin(userCredential: UserCredential) {
@@ -125,15 +135,13 @@ export function LoginForm() {
           }
           break;
         case 'phoneSend':
-          if (recaptchaContainerRef.current) {
-            const verifier = new RecaptchaVerifier(auth, recaptchaContainerRef.current, { size: 'invisible' });
-            // Render reCAPTCHA and then sign in with phone number
-            await verifier.render();
+          if (recaptchaVerifierRef.current) {
+            const verifier = recaptchaVerifierRef.current;
             const result = await signInWithPhoneNumber(auth, phoneNumber, verifier);
             setConfirmationResult(result);
             toast({ title: 'Kod SMS został wysłany!' });
           } else {
-            throw new Error("Kontener reCAPTCHA nie jest gotowy.");
+            throw new Error("Weryfikator reCAPTCHA nie jest gotowy. Spróbuj ponownie za chwilę.");
           }
           break;
         case 'phoneVerify':
@@ -178,7 +186,7 @@ export function LoginForm() {
              message = 'Weryfikacja reCAPTCHA nie powiodła się. Odśwież stronę i spróbuj ponownie.';
              break;
         case 'auth/too-many-requests':
-             message = 'Zbyt wiele prób. Spróbuj ponownie później.';
+             message = 'Zbyt wiele prób. Odczekaj chwilę przed ponownym wysłaniem kodu.';
              break;
         default:
              message = 'Wystąpił błąd logowania. Spróbuj ponownie.';
@@ -210,6 +218,7 @@ export function LoginForm() {
         
         <TabsContent value="google">
             <CardContent>
+                <div ref={recaptchaContainerRef}></div>
                 <Button variant="outline" onClick={() => handleAuthAction('google')} disabled={isPending} className="w-full">
                 {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (
                     <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
@@ -251,7 +260,6 @@ export function LoginForm() {
 
         <TabsContent value="phone">
           <CardContent className="space-y-4">
-             <div ref={recaptchaContainerRef}></div>
             {!confirmationResult ? (
               <>
                 <div className="space-y-2">
@@ -296,5 +304,3 @@ export function LoginForm() {
     </Card>
   );
 }
-
-    
