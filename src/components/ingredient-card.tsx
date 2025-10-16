@@ -20,14 +20,14 @@ import {
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import type { Ingredient } from '@/lib/types';
-import { ArrowRight, PawPrint, Gem, Share2 } from 'lucide-react';
+import { ArrowRight, PawPrint, Gem } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/firebase/provider';
 import { loginPrompts } from '@/app/data/login-prompts';
 import { incrementIngredientViewCount } from '@/app/actions/user-actions';
-import { useToast } from '@/hooks/use-toast';
+import { ShareButton } from './share-button';
 
 type IngredientCardProps = {
   ingredient: Ingredient;
@@ -41,14 +41,17 @@ const statusConfig = {
   safe: {
     className: 'bg-status-safe dark:bg-status-safe/50 border-green-200 dark:border-green-800',
     textColor: 'text-status-safe-foreground',
+    buttonColor: 'border-green-600/30 text-green-700 hover:bg-green-600/10 hover:text-green-800 dark:border-green-500/30 dark:text-green-400 dark:hover:bg-green-500/10 dark:hover:text-green-300'
   },
   warning: {
     className: 'bg-status-warning dark:bg-status-warning/50 border-yellow-200 dark:border-yellow-800',
     textColor: 'text-status-warning-foreground',
+    buttonColor: 'border-yellow-600/30 text-yellow-700 hover:bg-yellow-600/10 hover:text-yellow-800 dark:border-yellow-500/30 dark:text-yellow-400 dark:hover:bg-yellow-500/10 dark:hover:text-yellow-300'
   },
   danger: {
     className: 'bg-status-danger dark:bg-status-danger/50 border-red-200 dark:border-red-800',
     textColor: 'text-status-danger-foreground',
+    buttonColor: 'border-red-600/30 text-red-700 hover:bg-red-600/10 hover:text-red-800 dark:border-red-500/30 dark:text-red-400 dark:hover:bg-red-500/10 dark:hover:text-red-300'
   },
 };
 
@@ -59,8 +62,7 @@ export function IngredientCard({ ingredient, userProfile }: IngredientCardProps)
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [randomPrompt, setRandomPrompt] = useState(loginPrompts[0]);
   const router = useRouter();
-  const { toast } = useToast();
-
+  
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (isUserLoading) return;
@@ -93,42 +95,6 @@ export function IngredientCard({ ingredient, userProfile }: IngredientCardProps)
     }
   };
 
-  const handleShareClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation(); // Prevent card navigation
-    const shareUrl = `${window.location.origin}/skladnik/${ingredient.slug}`;
-    const shareData = {
-      title: `Dieta Nero: ${ingredient.name}`,
-      text: `Sprawdź, czy ${ingredient.name.toLowerCase()} jest bezpieczny dla psa.`,
-      url: shareUrl,
-    };
-
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        // Fallback for browsers that do not support navigator.share
-        await navigator.clipboard.writeText(shareUrl);
-        toast({
-          title: 'Link skopiowany!',
-          description: 'Możesz teraz wkleić go i udostępnić.',
-        });
-      }
-    } catch (error) {
-      // This catch block handles errors, including "AbortError" when the user cancels the share dialog,
-      // or "PermissionDenied" errors. In any case, we fall back to copying to the clipboard.
-      if (error instanceof Error && error.name === 'AbortError') {
-        // User cancelled the share action, do nothing.
-      } else {
-        console.error('Błąd udostępniania, kopiowanie linku:', error);
-        // Fallback for when sharing fails for other reasons
-        await navigator.clipboard.writeText(shareUrl);
-        toast({
-          title: 'Link skopiowany do schowka',
-          description: 'Nie udało się otworzyć okna udostępniania.',
-        });
-      }
-    }
-  };
 
   return (
     <>
@@ -158,15 +124,12 @@ export function IngredientCard({ ingredient, userProfile }: IngredientCardProps)
                 Zobacz szczegóły
                 <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
             </Button>
-            <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleShareClick}
-                className={cn(config.textColor, 'rounded-full hover:bg-black/10 dark:hover:bg-white/10')}
-                aria-label="Udostępnij"
-              >
-                <Share2 className="h-5 w-5" />
-            </Button>
+            <ShareButton 
+                ingredient={ingredient}
+                variant="outline"
+                label=""
+                className={cn('h-9 w-9 p-0', config.buttonColor)}
+            />
           </CardFooter>
         </Card>
       </div>
