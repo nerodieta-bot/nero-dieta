@@ -20,13 +20,14 @@ import {
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import type { Ingredient } from '@/lib/types';
-import { ArrowRight, PawPrint, Gem } from 'lucide-react';
+import { ArrowRight, PawPrint, Gem, Share2 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/firebase/provider';
 import { loginPrompts } from '@/app/data/login-prompts';
 import { incrementIngredientViewCount } from '@/app/actions/user-actions';
+import { useToast } from '@/hooks/use-toast';
 
 type IngredientCardProps = {
   ingredient: Ingredient;
@@ -58,13 +59,13 @@ export function IngredientCard({ ingredient, userProfile }: IngredientCardProps)
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [randomPrompt, setRandomPrompt] = useState(loginPrompts[0]);
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (isUserLoading) return;
 
     if (user) {
-      // Logic for logged-in users
       if (userProfile?.plan === 'premium') {
         router.push(`/skladnik/${ingredient.slug}`);
         return;
@@ -72,13 +73,12 @@ export function IngredientCard({ ingredient, userProfile }: IngredientCardProps)
       
       const userClicks = userProfile?.ingredientViewCount ?? 0;
       if (userClicks < LOGGED_IN_CLICK_LIMIT) {
-        incrementIngredientViewCount(); // Server Action
+        incrementIngredientViewCount();
         router.push(`/skladnik/${ingredient.slug}`);
       } else {
         setShowPremiumModal(true);
       }
     } else {
-      // Logic for guest users (client-side only)
       const guestClicksStr = sessionStorage.getItem('guestClicks') || '0';
       const guestClicks = parseInt(guestClicksStr, 10);
       
@@ -93,9 +93,40 @@ export function IngredientCard({ ingredient, userProfile }: IngredientCardProps)
     }
   };
 
+  const handleShareClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation(); // Prevent card navigation
+    const shareUrl = `${window.location.origin}/skladnik/${ingredient.slug}`;
+    const shareData = {
+      title: `Dieta Nero: ${ingredient.name}`,
+      text: `Sprawdź, czy ${ingredient.name.toLowerCase()} jest bezpieczny dla psa.`,
+      url: shareUrl,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback for browsers that do not support navigator.share
+        await navigator.clipboard.writeText(shareUrl);
+        toast({
+          title: 'Link skopiowany!',
+          description: 'Możesz teraz wkleić go i udostępnić.',
+        });
+      }
+    } catch (error) {
+      console.error('Błąd udostępniania:', error);
+      // Fallback for when sharing fails or is cancelled
+      await navigator.clipboard.writeText(shareUrl);
+      toast({
+        title: 'Link skopiowany do schowka',
+        description: 'Nie udało się otworzyć okna udostępniania.',
+      });
+    }
+  };
+
   return (
     <>
-      <Card
+      <div
         className={cn(
           'flex flex-col transition-all duration-300 ease-in-out',
           'hover:shadow-xl hover:-translate-y-1 cursor-pointer group',
@@ -103,7 +134,7 @@ export function IngredientCard({ ingredient, userProfile }: IngredientCardProps)
         )}
         onClick={handleCardClick}
       >
-        <div className="flex-grow flex flex-col">
+        <Card className="flex-grow flex flex-col bg-transparent border-0 shadow-none">
           <CardHeader className="text-center items-center">
             <div className="text-5xl mb-2 transition-transform duration-300 group-hover:scale-110">{ingredient.icon}</div>
             <CardTitle className={cn('text-xl font-bold font-headline', config.textColor)}>
@@ -116,16 +147,23 @@ export function IngredientCard({ ingredient, userProfile }: IngredientCardProps)
           <CardContent className="flex-grow">
              <p className={cn('text-sm text-center', config.textColor, 'opacity-90 line-clamp-3')}>{ingredient.desc}</p>
           </CardContent>
-          <CardFooter className="flex flex-col gap-4 pt-4 border-t border-black/10 dark:border-white/10 mt-auto">
-             <div className="flex justify-center items-center text-accent w-full font-semibold">
-                <Button variant="link" className={cn(config.textColor, 'font-semibold')}>
-                    Zobacz szczegóły
-                    <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
-                </Button>
-            </div>
+          <CardFooter className="flex justify-between items-center pt-4 border-t border-black/10 dark:border-white/10 mt-auto">
+             <Button variant="link" className={cn(config.textColor, 'font-semibold px-2')}>
+                Zobacz szczegóły
+                <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
+            </Button>
+            <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleShareClick}
+                className={cn(config.textColor, 'rounded-full hover:bg-black/10 dark:hover:bg-white/10')}
+                aria-label="Udostępnij"
+              >
+                <Share2 className="h-5 w-5" />
+            </Button>
           </CardFooter>
-        </div>
-      </Card>
+        </Card>
+      </div>
       
       <Dialog open={showLoginModal} onOpenChange={setShowLoginModal}>
         <DialogContent>
