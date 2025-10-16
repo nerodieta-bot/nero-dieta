@@ -33,7 +33,10 @@ export default function Home() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
   
-  const userDocRef = (firestore && user) ? doc(firestore, 'users', user.uid) : null;
+  const userDocRef = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [firestore, user]);
 
   const { data: userProfile, isLoading: isProfileLoading } = useDoc(userDocRef);
 

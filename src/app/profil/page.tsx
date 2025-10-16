@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useUser, useFirestore } from '@/firebase';
+import { useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, Suspense } from 'react';
 import { Loader2, User as UserIcon } from 'lucide-react';
@@ -17,7 +17,10 @@ function ProfilePageContent() {
   const { user, isUserLoading } = useUser();
   const firestore = useFirestore();
 
-  const userDocRef = (firestore && user) ? doc(firestore, 'users', user.uid) : null;
+  const userDocRef = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [firestore, user]);
 
   const { data: userProfile, isLoading: isProfileLoading } = useDoc(userDocRef);
 
