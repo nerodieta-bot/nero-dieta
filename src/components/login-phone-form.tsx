@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth, useFirestore } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import {
@@ -47,7 +46,24 @@ export function LoginPhoneForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
+  const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
   const recaptchaContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (auth && recaptchaContainerRef.current && !recaptchaVerifierRef.current) {
+        recaptchaVerifierRef.current = new RecaptchaVerifier(auth, recaptchaContainerRef.current, {
+            'size': 'invisible',
+            'callback': () => {
+              // reCAPTCHA solved, allow signInWithPhoneNumber.
+            },
+            'expired-callback': () => {
+               setError('Weryfikacja reCAPTCHA wygasła. Spróbuj ponownie.');
+            }
+        });
+        recaptchaVerifierRef.current.render();
+    }
+  }, [auth]);
+
 
   async function handleSuccessfulLogin(userCredential: UserCredential) {
     setIsPending(true);
@@ -97,23 +113,13 @@ export function LoginPhoneForm() {
       let userCredential: UserCredential | undefined;
       switch (action) {
         case 'phoneSend':
-          if (recaptchaContainerRef.current) {
-            // Create a new verifier each time. This is the most reliable way.
-            const verifier = new RecaptchaVerifier(auth, recaptchaContainerRef.current, {
-                'size': 'invisible',
-                'callback': () => {
-                  // reCAPTCHA solved, allow signInWithPhoneNumber.
-                },
-                'expired-callback': () => {
-                   setError('Weryfikacja reCAPTCHA wygasła. Spróbuj ponownie.');
-                }
-            });
-            // Render reCAPTCHA and then sign in
+          if (recaptchaVerifierRef.current) {
+            const verifier = recaptchaVerifierRef.current;
             const result = await signInWithPhoneNumber(auth, phoneNumber, verifier);
             setConfirmationResult(result);
             toast({ title: 'Kod SMS został wysłany!' });
           } else {
-            throw new Error("Kontener reCAPTCHA nie jest gotowy.");
+            throw new Error("Weryfikator reCAPTCHA nie jest gotowy.");
           }
           break;
         case 'phoneVerify':
