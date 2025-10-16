@@ -73,7 +73,7 @@ export default function IngredientPage({ params }: { params: { slug: string } })
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8 flex justify-between items-center">
+        <div className="mb-8 flex items-center gap-2">
             <Button asChild variant="outline">
                 <Link href="/">
                     <Home className="mr-2 h-4 w-4" />
