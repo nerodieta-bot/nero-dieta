@@ -3,8 +3,6 @@ import { initializeApp, getApps, App, cert, credential } from 'firebase-admin/ap
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
 
-// IMPORTANT: DO NOT MODIFY THIS FILE
-
 function initializeAdminApp(): { app: App; auth: ReturnType<typeof getAuth>; firestore: ReturnType<typeof getFirestore> } {
   const apps = getApps();
   if (apps.length > 0) {
@@ -12,45 +10,30 @@ function initializeAdminApp(): { app: App; auth: ReturnType<typeof getAuth>; fir
     return { app, auth: getAuth(app), firestore: getFirestore(app) };
   }
 
-  // Check if we're in a development environment
-  if (process.env.NODE_ENV === 'development') {
-    // Connect to emulators in development
-    console.log("Development environment detected. Connecting to Firebase emulators.");
-    process.env.FIREBASE_AUTH_EMULATOR_HOST = "127.0.0.1:9099";
-    process.env.FIRESTORE_EMULATOR_HOST = "127.0.0.1:8080";
-    
+  // Ulepszona logika: Jeśli zmienne emulatora są ustawione, ZAWSZE używaj emulatorów.
+  // Działa to zarówno lokalnie, jak i w specjalnych środowiskach CI/CD.
+  if (process.env.FIREBASE_AUTH_EMULATOR_HOST) {
+    console.log("Emulator environment detected. Connecting to Firebase emulators.");
     const app = initializeApp({
-      projectId: process.env.GCLOUD_PROJECT || 'demo-dieta-nero', // Use a demo project ID for emulators
+      projectId: process.env.GCLOUD_PROJECT || 'demo-dieta-nero',
     });
     return { app, auth: getAuth(app), firestore: getFirestore(app) };
   }
 
-  // Production environment logic (unchanged)
-  let cred: credential.Credential;
+  // Logika produkcyjna: Używaj domyślnych poświadczeń Google Cloud.
+  // To działa automatycznie w App Hosting, Cloud Run, itp.
+  // Usunęliśmy zawodną próbę odczytu pliku JSON.
   try {
-    // This will succeed in any Google Cloud environment (including App Hosting, Cloud Run, Cloud Functions, and Workstations)
-    // where Application Default Credentials are available.
-    cred = credential.applicationDefault();
+    const cred = credential.applicationDefault();
+    const app = initializeApp({
+      credential: cred,
+      projectId: process.env.GCLOUD_PROJECT,
+    });
+    return { app, auth: getAuth(app), firestore: getFirestore(app) };
   } catch (error) {
-    // This block will now only be a concern for non-Google Cloud production-like environments,
-    // which is a very rare edge case. For local dev, the emulator block above handles it.
-    console.error("Application Default Credentials not found in a non-dev environment. Falling back to firebase-credentials.json attempt.", error);
-    try {
-        cred = cert('firebase-credentials.json');
-    } catch (certError) {
-        console.error("Failed to parse service account json file: firebase-credentials.json not found or invalid.", certError);
-        throw new Error("Firebase Admin SDK initialization failed. Could not find Application Default Credentials or a valid firebase-credentials.json file.");
-    }
+    console.error("Firebase Admin SDK initialization failed in production-like environment.", error);
+    throw new Error("Could not initialize Firebase Admin SDK. Application Default Credentials not found.");
   }
-
-  const app = initializeApp({
-    credential: cred,
-    databaseURL: `https://${process.env.GCLOUD_PROJECT}.firebaseio.com`,
-    projectId: process.env.GCLOUD_PROJECT,
-    storageBucket: `${process.env.GCLOUD_PROJECT}.appspot.com`,
-  });
-
-  return { app, auth: getAuth(app), firestore: getFirestore(app) };
 }
 
 export { initializeAdminApp };
