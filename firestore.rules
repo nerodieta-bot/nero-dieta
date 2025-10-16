@@ -1,163 +1,145 @@
 /**
- * @fileoverview Firestore Security Rules for the dog food app.
- *
- * Core Philosophy:
- * This ruleset enforces a role-based access control model, with a separation of concerns between users and admins.
- * Users can only access their own profile data and create user contributions. Admins have full access to ingredients and meal plans.
+ * @file Firestore Security Rules
+ * @description This ruleset enforces a strict user-ownership model for user profiles and an admin-controlled model for ingredients and meal plans.
  *
  * Data Structure:
- * - /users/{userId}: Stores user profiles. Only accessible by the user themselves or an admin.
- * - /ingredients/{ingredientId}: Stores ingredient information. Publicly readable, only writable by admins.
- * - /meal_plans/{mealPlanId}: Stores meal plans. Publicly readable, only writable by admins.
- * - /user_contributions/{contributionId}: Stores user contributions. Accessible by the user who created them and admins.
- * - /roles_admin/{userId}: Existence of a document at this path grants admin privileges to the user.
+ * - /users/{userId}: User profile data, accessible only to the user and admins.
+ * - /ingredients/{ingredientId}: Ingredient data, publicly readable, but only admins can modify.
+ * - /meal_plans/{mealPlanId}: Meal plan data, publicly readable, but only admins can modify.
+ * - /user_contributions/{contributionId}: User contributions, readable by the submitting user and admins.
+ * - /roles_admin/{userId}:  If a document exists, then the user is an admin.
  *
  * Key Security Decisions:
- * - Listing of the /users collection is disallowed to prevent unauthorized access to user data.
- * - Admin privileges are granted based on the existence of a document in the /roles_admin/{userId} collection.
- * - All write operations are protected by authorization checks.
+ * - Users can only create their own profile.
+ * - User listing is disabled for the /users collection to protect privacy.
+ * - Public read access is granted for ingredients and meal plans, but write access is restricted to admins.
  *
  * Denormalization for Authorization:
- * - User contributions include a userId field to enable owner-based access control. This avoids the need for server-side queries to determine ownership.
+ * - Admin status is determined by the existence of a document in the `/roles_admin/{userId}` collection.
+ *
+ * Structural Segregation:
+ * - Publicly readable data (ingredients, meal plans) is stored in top-level collections separate from private user data.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ————— Helper Functions —————
-
     /**
      * @description Checks if the user is signed in.
-     * @return {boolean} True if the user is signed in, false otherwise.
      */
     function isSignedIn() {
       return request.auth != null;
     }
 
     /**
-     * @description Checks if the user is an admin based on custom claim.
-     * @return {boolean} True if the user has the 'admin' custom claim, false otherwise.
+     * @description Checks if the user is an admin based on the existence of a document in /roles_admin/{userId}.
      */
     function isAdmin() {
-      return isSignedIn() && request.auth.token.admin == true;
+      return exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
     }
 
     /**
-     * @description Checks if the authenticated user's UID matches the {userId} path parameter.
-     * @param {string} userId The userId from the path.
-     * @return {boolean} True if the user is the owner, false otherwise.
+     * @description Checks if the authenticated user ID matches the provided user ID.
+     * @param {string} userId - The user ID to compare against.
+     * @returns {boolean} True if the user is signed in and the UID matches; otherwise, false.
      */
-    function isOwnerPath(userId) {
+    function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
 
     /**
-     * @description Checks if the authenticated user's UID matches the userId field in the request data.
-     * @return {boolean} True if the user is the owner, false otherwise.
-     */
-    function isOwnerField() {
-      return isSignedIn() && request.resource.data.userId == request.auth.uid;
-    }
-
-    /**
-     * @description Checks if the authenticated user's UID matches the userId field in the existing resource data.
-     * @return {boolean} True if the user is the owner, false otherwise.
-     */
-    function isOwnerResource() {
-      return isSignedIn() && resource.data.userId == request.auth.uid;
-    }
-
-    /**
-     * @description Checks if the authenticated user's UID matches the userId field in the existing resource data, and the document exists.
-     * @param {string} userId The userId from the path.
-     * @return {boolean} True if the user is the owner and the document exists, false otherwise.
+     * @description Checks if the user is the owner of the existing document
+     * @param {string} userId - The user ID to compare against.
+     * @returns {boolean} True if the user is signed in, the UID matches, and the resource exists; otherwise, false.
      */
     function isExistingOwner(userId) {
-        return isOwnerPath(userId) && resource != null;
+      return isOwner(userId) && resource != null;
     }
 
-    // ————— USERS —————
 
     /**
-     * @description Allows a user to read, update, or delete their own profile.
+     * @description Defines security rules for user profiles.
      * @path /users/{userId}
-     * @allow (get, update, delete) User with ID 'user123' reading their own profile.
-     * @deny (get, update, delete) User with ID 'user123' trying to read 'user456' profile.
-     * @principle Enforces document ownership for user profiles.
+     * @allow (create) - Authenticated user with matching userId can create their profile.
+     * @allow (get, update, delete) - Authenticated user with matching userId or admin can perform these operations.
+     * @deny (create) - Unauthenticated user cannot create a profile.
+     * @deny (update) - Authenticated user without matching userId cannot update the profile.
+     * @principle Enforces document ownership for writes; admins can also modify.
      */
     match /users/{userId} {
+      allow create: if isOwner(userId);
       allow get, update, delete: if isExistingOwner(userId) || isAdmin();
-      allow create: if isOwnerPath(userId);
-      allow list: if false; // Listing users is not allowed
+      allow list: if false; // User listing is not allowed.
     }
 
-    // ————— INGREDIENTS —————
-
     /**
-     * @description Allows public read access to ingredients and admin-only write access.
+     * @description Defines security rules for ingredients.
      * @path /ingredients/{ingredientId}
-     * @allow (get) Any user reading ingredient data.
-     * @allow (create, update, delete) Admin user creating an ingredient.
-     * @deny (create, update, delete) Non-admin user attempting to create an ingredient.
-     * @principle Public read, admin-only write for ingredient data.
+     * @allow (get, list) - Anyone can read the ingredients.
+     * @allow (create, update, delete) - Only admins can modify ingredients.
+     * @deny (create) - Non-admins cannot create ingredients.
+     * @deny (update) - Non-admins cannot update ingredients.
+     * @principle Public read access with admin-only writes.
      */
     match /ingredients/{ingredientId} {
       allow get, list: if true;
       allow create, update, delete: if isAdmin();
     }
 
-    // ————— MEAL PLANS —————
-
     /**
-     * @description Allows public read access to meal plans and admin-only write access.
+     * @description Defines security rules for meal plans.
      * @path /meal_plans/{mealPlanId}
-     * @allow (get) Any user reading meal plan data.
-     * @allow (create, update, delete) Admin user creating a meal plan.
-     * @deny (create, update, delete) Non-admin user attempting to create a meal plan.
-     * @principle Public read, admin-only write for meal plan data.
+     * @allow (get, list) - Anyone can read the meal plans.
+     * @allow (create, update, delete) - Only admins can modify meal plans.
+     * @deny (create) - Non-admins cannot create meal plans.
+     * @deny (update) - Non-admins cannot update meal plans.
+     * @principle Public read access with admin-only writes.
      */
     match /meal_plans/{mealPlanId} {
       allow get, list: if true;
       allow create, update, delete: if isAdmin();
     }
 
-    // ————— USER CONTRIBUTIONS —————
-
     /**
-     * @description Allows logged-in users to create contributions with their own user ID, and allows access to contributions by their owner or an admin.
+     * @description Defines security rules for user contributions.
      * @path /user_contributions/{contributionId}
-     * @allow (create) Logged-in user creating a contribution with their own user ID.
-     * @allow (get, update, delete) Owner of the contribution or admin accessing the contribution.
-     * @deny (create) Logged-in user attempting to create a contribution with another user's ID.
-     * @deny (get, update, delete) Non-owner user attempting to access another user's contribution.
-     * @principle Enforces ownership for user contributions and allows admin access.
+     * @allow (get) - The owner and admins can read a contribution.
+     * @allow (create) - Any signed-in user can create a contribution.
+     * @allow (update, delete) - Only admins can modify contributions.
+     * @deny (create) - Unauthenticated users cannot create contributions.
+     * @deny (update) - Non-admins cannot update contributions.
+     * @principle User-submitted content readable by the submitter and admins.
      */
     match /user_contributions/{contributionId} {
-      allow create: if isSignedIn() && isOwnerField();
-      allow get, update, delete: if isExistingOwnerResource() || isAdmin();
-      allow list: if isSignedIn(); // list dozwolony, ale patrz ↓ query rules
+      allow get: if isOwner(request.resource.data.userId) || isAdmin();
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+      allow list: if isSignedIn() && request.auth.uid == resource.data.userId; // Owner can list their own contributions
     }
 
     /**
-     * @description Grant admin role to a user based on the existence of a document in the /roles_admin/{userId} collection
+     * @description Defines security rules for admin role assignments.
      * @path /roles_admin/{userId}
-     * @allow get, create, update, delete: if isAdmin();
-     * @principle DBAC (Database Acess Control) via explicit admin role assignment.
+     * @allow (create) - Only admins can assign admin roles.
+     * @allow (get, delete) - Only admins can read or remove admin roles.
+     * @deny (create) - Non-admins cannot assign admin roles.
+     * @deny (delete) - Non-admins cannot remove admin roles.
+     * @principle Admin role management restricted to existing admins.
      */
-     match /roles_admin/{userId} {
-        allow get: if isAdmin();
-        allow create: if isAdmin();
-        allow update: if false; //Prevent client side updates
-        allow delete: if isAdmin();
-        allow list: if false; // Listing not allowed
-     }
-    // Domyślnie: wszystko inne zablokowane
-    match /{document=**} {
-      allow read, write: if false;
+    match /roles_admin/{userId} {
+      allow create, get, delete: if isAdmin();
+      allow update: if false;
+      allow list: if false;
     }
 
-    function isExistingOwnerResource() {
-        return isOwnerResource() && resource != null;
+    /**
+     * @description Prevents access to any other documents in the database.
+     * @path /{document=**}
+     * @deny (read, write) - All read and write operations are denied on all other paths.
+     * @principle Explicitly denies all access to undefined paths.
+     */
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
