@@ -114,13 +114,19 @@ export function IngredientCard({ ingredient, userProfile }: IngredientCardProps)
         });
       }
     } catch (error) {
-      console.error('Błąd udostępniania:', error);
-      // Fallback for when sharing fails or is cancelled
-      await navigator.clipboard.writeText(shareUrl);
-      toast({
-        title: 'Link skopiowany do schowka',
-        description: 'Nie udało się otworzyć okna udostępniania.',
-      });
+      // This catch block handles errors, including "AbortError" when the user cancels the share dialog,
+      // or "PermissionDenied" errors. In any case, we fall back to copying to the clipboard.
+      if (error instanceof Error && error.name === 'AbortError') {
+        // User cancelled the share action, do nothing.
+      } else {
+        console.error('Błąd udostępniania, kopiowanie linku:', error);
+        // Fallback for when sharing fails for other reasons
+        await navigator.clipboard.writeText(shareUrl);
+        toast({
+          title: 'Link skopiowany do schowka',
+          description: 'Nie udało się otworzyć okna udostępniania.',
+        });
+      }
     }
   };
 
