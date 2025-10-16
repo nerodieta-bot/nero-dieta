@@ -1,5 +1,5 @@
 'use client';
-    
+
 import {
   setDoc,
   addDoc,
@@ -8,90 +8,97 @@ import {
   CollectionReference,
   DocumentReference,
   SetOptions,
+  FirestoreError,
 } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
-import {FirestorePermissionError} from '@/firebase/errors';
+import { FirestorePermissionError } from '@/firebase/errors';
 
-/**
- * Initiates a setDoc operation for a document reference.
- * It is idempotent: it will create the document if it doesn't exist,
- * or update/merge it if it does.
- * Does NOT await the write operation internally.
- */
-export function setDocumentNonBlocking(docRef: DocumentReference, data: any, options?: SetOptions) {
-  const effectiveOptions = options || {};
-  
-  // Ensure merge is true if no options are provided, making it an upsert by default.
-  if (!options) {
-    effectiveOptions.merge = true;
-  }
+type AnyData = Record<string, unknown>;
+type Op = 'create' | 'update' | 'delete';
 
-  setDoc(docRef, data, effectiveOptions).catch(error => {
-    errorEmitter.emit(
-      'permission-error',
-      new FirestorePermissionError({
-        path: docRef.path,
-        operation: effectiveOptions.merge ? 'update' : 'create',
-        requestResourceData: data,
-      })
-    )
-  })
+function emitPermissionDenied(path: string, operation: Op, data?: AnyData) {
+  errorEmitter.emit(
+    'permission-error',
+    new FirestorePermissionError({
+      path,
+      operation,
+      requestResourceData: data,
+    })
+  );
 }
 
-
-/**
- * Initiates an addDoc operation for a collection reference.
- * Does NOT await the write operation internally.
- * Returns the Promise for the new doc ref, but typically not awaited by caller.
- */
-export function addDocumentNonBlocking(colRef: CollectionReference, data: any) {
-  const promise = addDoc(colRef, data)
-    .catch(error => {
-      errorEmitter.emit(
-        'permission-error',
-        new FirestorePermissionError({
-          path: colRef.path,
-          operation: 'create',
-          requestResourceData: data,
-        })
-      )
-    });
-  return promise;
+function emitWriteError(code: string, path: string, operation: Op, data?: AnyData) {
+  errorEmitter.emit('write-error', { code, path, operation, data });
 }
 
-
 /**
- * Initiates an updateDoc operation for a document reference.
- * Does NOT await the write operation internally.
+ * Idempotentny zapis dokumentu – domyślnie UP SERT (merge: true).
+ * Nie awaituje; błędy permission emitowane selektywnie.
  */
-export function updateDocumentNonBlocking(docRef: DocumentReference, data: any) {
-  updateDoc(docRef, data)
-    .catch(error => {
-      errorEmitter.emit(
-        'permission-error',
-        new FirestorePermissionError({
-          path: docRef.path,
-          operation: 'update',
-          requestResourceData: data,
-        })
-      )
-    });
+export function setDocumentNonBlocking(
+  docRef: DocumentReference,
+  data: AnyData,
+  options?: SetOptions
+) {
+  const effective: SetOptions = options ?? { merge: true };
+
+  setDoc(docRef, data, effective).catch((err: FirestoreError) => {
+    if (err.code === 'permission-denied') {
+      emitPermissionDenied(docRef.path, effective.merge ? 'update' : 'create', data);
+    } else {
+      emitWriteError(err.code, docRef.path, effective.merge ? 'update' : 'create', data);
+      // opcjonalnie:
+      // console.error('[setDoc]', err);
+    }
+  });
 }
 
+/**
+ * Dodanie dokumentu do kolekcji.
+ * Zwraca Promise<DocRef>, ale zwykle nie czekamy.
+ */
+export function addDocumentNonBlocking(colRef: CollectionReference, data: AnyData) {
+  const p = addDoc(colRef, data).catch((err: FirestoreError) => {
+    if (err.code === 'permission-denied') {
+      emitPermissionDenied(colRef.path, 'create', data);
+    } else {
+      emitWriteError(err.code, colRef.path, 'create', data);
+      // console.error('[addDoc]', err);
+    }
+    throw err; // pozwól callerowi ewentualnie obsłużyć
+  });
+  return p;
+}
 
 /**
- * Initiates a deleteDoc operation for a document reference.
- * Does NOT await the write operation internally.
+ * Aktualizacja dokumentu.
+ * Jeśli dokument nie istnieje (not-found), robimy UPSERT (merge: true).
+ */
+export function updateDocumentNonBlocking(docRef: DocumentReference, data: AnyData) {
+  updateDoc(docRef, data).catch(async (err: FirestoreError) => {
+    if (err.code === 'not-found') {
+      // UPSERT – to rozwiązuje Twój przypadek /users/<uid> + updatedAt
+      return setDoc(docRef, data, { merge: true });
+    }
+    if (err.code === 'permission-denied') {
+      emitPermissionDenied(docRef.path, 'update', data);
+    } else {
+      emitWriteError(err.code, docRef.path, 'update', data);
+      // console.error('[updateDoc]', err);
+    }
+  });
+}
+
+/**
+ * Usunięcie dokumentu.
  */
 export function deleteDocumentNonBlocking(docRef: DocumentReference) {
-  deleteDoc(docRef)
-    .catch(error => {
-      errorEmitter.emit(
-        'permission-error',
-        new FirestorePermissionError({
-          path: docRef.path,
-          operation: 'delete',
-        })
-      )
-    });
+  deleteDoc(docRef).catch((err: FirestoreError) => {
+    if (err.code === 'permission-denied') {
+      emitPermissionDenied(docRef.path, 'delete');
+    } else {
+      emitWriteError(err.code, docRef.path, 'delete');
+      // console.error('[deleteDoc]', err);
+    }
+  });
 }
