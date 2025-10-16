@@ -208,9 +208,9 @@ export function MealPlanForm({ generationsLeft }: MealPlanFormProps) {
 
             {formState.mealPlan && !isPending && (
                 <Card className="w-full bg-primary/5 dark:bg-primary/10">
-                <CardHeader className="flex flex-row items-center justify-between">
+                <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <CardTitle>Oto Twój Plan Posiłków!</CardTitle>
-                    <Button variant="outline" size="sm" onClick={handlePrint}>
+                    <Button variant="outline" size="sm" onClick={handlePrint} className="w-full sm:w-auto">
                     <Printer className="mr-2 h-4 w-4" />
                     Drukuj
                     </Button>
