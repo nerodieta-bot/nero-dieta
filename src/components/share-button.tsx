@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useToast } from '@/hooks/use-toast';
@@ -17,7 +18,7 @@ export function ShareButton({
   ingredient,
   className,
   variant = 'outline',
-  label = 'Udostępnij',
+  label = 'Poinformuj swoje stado',
   ...props
 }: ShareButtonProps) {
   const { toast } = useToast();
