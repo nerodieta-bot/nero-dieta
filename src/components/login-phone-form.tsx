@@ -19,7 +19,6 @@ import { doc, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import {
   type UserCredential,
-  RecaptchaVerifier,
   signInWithPhoneNumber,
   ConfirmationResult
 } from 'firebase/auth';
@@ -95,22 +94,11 @@ export function LoginPhoneForm() {
       let userCredential: UserCredential | undefined;
       switch (action) {
         case 'phoneSend':
-          // Create a new RecaptchaVerifier instance on each send attempt
-          const recaptchaContainer = document.getElementById('recaptcha-container');
-          if (recaptchaContainer) {
-            const verifier = new RecaptchaVerifier(auth, recaptchaContainer, {
-              'size': 'invisible',
-              'callback': () => {
-                // reCAPTCHA solved, allow signInWithPhoneNumber.
-              }
-            });
-            // Render reCAPTCHA and then sign in
-            const result = await signInWithPhoneNumber(auth, phoneNumber, verifier);
-            setConfirmationResult(result);
-            toast({ title: 'Kod SMS został wysłany!' });
-          } else {
-            throw new Error("Nie znaleziono kontenera reCAPTCHA.");
-          }
+          // Passing null for the verifier argument to use invisible reCAPTCHA
+          // or other verification methods provided by Firebase.
+          const result = await signInWithPhoneNumber(auth, phoneNumber, null as any);
+          setConfirmationResult(result);
+          toast({ title: 'Kod SMS został wysłany!' });
           break;
         case 'phoneVerify':
           if (confirmationResult) {
@@ -135,9 +123,6 @@ export function LoginPhoneForm() {
              break;
         case 'auth/invalid-verification-code':
              message = 'Nieprawidłowy kod weryfikacyjny.';
-             break;
-        case 'auth/captcha-check-failed':
-             message = 'Weryfikacja reCAPTCHA nie powiodła się. Odśwież stronę i spróbuj ponownie.';
              break;
         case 'auth/too-many-requests':
              message = 'Zbyt wiele prób. Odczekaj chwilę przed ponownym wysłaniem kodu.';
@@ -165,7 +150,6 @@ export function LoginPhoneForm() {
         </CardHeader>
 
           <CardContent className="space-y-4">
-            <div id="recaptcha-container"></div>
             {!confirmationResult ? (
               <>
                 <div className="space-y-2">
