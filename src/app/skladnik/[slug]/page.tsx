@@ -73,13 +73,14 @@ export default function IngredientPage({ params }: { params: { slug: string } })
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
+        <div className="mb-8 flex justify-between items-center">
             <Button asChild variant="outline">
                 <Link href="/">
                     <Home className="mr-2 h-4 w-4" />
                     Wróć do bazy
                 </Link>
             </Button>
+            <ShareButton ingredient={ingredient} variant="outline" />
         </div>
 
         <Collapsible defaultOpen={true} className="md:!block">
@@ -159,9 +160,6 @@ export default function IngredientPage({ params }: { params: { slug: string } })
                         </blockquote>
                     </div>
                   )}
-                  <div className='flex-shrink-0 w-full md:w-auto'>
-                    <ShareButton ingredient={ingredient} variant="outline" className="w-full" />
-                  </div>
               </CardFooter>
             </CollapsibleContent>
           </Card>
