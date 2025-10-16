@@ -177,6 +177,9 @@ export function LoginForm() {
         case 'auth/captcha-check-failed':
              message = 'Weryfikacja reCAPTCHA nie powiodła się. Odśwież stronę i spróbuj ponownie.';
              break;
+        case 'auth/too-many-requests':
+             message = 'Zbyt wiele prób. Spróbuj ponownie później.';
+             break;
         default:
              message = 'Wystąpił błąd logowania. Spróbuj ponownie.';
              break;
@@ -200,8 +203,8 @@ export function LoginForm() {
                     <path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 110.3 512 0 401.8 0 265.8c0-57.5 22.9-108.9 59.9-146.9L120.3 176c-18.1 34.2-28.7 75.3-28.7 119.8 0 85.4 69.3 154.8 154.8 154.8 85.4 0 154.8-69.3 154.8-154.8 0-11.7-1.3-23.2-3.8-34.5H244v-92.4h139.7c5.6 24.1 8.3 49.3 8.3 75.5zM128 123.4l-75.1-59.1C87.8 28.5 160.4 0 244 0c87.3 0 162.2 45.4 203.2 114.2L380.3 173c-28.9-34.2-70.5-54.8-116.3-54.8-59.5 0-109.8 34.3-135.7 85z"></path>
                 </svg> Google
             </TabsTrigger>
-            <TabsTrigger value="email"><Mail /> E-mail</TabsTrigger>
-            <TabsTrigger value="phone"><Phone /> Telefon</TabsTrigger>
+            <TabsTrigger value="email"><Mail className="mr-2 h-4 w-4" /> E-mail</TabsTrigger>
+            <TabsTrigger value="phone"><Phone className="mr-2 h-4 w-4" /> Telefon</TabsTrigger>
           </TabsList>
         </CardHeader>
         
