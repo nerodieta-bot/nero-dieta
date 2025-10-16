@@ -3,23 +3,26 @@ import type {NextConfig} from 'next';
 
 const isDev = process.env.NODE_ENV === 'development';
 
-// Dozwolone originy dla środowiska deweloperskiego (np. Cloud Workstations).
-const allowedDevOrigins = [
-  '*.cluster-fbfjltn375c6wqxlhoehbz44sk.cloudworkstations.dev',
-  'http://localhost:3000',
-];
+// ✅ Dynamiczne wczytywanie dozwolonych originów ze zmiennej środowiskowej
+// W pliku .env można ustawić: DEV_ALLOWED_ORIGINS="http://localhost:3000,https://<twoje>.cloudworkstations.dev"
+const allowedDevOriginsFromEnv =
+  process.env.DEV_ALLOWED_ORIGINS?.split(',').map(s => s.trim()).filter(Boolean) ?? [];
 
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  output: 'standalone',
+  output: 'standalone', // Zachowane z Twojej konfiguracji
+  
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true, // Zachowane z Twojej konfiguracji
   },
+  
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true, // Zachowane z Twojej konfiguracji
   },
+
   images: {
+    // Twoje istniejące, działające remotePatterns
     remotePatterns: [
       {
         protocol: 'https',
@@ -34,7 +37,8 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https',
+        protocol: 'https'
+        ,
         hostname: 'picsum.photos',
         port: '',
         pathname: '/**',
@@ -53,12 +57,22 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Ustawienia eksperymentalne, działają tylko w trybie deweloperskim
+  
+  // Nowoczesna konfiguracja "whitelist" dla środowiska deweloperskiego
   ...(isDev && {
     experimental: {
-      allowedDevOrigins,
+      allowedDevOrigins:
+        allowedDevOriginsFromEnv.length > 0
+          ? allowedDevOriginsFromEnv
+          : [
+              'http://localhost:3000',
+              // Tutaj możesz wkleić zapasowy, dokładny origin z Cloud Workstations, jeśli .env nie jest używane
+            ],
     },
   }),
+
+  // Drobne, ale przydatne optymalizacje
+  poweredByHeader: false, // Poprawa bezpieczeństwa
 };
 
 export default nextConfig;
