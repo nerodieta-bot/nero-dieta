@@ -1,75 +1,70 @@
-'use server';
+type CheckoutResponse =
+  | { ok: true; sessionId: string }
+  | { ok: false; code: 'NOT_AUTH'|'PRICE_MISSING'|'STRIPE_FAIL'|'UNEXPECTED'; message: string };
 
-import { cookies } from 'next/headers';
-import { initializeAdminApp } from '@/firebase/admin';
-import Stripe from 'stripe';
-import { headers } from 'next/headers';
-
-if (!process.env.STRIPE_SECRET_KEY) {
-    throw new Error('STRIPE_SECRET_KEY is not set');
+function msg(key: 'notAuth'|'priceMissing'|'stripeFail'|'unexpected', lang: 'pl'|'en' = 'pl') {
+  const d = {
+    pl: {
+      notAuth: 'Musisz być zalogowany, aby dokonać zakupu.',
+      priceMissing: 'Plan płatny nie jest poprawnie skonfigurowany.',
+      stripeFail: 'Płatność nie może zostać przetworzona. Spróbuj ponownie.',
+      unexpected: 'Wystąpił nieoczekiwany błąd. Spróbuj ponownie.',
+    },
+    en: {
+      notAuth: 'You must be signed in to complete the purchase.',
+      priceMissing: 'Paid plan is not properly configured.',
+      stripeFail: 'The payment could not be processed. Please try again.',
+      unexpected: 'An unexpected error occurred. Please try again.',
+    },
+  } as const;
+  return d[lang][key];
 }
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2024-06-20',
-});
-
-type CheckoutResponse = {
-    sessionId?: string;
-    error?: string;
-};
-
-export async function createCheckoutSession(plan: 'monthly' | 'yearly'): Promise<CheckoutResponse> {
+export async function createCheckoutSession(
+  plan: 'monthly' | 'yearly',
+  lang: 'pl'|'en' = 'pl'
+): Promise<CheckoutResponse> {
+  try {
     const { auth } = initializeAdminApp();
     const sessionCookie = cookies().get('__session')?.value;
-    
     if (!sessionCookie) {
-        return { error: 'Musisz być zalogowany, aby dokonać zakupu.' };
+      return { ok: false, code: 'NOT_AUTH', message: msg('notAuth', lang) };
     }
 
-    try {
-        const decodedToken = await auth.verifySessionCookie(sessionCookie, true);
-        const userId = decodedToken.uid;
-        
-        const priceId = plan === 'monthly'
-            ? process.env.STRIPE_MONTHLY_PRICE_ID
-            : process.env.STRIPE_YEARLY_PRICE_ID;
+    const decodedToken = await auth.verifySessionCookie(sessionCookie, true);
+    const userId = decodedToken.uid;
 
-        if (!priceId) {
-            throw new Error(`Price ID for ${plan} plan is not configured.`);
-        }
-        
-        const referer = headers().get('referer') || 'https://nero-dieta.ch';
-        const successUrl = new URL('/profil?status=success', referer).toString();
-        const cancelUrl = new URL('/pricing?status=cancelled', referer).toString();
+    const priceId =
+      plan === 'monthly'
+        ? process.env.STRIPE_MONTHLY_PRICE_ID
+        : process.env.STRIPE_YEARLY_PRICE_ID;
 
-
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card', 'blik', 'p24'],
-            line_items: [
-                {
-                    price: priceId,
-                    quantity: 1,
-                },
-            ],
-            mode: 'subscription',
-            success_url: successUrl,
-            cancel_url: cancelUrl,
-            metadata: {
-                userId: userId,
-            },
-        });
-
-        if (!session.id) {
-            throw new Error('Could not create Stripe session.');
-        }
-
-        return { sessionId: session.id };
-
-    } catch (error) {
-        console.error('Error creating checkout session:', error);
-        if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'Wystąpił nieoczekiwany błąd. Spróbuj ponownie.' };
+    if (!priceId) {
+      return { ok: false, code: 'PRICE_MISSING', message: msg('priceMissing', lang) };
     }
+
+    const hdrs = headers();
+    const fallbackBase = process.env.NEXT_PUBLIC_APP_URL || 'https://nero-dieta.ch';
+    const referer = hdrs.get('origin') || hdrs.get('referer') || fallbackBase;
+    const base = new URL(referer).origin;
+
+    const stripe = getStripe();
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      line_items: [{ price: priceId, quantity: 1 }],
+      payment_method_collection: 'always',
+      success_url: `${base}/profil?status=success`,
+      cancel_url: `${base}/pricing?status=cancelled`,
+      metadata: { userId },
+    });
+
+    if (!session.id) {
+      return { ok: false, code: 'STRIPE_FAIL', message: msg('stripeFail', lang) };
+    }
+
+    return { ok: true, sessionId: session.id };
+  } catch (err: any) {
+    console.error('createCheckoutSession error:', err?.type || err?.name, err?.message);
+    return { ok: false, code: 'UNEXPECTED', message: msg('unexpected', lang) };
+  }
 }
