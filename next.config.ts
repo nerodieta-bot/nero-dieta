@@ -1,19 +1,23 @@
 
 import type {NextConfig} from 'next';
 
+const isDev = process.env.NODE_ENV === 'development';
+
+// Dozwolone originy dla środowiska deweloperskiego (np. Cloud Workstations).
+const allowedDevOrigins = [
+  '*.cluster-fbfjltn375c6wqxlhoehbz44sk.cloudworkstations.dev',
+  'http://localhost:3000',
+];
+
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: true,
   output: 'standalone',
   typescript: {
     ignoreBuildErrors: true,
   },
   eslint: {
     ignoreDuringBuilds: true,
-  },
-  devIndicators: {
-    allowedDevOrigins: [
-        '*.cluster-fbfjltn375c6wqxlhoehbz44sk.cloudworkstations.dev',
-    ],
   },
   images: {
     remotePatterns: [
@@ -49,6 +53,12 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Ustawienia eksperymentalne, działają tylko w trybie deweloperskim
+  ...(isDev && {
+    experimental: {
+      allowedDevOrigins,
+    },
+  }),
 };
 
 export default nextConfig;
