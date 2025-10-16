@@ -24,11 +24,10 @@ const navLinks = [
   { href: '/pricing', label: 'Cennik', icon: Gem },
   { href: '/submit', label: 'Dodaj', icon: PlusSquare },
   { href: '/nero', label: 'O Nero', icon: Dog },
-  { href: '/pricing#faq', label: 'FAQ', icon: HelpCircle },
 ];
 
 const mobileNavLinks = [
-  ...navLinks.filter(link => link.href !== '/pricing#faq'), // remove faq to re-add later
+  ...navLinks,
   { href: '#recommendations', label: 'Polecane', icon: Award },
   { href: '/pricing#faq', label: 'FAQ', icon: HelpCircle },
 ];
