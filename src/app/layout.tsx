@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { Footer } from '@/components/footer';
 import { CookieConsentBanner } from '@/components/cookie-consent-banner';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
+import ClientBoot from '@/firebase/ClientBoot';
 
 export const metadata: Metadata = {
   title: 'Dieta Nero',
@@ -29,6 +30,7 @@ export default function RootLayout({
       </head>
       <body className={cn('font-body antialiased bg-background text-foreground')}>
         <FirebaseClientProvider>
+          <ClientBoot />
           <div className="flex flex-col min-h-screen">
             <Header />
             <main className="flex-grow">{children}</main>
