@@ -148,18 +148,21 @@ export default function IngredientPage({ params }: { params: { slug: string } })
                     </div>
                 </div>
               </CardContent>
-              {ingredient.nero && (
-                <CardFooter className="p-0 md:p-2 mt-6">
-                  <div className={cn("relative w-full p-5 pl-8 pt-10 rounded-xl border-l-4", variant.neroQuote)}>
-                      <div className="absolute left-4 top-3 inline-flex items-center gap-2 bg-white/70 dark:bg-black/20 text-xs font-extrabold text-foreground/80 dark:text-foreground/70 px-3 py-1.5 rounded-lg border border-black/10 dark:border-white/10">
-                          <PawPrint className="w-4 h-4" /> Nero mówi:
-                      </div>
-                      <blockquote className="italic text-lg leading-relaxed">
-                          "{ingredient.nero}"
-                      </blockquote>
+              <CardFooter className="flex-col md:flex-row items-center justify-between p-0 md:p-2 mt-6 gap-4">
+                  {ingredient.nero && (
+                    <div className={cn("relative w-full p-5 pl-8 pt-10 rounded-xl border-l-4", variant.neroQuote)}>
+                        <div className="absolute left-4 top-3 inline-flex items-center gap-2 bg-white/70 dark:bg-black/20 text-xs font-extrabold text-foreground/80 dark:text-foreground/70 px-3 py-1.5 rounded-lg border border-black/10 dark:border-white/10">
+                            <PawPrint className="w-4 h-4" /> Nero mówi:
+                        </div>
+                        <blockquote className="italic text-lg leading-relaxed">
+                            "{ingredient.nero}"
+                        </blockquote>
+                    </div>
+                  )}
+                  <div className='flex-shrink-0 w-full md:w-auto'>
+                    <ShareButton ingredient={ingredient} variant="outline" className="w-full" />
                   </div>
-                </CardFooter>
-              )}
+              </CardFooter>
             </CollapsibleContent>
           </Card>
           <CollapsibleTrigger asChild>
@@ -170,11 +173,6 @@ export default function IngredientPage({ params }: { params: { slug: string } })
             </Button>
           </CollapsibleTrigger>
         </Collapsible>
-
-        <div className="mt-8 flex justify-center">
-            <ShareButton ingredient={ingredient} variant="outline" className="w-full md:w-auto" />
-        </div>
-
       </div>
     </div>
   );
