@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth, useFirestore } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,7 +25,7 @@ import {
   signInWithEmailAndPassword,
   RecaptchaVerifier,
   signInWithPhoneNumber,
-  type ConfirmationResult
+  type ConfirmationResult,
 } from 'firebase/auth';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -52,29 +52,35 @@ export function LoginForm() {
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const [isCodeSent, setIsCodeSent] = useState(false);
 
-
   const auth = useAuth();
   const firestore = useFirestore();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
 
-  const setupRecaptcha = () => {
+  useEffect(() => {
     if (!auth) return;
-    // Ensure window.recaptchaVerifier is created only once.
-    if (!(window as any).recaptchaVerifier) {
-      (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        'size': 'invisible',
-        'callback': (response: any) => {
-          // reCAPTCHA solved, allow signInWithPhoneNumber.
-        },
-        'expired-callback': () => {
-           // Response expired. Ask user to solve reCAPTCHA again.
-           setError('Weryfikacja reCAPTCHA wygasła. Spróbuj ponownie.');
-        }
-      });
-    }
-  }
+
+    // Initialize reCAPTCHA verifier only once when the component mounts.
+    const verifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      'size': 'invisible',
+      'callback': (response: any) => {
+        // reCAPTCHA solved, you can proceed with phone sign-in.
+      },
+      'expired-callback': () => {
+        // Response expired. User needs to solve reCAPTCHA again.
+        setError('Weryfikacja reCAPTCHA wygasła. Odśwież stronę i spróbuj ponownie.');
+      }
+    });
+
+    (window as any).recaptchaVerifier = verifier;
+
+    // Cleanup function to clear the verifier when the component unmounts.
+    return () => {
+      verifier.clear();
+      (window as any).recaptchaVerifier = null;
+    };
+  }, [auth]);
 
   async function handleSuccessfulLogin(userCredential: UserCredential) {
     setIsPending(true);
@@ -132,10 +138,13 @@ export function LoginForm() {
 
     try {
       if (action === 'phone') {
+        const appVerifier = (window as any).recaptchaVerifier;
+        if (!appVerifier) {
+          throw new Error("RecaptchaVerifier nie jest gotowy.");
+        }
+
         if (!isCodeSent) {
           // Stage 1: Send verification code
-          setupRecaptcha();
-          const appVerifier = (window as any).recaptchaVerifier;
           const result = await signInWithPhoneNumber(auth, phone, appVerifier);
           setConfirmationResult(result);
           setIsCodeSent(true);
@@ -193,6 +202,9 @@ export function LoginForm() {
              break;
         case 'auth/invalid-phone-number':
              message = 'Nieprawidłowy numer telefonu. Podaj go w formacie międzynarodowym (np. +48123456789).';
+             break;
+        case 'auth/too-many-requests':
+             message = 'Zbyt wiele prób. Spróbuj ponownie później lub odśwież stronę.';
              break;
         default:
              message = 'Wystąpił błąd logowania. Spróbuj ponownie.';
