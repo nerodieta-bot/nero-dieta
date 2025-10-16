@@ -1,4 +1,3 @@
-
 import { notFound } from 'next/navigation';
 import { ingredients } from '@/app/data/ingredients';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,46 +16,46 @@ export async function generateStaticParams() {
 
 const statusConfig = {
   safe: {
-    card: 'bg-status-safe dark:bg-green-950/30 border-green-200 dark:border-green-800/50',
+    card: 'bg-[#e9f9ed]',
     title: 'text-green-800 dark:text-green-300',
     description: 'text-green-700 dark:text-green-400',
     badge: 'bg-green-600 text-white',
-    warningBox: 'border border-emerald-300 bg-[#f0fff4] dark:bg-emerald-950/20',
-    detailsBox: 'bg-[#f4fbf5] dark:bg-green-950/20 border border-[#b7e2c2] dark:border-green-800/40',
-    detailsStrong: 'text-green-900 dark:text-green-200 font-extrabold',
-    detailsLink: 'text-green-700 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 hover:bg-green-500/10',
+    warningBox: 'border-emerald-300 bg-[#f0fff4]',
+    detailsBox: 'border-[#b7e2c2] bg-[#f4fbf5]',
+    detailsStrong: 'font-extrabold text-green-900 dark:text-green-200',
+    detailsLink: 'text-green-700 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300',
     quoteBorder: 'border-l-4 border-green-500',
     quoteBg: 'bg-green-100/50 dark:bg-green-950/20',
-    quoteText: 'text-green-900/90 dark:text-green-200/90 font-semibold',
-    quoteAuthor: 'text-green-900 dark:text-green-200 font-bold',
+    quoteText: 'font-semibold text-green-900/90 dark:text-green-200/90',
+    quoteAuthor: 'font-bold text-green-900 dark:text-green-200',
   },
   warning: {
-    card: 'bg-status-warning dark:bg-amber-950/30 border-amber-300 dark:border-amber-800/50',
+    card: 'bg-[#fff5e5]',
     title: 'text-amber-800 dark:text-amber-300',
     description: 'text-amber-700 dark:text-amber-400',
     badge: 'bg-amber-500 text-amber-950',
-    warningBox: 'border border-amber-400 bg-[#fff7ed] dark:bg-amber-950/20',
-    detailsBox: 'bg-[#fff9f0] dark:bg-amber-950/20 border border-[#fbd38d] dark:border-amber-800/40',
-    detailsStrong: 'text-amber-900 dark:text-amber-200 font-extrabold',
-    detailsLink: 'text-amber-700 hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-300 hover:bg-amber-500/10',
+    warningBox: 'border-amber-400 bg-[#fff7ed]',
+    detailsBox: 'border-[#fbd38d] bg-[#fff9f0]',
+    detailsStrong: 'font-extrabold text-amber-900 dark:text-amber-200',
+    detailsLink: 'text-amber-700 hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-300',
     quoteBorder: 'border-l-4 border-amber-500',
     quoteBg: 'bg-amber-100/50 dark:bg-amber-950/20',
-    quoteText: 'text-amber-900/90 dark:text-amber-200/90 font-semibold',
-    quoteAuthor: 'text-amber-900 dark:text-amber-200 font-bold',
+    quoteText: 'font-semibold text-amber-900/90 dark:text-amber-200/90',
+    quoteAuthor: 'font-bold text-amber-900 dark:text-amber-200',
   },
   danger: {
-    card: 'bg-status-danger dark:bg-red-950/30 border-red-300 dark:border-red-800/50',
+    card: 'bg-[#ffecec]',
     title: 'text-red-800 dark:text-red-300',
     description: 'text-red-700 dark:text-red-400',
     badge: 'bg-red-600 text-white',
-    warningBox: 'border border-red-400 bg-[#fff2f2] dark:bg-red-950/20',
-    detailsBox: 'bg-[#fff6f6] dark:bg-red-950/20 border border-[#fecaca] dark:border-red-800/40',
-    detailsStrong: 'text-red-900 dark:text-red-200 font-extrabold',
-    detailsLink: 'text-red-700 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-500/10',
+    warningBox: 'border-red-400 bg-[#fff2f2]',
+    detailsBox: 'border-[#fecaca] bg-[#fff6f6]',
+    detailsStrong: 'font-extrabold text-red-900 dark:text-red-200',
+    detailsLink: 'text-red-700 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300',
     quoteBorder: 'border-l-4 border-red-500',
     quoteBg: 'bg-red-100/50 dark:bg-red-950/20',
-    quoteText: 'text-red-900/90 dark:text-red-200/90 font-semibold',
-    quoteAuthor: 'text-red-900 dark:text-red-200 font-bold',
+    quoteText: 'font-semibold text-red-900/90 dark:text-red-200/90',
+    quoteAuthor: 'font-bold text-red-900 dark:text-red-200',
   },
 };
 
@@ -73,18 +72,17 @@ export default function IngredientPage({ params }: { params: { slug: string } })
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8 flex flex-wrap gap-2">
+        <div className="mb-8">
             <Button asChild variant="outline">
                 <Link href="/">
                     <Home className="mr-2 h-4 w-4" />
                     Wróć do bazy
                 </Link>
             </Button>
-            <ShareButton ingredient={ingredient} variant="outline" />
         </div>
 
-        <Card className={cn('overflow-hidden', config.card)}>
-          <CardHeader className="text-center items-center p-8">
+        <Card className={cn('overflow-hidden !p-6 !rounded-2xl transition-all duration-200 ease-in-out hover:shadow-2xl hover:-translate-y-0.5', config.card, 'shadow-lg border-opacity-50')}>
+          <CardHeader className="text-center items-center p-2 md:p-8">
             <div className="text-7xl mb-4">{ingredient.icon}</div>
             <CardTitle className={cn('text-4xl font-extrabold font-headline tracking-tight', config.title)}>
               {ingredient.name}
@@ -101,7 +99,7 @@ export default function IngredientPage({ params }: { params: { slug: string } })
               {ingredient.status === 'danger' && '❌ Zakazany'}
             </div>
           </CardHeader>
-          <CardContent className="p-6 md:p-8 space-y-6">
+          <CardContent className="p-0 md:p-2 space-y-6">
             <div>
               <h3 className={cn("text-xl font-extrabold mb-2", config.title)}>Opis</h3>
               <p className="text-base leading-relaxed text-foreground/80">{ingredient.desc}</p>
@@ -119,7 +117,7 @@ export default function IngredientPage({ params }: { params: { slug: string } })
               </div>
             )}
             
-            <div className={cn("p-6 rounded-lg", config.detailsBox)}>
+            <div className={cn("p-6 rounded-xl", config.detailsBox)}>
                 <h3 className={cn("text-xl font-extrabold mb-4", config.title)}>Szczegóły</h3>
                 <div className="space-y-3 text-base text-foreground/80 dark:text-foreground/70">
                 {ingredient.portion && (
@@ -136,8 +134,8 @@ export default function IngredientPage({ params }: { params: { slug: string } })
                             target="_blank" 
                             rel="noopener noreferrer" 
                             className={cn(
-                                "inline-flex items-center gap-1.5 font-bold underline decoration-2 underline-offset-4 decoration-current/50 transition-all p-1 rounded-md -m-1", 
-                                "hover:bg-black/5 dark:hover:bg-white/10",
+                                "inline-flex items-center gap-1.5 font-bold underline decoration-2 underline-offset-4 rounded-md -m-1 p-1",
+                                "transition-colors hover:bg-black/5 dark:hover:bg-white/10",
                                 config.detailsLink
                             )}
                         >
@@ -151,10 +149,10 @@ export default function IngredientPage({ params }: { params: { slug: string } })
 
           </CardContent>
           {ingredient.nero && (
-            <CardFooter className="p-6 md:p-8">
-              <div className={cn("relative w-full p-5 pl-8 pt-10 rounded-lg", config.quoteBorder, config.quoteBg)}>
-                  <div className="absolute left-4 top-3 inline-flex items-center gap-2 bg-white/70 dark:bg-black/20 text-xs font-extrabold text-foreground/80 dark:text-foreground/70 px-3 py-1 rounded-full border border-black/10 dark:border-white/10">
-                      <PawPrint className="w-3 h-3" /> Nero mówi:
+            <CardFooter className="p-0 md:p-2 mt-6">
+              <div className={cn("relative w-full p-5 pl-8 pt-10 rounded-xl", config.quoteBorder, config.quoteBg)}>
+                  <div className="absolute left-4 top-3 inline-flex items-center gap-2 bg-white/70 dark:bg-black/20 text-xs font-extrabold text-foreground/80 dark:text-foreground/70 px-3 py-1.5 rounded-lg border border-black/10 dark:border-white/10">
+                      <PawPrint className="w-4 h-4" /> Nero mówi:
                   </div>
                   <blockquote className={cn("italic text-lg leading-relaxed", config.quoteText)}>
                       "{ingredient.nero}"
@@ -163,6 +161,10 @@ export default function IngredientPage({ params }: { params: { slug: string } })
             </CardFooter>
           )}
         </Card>
+
+        <div className="mt-8 flex justify-center">
+            <ShareButton ingredient={ingredient} variant="outline" className="w-full md:w-auto" />
+        </div>
 
       </div>
     </div>
