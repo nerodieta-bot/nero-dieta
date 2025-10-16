@@ -3,11 +3,16 @@ import { notFound } from 'next/navigation';
 import { ingredients } from '@/app/data/ingredients';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { AlertCircle, Link as LinkIcon, Home, PawPrint } from 'lucide-react';
+import { AlertCircle, Link as LinkIcon, Home, PawPrint, ChevronsUpDown } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ShareButton } from '@/components/share-button';
 import type { IngredientStatus } from '@/lib/types';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 
 
 export async function generateStaticParams() {
@@ -77,86 +82,94 @@ export default function IngredientPage({ params }: { params: { slug: string } })
             </Button>
         </div>
 
-        <Card className={cn(
-            'overflow-hidden !p-6 !rounded-2xl transition-all duration-200 ease-in-out hover:shadow-2xl hover:-translate-y-0.5',
-            variant.card, 
-            'shadow-lg border-opacity-50'
-        )}>
-          <CardHeader className="text-center items-center p-2 md:p-8">
-            <div className="text-7xl mb-4">{ingredient.icon}</div>
-            <CardTitle className={cn('text-4xl font-extrabold font-headline tracking-tight', variant.title)}>
-              {ingredient.name}
-            </CardTitle>
-            <CardDescription className={cn('font-semibold text-lg', variant.description)}>
-              {ingredient.category}
-            </CardDescription>
-            <div className={cn('mt-4 px-4 py-1 rounded-full text-sm font-bold', variant.badge)}>
-              {statusBadgeMap[ingredient.status]}
-            </div>
-          </CardHeader>
-
-          <CardContent className="p-0 md:p-2 space-y-6">
-            <div>
-              <h3 className={cn("text-xl font-extrabold mb-2", variant.title)}>Opis</h3>
-              <p className="text-base leading-relaxed text-foreground/80">{ingredient.desc}</p>
-            </div>
-
-            {ingredient.WARNING && (
-              <div className={cn("p-4 rounded-lg", variant.warningBox)}>
-                <div className="flex items-center gap-2 text-lg font-extrabold !text-red-700 dark:!text-red-400">
-                    <AlertCircle className="w-5 h-5" />
-                    <h4>Uwaga!</h4>
-                </div>
-                <div className="mt-1 pl-7 font-bold text-foreground/80 dark:text-foreground/70">
-                    <span>{ingredient.WARNING}</span>
-                </div>
+        <Collapsible defaultOpen={true} className="md:!block">
+          <Card className={cn(
+              'overflow-hidden !p-6 !rounded-2xl transition-all duration-200 ease-in-out',
+              variant.card, 
+              'shadow-lg border-opacity-50'
+          )}>
+            <CardHeader className="text-center items-center p-2 md:p-8">
+              <div className="text-7xl mb-4">{ingredient.icon}</div>
+              <CardTitle className={cn('text-4xl font-extrabold font-headline tracking-tight', variant.title)}>
+                {ingredient.name}
+              </CardTitle>
+              <CardDescription className={cn('font-semibold text-lg', variant.description)}>
+                {ingredient.category}
+              </CardDescription>
+              <div className={cn('mt-4 px-4 py-1 rounded-full text-sm font-bold', variant.badge)}>
+                {statusBadgeMap[ingredient.status]}
               </div>
-            )}
-            
-            <div className={cn("p-6 rounded-xl", variant.detailsBox)}>
-                <h3 className={cn("text-xl font-extrabold mb-4", variant.title)}>Szczegóły</h3>
-                <div className="space-y-3 text-base text-foreground/80 dark:text-foreground/70">
-                {ingredient.portion && (
-                    <p><strong className="font-extrabold text-foreground/90 dark:text-foreground/80">Sugerowana porcja:</strong> {ingredient.portion}</p>
-                )}
-                {ingredient.prep && (
-                    <p><strong className="font-extrabold text-foreground/90 dark:text-foreground/80">Sposób przygotowania:</strong> {ingredient.prep}</p>
-                )}
-                {ingredient.source && (
-                    <div className="flex items-center gap-2 pt-2 border-t border-black/10 dark:border-white/10">
-                        <strong className="font-extrabold text-foreground/90 dark:text-foreground/80">Źródło naukowe:</strong> 
-                        <a 
-                            href={ingredient.source} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className={cn(
-                                "inline-flex items-center gap-1.5 font-bold underline decoration-2 underline-offset-4 rounded-md -m-1 p-1 transition-colors",
-                                variant.detailsLink
-                            )}
-                        >
-                            <span>Dowiedz się więcej</span>
-                            <LinkIcon className="w-4 h-4" />
-                        </a>
+            </CardHeader>
+            <CollapsibleContent>
+              <CardContent className="p-0 md:p-2 space-y-6">
+                <div>
+                  <h3 className={cn("text-xl font-extrabold mb-2", variant.title)}>Opis</h3>
+                  <p className="text-base leading-relaxed text-foreground/80">{ingredient.desc}</p>
+                </div>
+
+                {ingredient.WARNING && (
+                  <div className={cn("p-4 rounded-lg", variant.warningBox)}>
+                    <div className="flex items-center gap-2 text-lg font-extrabold !text-red-700 dark:!text-red-400">
+                        <AlertCircle className="w-5 h-5" />
+                        <h4>Uwaga!</h4>
                     </div>
-                )}
-                </div>
-            </div>
-
-          </CardContent>
-
-          {ingredient.nero && (
-            <CardFooter className="p-0 md:p-2 mt-6">
-              <div className={cn("relative w-full p-5 pl-8 pt-10 rounded-xl border-l-4", variant.neroQuote)}>
-                  <div className="absolute left-4 top-3 inline-flex items-center gap-2 bg-white/70 dark:bg-black/20 text-xs font-extrabold text-foreground/80 dark:text-foreground/70 px-3 py-1.5 rounded-lg border border-black/10 dark:border-white/10">
-                      <PawPrint className="w-4 h-4" /> Nero mówi:
+                    <div className="mt-1 pl-7 font-bold text-red-800/90 dark:text-red-300/80">
+                        <span>{ingredient.WARNING}</span>
+                    </div>
                   </div>
-                  <blockquote className="italic text-lg leading-relaxed">
-                      "{ingredient.nero}"
-                  </blockquote>
-              </div>
-            </CardFooter>
-          )}
-        </Card>
+                )}
+                
+                <div className={cn("p-6 rounded-xl", variant.detailsBox)}>
+                    <h3 className={cn("text-xl font-extrabold mb-4", variant.title)}>Szczegóły</h3>
+                    <div className="space-y-3 text-base text-foreground/80 dark:text-foreground/70">
+                    {ingredient.portion && (
+                        <p><strong className="font-extrabold text-foreground/90 dark:text-foreground/80">Sugerowana porcja:</strong> {ingredient.portion}</p>
+                    )}
+                    {ingredient.prep && (
+                        <p><strong className="font-extrabold text-foreground/90 dark:text-foreground/80">Sposób przygotowania:</strong> {ingredient.prep}</p>
+                    )}
+                    {ingredient.source && (
+                        <div className="flex items-center gap-2 pt-2 border-t border-black/10 dark:border-white/10">
+                            <strong className="font-extrabold text-foreground/90 dark:text-foreground/80">Źródło naukowe:</strong> 
+                            <a 
+                                href={ingredient.source} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className={cn(
+                                    "inline-flex items-center gap-1.5 font-bold underline decoration-2 underline-offset-4 rounded-md -m-1 p-1 transition-colors",
+                                    variant.detailsLink
+                                )}
+                            >
+                                <span>Dowiedz się więcej</span>
+                                <LinkIcon className="w-4 h-4" />
+                            </a>
+                        </div>
+                    )}
+                    </div>
+                </div>
+              </CardContent>
+              {ingredient.nero && (
+                <CardFooter className="p-0 md:p-2 mt-6">
+                  <div className={cn("relative w-full p-5 pl-8 pt-10 rounded-xl border-l-4", variant.neroQuote)}>
+                      <div className="absolute left-4 top-3 inline-flex items-center gap-2 bg-white/70 dark:bg-black/20 text-xs font-extrabold text-foreground/80 dark:text-foreground/70 px-3 py-1.5 rounded-lg border border-black/10 dark:border-white/10">
+                          <PawPrint className="w-4 h-4" /> Nero mówi:
+                      </div>
+                      <blockquote className="italic text-lg leading-relaxed">
+                          "{ingredient.nero}"
+                      </blockquote>
+                  </div>
+                </CardFooter>
+              )}
+            </CollapsibleContent>
+          </Card>
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" className="w-full mt-4 md:hidden text-muted-foreground group">
+                <span className="group-data-[state=open]:hidden">Rozwiń szczegóły</span>
+                <span className="group-data-[state=closed]:hidden">Zwiń szczegóły</span>
+                <ChevronsUpDown className="ml-2 h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
+            </Button>
+          </CollapsibleTrigger>
+        </Collapsible>
 
         <div className="mt-8 flex justify-center">
             <ShareButton ingredient={ingredient} variant="outline" className="w-full md:w-auto" />
