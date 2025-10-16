@@ -12,14 +12,14 @@ function initializeAdminApp(): { app: App; auth: ReturnType<typeof getAuth>; fir
     return { app, auth: getAuth(app), firestore: getFirestore(app) };
   }
   
-  // In a deployed App Hosting environment, the GOOGLE_APPLICATION_CREDENTIALS is not set,
-  // but default credentials are still available.
-  const useDefaultCredentials = !process.env.GOOGLE_APPLICATION_CREDENTIALS;
+  // Use application default credentials in production. In development, use a service account key.
+  // This is more robust than checking for GOOGLE_APPLICATION_CREDENTIALS.
+  const useDefaultCredentials = process.env.NODE_ENV === 'production';
 
   const app = initializeApp({
-    credential: useDefaultCredentials 
-      ? credential.applicationDefault() 
-      : cert(process.env.GOOGLE_APPLICATION_CREDENTIALS!),
+    credential: useDefaultCredentials
+      ? credential.applicationDefault()
+      : credential.cert('firebase-credentials.json'), // Expects the file in the root for local dev
     databaseURL: `https://${process.env.GCLOUD_PROJECT}.firebaseio.com`,
     projectId: process.env.GCLOUD_PROJECT,
     storageBucket: `${process.env.GCLOUD_PROJECT}.appspot.com`,
