@@ -80,7 +80,11 @@ export default function IngredientPage({ params }: { params: { slug: string } })
                     Wróć do bazy
                 </Link>
             </Button>
-            <ShareButton ingredient={ingredient} variant="outline" />
+            <ShareButton 
+                ingredient={ingredient} 
+                variant="outline" 
+                label="Poinformuj swoje stado" 
+            />
         </div>
 
         <Collapsible defaultOpen={true} className="md:!block">
@@ -197,3 +201,5 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     description: `Sprawdź, czy ${ingredient.name.toLowerCase()} ${statusMap[ingredient.status]} dla psa. Poznaj właściwości, dawkowanie i opinię Nero.`,
   };
 }
+
+    
