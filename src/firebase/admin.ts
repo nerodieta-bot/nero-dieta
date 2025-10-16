@@ -22,7 +22,7 @@ function initializeAdminApp(): { app: App; auth: ReturnType<typeof getAuth>; fir
     // that hasn't been configured with gcloud auth application-default login.
     // In this case, we fall back to the service account key file.
     console.log("Application Default Credentials not found, falling back to firebase-credentials.json");
-    cred = credential.cert('firebase-credentials.json');
+    cred = cert('firebase-credentials.json');
   }
 
   const app = initializeApp({
