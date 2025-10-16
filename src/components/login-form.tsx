@@ -1,8 +1,8 @@
 
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { useAuth, useFirestore } from '@/firebase';
+import { useState } from 'react';
+import { useAuth } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -27,7 +27,7 @@ import {
 } from 'firebase/auth';
 import { setDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Link from 'next/link';
+import { useFirestore } from '@/firebase/provider';
 
 async function createSessionCookie(idToken: string) {
   const response = await fetch('/api/auth/session', {
@@ -206,21 +206,7 @@ export function LoginForm() {
             </Button>
           </CardFooter>
         </TabsContent>
-
-        <div className="px-6 pb-6">
-             <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t"></span>
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">LUB</span>
-                </div>
-            </div>
-            <Button variant="link" asChild className="w-full mt-2">
-                <Link href="/login-phone">Zaloguj się za pomocą numeru telefonu</Link>
-            </Button>
-        </div>
-
+        
         {error && (
             <div className="m-6 mt-0 flex items-center gap-2 text-sm text-destructive bg-destructive/10 p-3 rounded-md">
                 <AlertTriangle className="h-4 w-4 flex-shrink-0" />
