@@ -1,8 +1,7 @@
-
 'use client';
 
 import { useState } from 'react';
-import { useAuth } from '@/firebase';
+import { useAuth, useFirestore } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -28,9 +27,8 @@ import {
   signInWithPhoneNumber,
   type ConfirmationResult
 } from 'firebase/auth';
-import { setDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useFirestore } from '@/firebase/provider';
 
 async function createSessionCookie(idToken: string) {
   const response = await fetch('/api/auth/session', {
@@ -96,13 +94,16 @@ export function LoginForm() {
             ingredientViewCount: 0,
             mealPlanGenerations: 0,
         };
-        setDocumentNonBlocking(userRef, userData);
+        // Use setDoc with merge:true to handle creation safely
+        setDocumentNonBlocking(userRef, userData, { merge: true });
       } else {
          const userData = {
             ...(user.displayName && { ownerName: user.displayName }),
+            email: user.email, // Always ensure email is present
             updatedAt: serverTimestamp(),
         };
-        updateDocumentNonBlocking(userRef, userData);
+        // Use setDoc with merge:true to handle update safely
+        setDocumentNonBlocking(userRef, userData, { merge: true });
       }
     }
 

@@ -14,21 +14,28 @@ import {FirestorePermissionError} from '@/firebase/errors';
 
 /**
  * Initiates a setDoc operation for a document reference.
+ * It is idempotent: it will create the document if it doesn't exist,
+ * or update/merge it if it does.
  * Does NOT await the write operation internally.
  */
 export function setDocumentNonBlocking(docRef: DocumentReference, data: any, options?: SetOptions) {
   const effectiveOptions = options || {};
+  
+  // Ensure merge is true if no options are provided, making it an upsert by default.
+  if (!options) {
+    effectiveOptions.merge = true;
+  }
+
   setDoc(docRef, data, effectiveOptions).catch(error => {
     errorEmitter.emit(
       'permission-error',
       new FirestorePermissionError({
         path: docRef.path,
-        operation: options && 'merge' in options ? 'update' : 'create',
+        operation: effectiveOptions.merge ? 'update' : 'create',
         requestResourceData: data,
       })
     )
   })
-  // Execution continues immediately
 }
 
 
